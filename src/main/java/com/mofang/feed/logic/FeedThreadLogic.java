@@ -1,5 +1,7 @@
 package com.mofang.feed.logic;
 
+import java.util.Set;
+
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.model.FeedThread;
 
@@ -71,4 +73,6 @@ public interface FeedThreadLogic
 	public ResultValue getUserQuestionThreadList(long userId, int pageNum, int pageSize) throws Exception;
 	
 	public ResultValue getGlobalEliteThreadList(int pageNum, int pageSize) throws Exception;
+	
+	public ResultValue getForumEliteThreadList(Set<Long> forumIds, int pageNum, int pageSize) throws Exception;
 }
