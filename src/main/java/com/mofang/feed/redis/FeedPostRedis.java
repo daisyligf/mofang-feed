@@ -84,6 +84,15 @@ public interface FeedPostRedis
 	public FeedPost getStartPost(long threadId) throws Exception;
 	
 	/**
+	 * 获取楼层所在的位置(非position)
+	 * @param threadId 主题ID
+	 * @param postId 楼层ID
+	 * @return
+	 * @throws Exception
+	 */
+	public int getRank(long threadId, long postId) throws Exception;
+	
+	/**
 	 * 将楼层ID添加到主题楼层列表
 	 * @param threadId 主题ID
 	 * @param postId 楼层ID
