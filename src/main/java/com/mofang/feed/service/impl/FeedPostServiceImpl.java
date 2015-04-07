@@ -10,6 +10,7 @@ import com.mofang.feed.global.common.CommentStatus;
 import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.global.common.ReplyType;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedPostAndComment;
@@ -27,9 +28,11 @@ import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostRecommendDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedCommentRedis;
+import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.FeedPostRedis;
 import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.impl.FeedCommentRedisImpl;
+import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.redis.impl.FeedPostRedisImpl;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
 import com.mofang.feed.service.FeedPostService;
@@ -57,6 +60,7 @@ public class FeedPostServiceImpl implements FeedPostService
 	private FeedCommentDao commentDao = FeedCommentDaoImpl.getInstance();
 	private FeedCommentSolr commentSolr = FeedCommentSolrImpl.getInstance();
 	private FeedPostRecommendDao recommendDao = FeedPostRecommendDaoImpl.getInstance();
+	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 	
 	private FeedPostServiceImpl()
 	{}
@@ -472,6 +476,8 @@ public class FeedPostServiceImpl implements FeedPostService
 			
 			List<FeedPostAndComment> list = new  ArrayList<FeedPostAndComment>();
 			FeedPostAndComment postAndCommentInfo = null;
+			FeedThread threadInfo = null;
+			FeedForum forumInfo = null;
 			for(FeedReply replyInfo : replies)
 			{
 				if(replyInfo.getType() == ReplyType.THREAD)   ///楼层
@@ -481,7 +487,19 @@ public class FeedPostServiceImpl implements FeedPostService
 						continue;
 					
 					postAndCommentInfo = new FeedPostAndComment();
-					
+					postAndCommentInfo.setThreadId(postInfo.getThreadId());
+					threadInfo = threadRedis.getInfo(postInfo.getThreadId());
+					if(null != threadInfo)
+						postAndCommentInfo.setSubject(threadInfo.getSubjectFilter());
+					postAndCommentInfo.setForumId(postInfo.getForumId());
+					forumInfo = forumRedis.getInfo(postInfo.getForumId());
+					if(null != forumInfo)
+						postAndCommentInfo.setForumName(forumInfo.getName());
+					postAndCommentInfo.setPostId(postInfo.getPostId());
+					int rank = postRedis.getRank(postInfo.getThreadId(), postInfo.getPostId());
+					postAndCommentInfo.setPosition(rank);
+					postAndCommentInfo.setReplyContent(postInfo.getContentFilter());
+					postAndCommentInfo.setReplyTime(postInfo.getCreateTime());
 				}
 				else if(replyInfo.getType() == ReplyType.POST)    ///评论
 				{
@@ -490,6 +508,19 @@ public class FeedPostServiceImpl implements FeedPostService
 						continue;
 					
 					postAndCommentInfo = new FeedPostAndComment();
+					postAndCommentInfo.setThreadId(commentInfo.getThreadId());
+					threadInfo = threadRedis.getInfo(commentInfo.getThreadId());
+					if(null != threadInfo)
+						postAndCommentInfo.setSubject(threadInfo.getSubjectFilter());
+					postAndCommentInfo.setForumId(commentInfo.getForumId());
+					forumInfo = forumRedis.getInfo(commentInfo.getForumId());
+					if(null != forumInfo)
+						postAndCommentInfo.setForumName(forumInfo.getName());
+					postAndCommentInfo.setPostId(commentInfo.getPostId());
+					int rank = postRedis.getRank(commentInfo.getThreadId(), commentInfo.getPostId());
+					postAndCommentInfo.setPosition(rank);
+					postAndCommentInfo.setReplyContent(commentInfo.getContentFilter());
+					postAndCommentInfo.setReplyTime(commentInfo.getCreateTime());
 				}
 				list.add(postAndCommentInfo);
 			}
