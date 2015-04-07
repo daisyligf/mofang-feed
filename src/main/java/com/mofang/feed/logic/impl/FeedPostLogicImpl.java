@@ -28,6 +28,7 @@ import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
+import com.mofang.feed.model.FeedPostAndComment;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.PostReplyNotify;
@@ -817,6 +818,60 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		catch(Exception e)
 		{
 			throw new Exception("at FeedPostLogicImpl.getUserPostList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue getUserReplyList(long userId, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			JSONArray arrayItems = new JSONArray();
+			JSONObject jsonItem = null;
+			long total = 0;
+			Page<FeedPostAndComment> page = postService.getUserReplyList(userId, pageNum, pageSize);
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedPostAndComment> replies = page.getList();
+				if(null != replies)
+				{
+					JSONObject jsonThread = null;
+					JSONObject jsonForum = null;
+					for(FeedPostAndComment postAndCommentInfo : replies)
+					{
+						jsonItem = new JSONObject();
+						jsonThread = new JSONObject();
+						jsonForum = new JSONObject();
+						
+						jsonThread.put("tid", postAndCommentInfo.getThreadId());
+						jsonThread.put("subject", postAndCommentInfo.getSubject());
+						jsonForum.put("fid", postAndCommentInfo.getForumId());
+						jsonForum.put("name", postAndCommentInfo.getForumName());
+						
+						jsonItem.put("thread", jsonThread);
+						jsonItem.put("forum", jsonForum);
+						jsonItem.put("pid", postAndCommentInfo.getPostId());
+						jsonItem.put("position", postAndCommentInfo.getPosition());
+						jsonItem.put("reply_content", postAndCommentInfo.getReplyContent());
+						jsonItem.put("reply_time", postAndCommentInfo.getReplyTime());
+						arrayItems.put(jsonItem);
+					}
+				}
+			}
+
+			data.put("total", total);
+			data.put("list", arrayItems);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedPostLogicImpl.getUserReplyList throw an error.", e);
 		}
 	}
 	

@@ -43,6 +43,8 @@ public class GlobalConfig
 	
 	public static String VIDEO_INFO_URL;
 	
+	public static String USER_FLLOW_FORUM_URL;
+	
 	public static String SENSITIVE_WORD_URL;
 	
 	public static String FEED_DETAIL_URL;

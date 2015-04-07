@@ -45,6 +45,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.BATCH_USER_INFO_URL = config.get("api", "batch_user_info_url");
 		GlobalConfig.SENSITIVE_WORD_URL = config.get("api", "sensitive_word_url");
 		GlobalConfig.VIDEO_INFO_URL = config.get("api", "video_info_url");
+		GlobalConfig.USER_FLLOW_FORUM_URL = config.get("api", "user_follow_forum_url");
 		
 		GlobalConfig.FEED_DETAIL_URL = config.get("link", "feed_detail_url");
 		GlobalConfig.FORUM_DETAIL_URL = config.get("link", "forum_detail_url");

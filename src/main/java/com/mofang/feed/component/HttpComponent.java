@@ -1,6 +1,7 @@
 package com.mofang.feed.component;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -240,6 +241,42 @@ public class HttpComponent
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at HttpComponent.getVideoInfo throw an error.", e);
+			return null;
+		}
+	}
+	
+	public static Set<Long> getFllowForums(long userId)
+	{
+		String requestUrl = GlobalConfig.USER_FLLOW_FORUM_URL + "?uid=" + userId + "&pagesize=20";
+		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return null;
+		
+		try
+		{
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return null;
+			
+			JSONArray data = json.optJSONArray("data");
+			if(null == data)
+				return null;
+			
+			Set<Long> forumIds = new HashSet<Long>();
+			JSONObject jsonItem = null;
+			long forumId = 0L;
+			for(int i=0; i<data.length(); i++)
+			{
+				jsonItem = data.getJSONObject(i);
+				forumId = jsonItem.optLong("id", 0L);
+				forumIds.add(forumId);
+			}
+			return forumIds;
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getFllowForums throw an error.", e);
 			return null;
 		}
 	}

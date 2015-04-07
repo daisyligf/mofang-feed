@@ -1577,10 +1577,11 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	}
 
 	@Override
-	public ResultValue getForumEliteThreadList(Set<Long> forumIds, int pageNum, int pageSize) throws Exception
+	public ResultValue getForumEliteThreadList(long userId, int pageNum, int pageSize) throws Exception
 	{
 		try
 		{
+			Set<Long> forumIds = HttpComponent.getFllowForums(userId);
 			Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
