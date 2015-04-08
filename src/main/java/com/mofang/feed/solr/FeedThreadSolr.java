@@ -3,6 +3,7 @@ package com.mofang.feed.solr;
 import java.util.List;
 
 import com.mofang.feed.model.FeedThread;
+import com.mofang.feed.model.Page;
 
 /**
  * 
@@ -20,4 +21,6 @@ public interface FeedThreadSolr
 	public void deleteByIds(List<String> threadIds) throws Exception;
 	
 	public void deleteByForumId(long forumId) throws Exception;
+	
+	public Page<FeedThread> search(long forumId, String forumName, String author, String keyword, int status, int start, int size) throws Exception;
 }

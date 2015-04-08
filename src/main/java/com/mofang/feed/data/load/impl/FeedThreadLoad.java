@@ -47,11 +47,14 @@ public class FeedThreadLoad implements FeedLoad
 			solrList.add(threadInfo);
 			if(total % STEP == 0 || total == list.size())
 			{
-				handleSolr(solrList);
+				//handleSolr(solrList);
 				solrList.clear();
 			}
 			total++;
 		}
+		///更新redis自增ID的值
+		initUniqueId();
+		
 		list = null;
 		System.gc();
 	}
@@ -85,6 +88,19 @@ public class FeedThreadLoad implements FeedLoad
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedThreadLoad.handleRedis throw an error.", e);
+		}
+	}
+	
+	private void initUniqueId()
+	{
+		try
+		{
+			long maxId = threadDao.getMaxId();
+			threadRedis.initUniqueId(maxId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadLoad.initUniqueId throw an error.", e);
 		}
 	}
 	

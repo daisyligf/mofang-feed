@@ -303,4 +303,21 @@ public class FeedForumServiceImpl implements FeedForumService
 			throw e;
 		}
 	}
+
+	@Override
+	public Page<FeedForum> search(String forumName, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int size = pageNumber.getEnd();
+			return forumSolr.search(forumName, start, size);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.search throw an error.", e);
+			throw e;
+		}
+	}
 }

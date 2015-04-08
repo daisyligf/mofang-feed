@@ -38,4 +38,6 @@ public interface FeedForumService
 	public List<FeedForum> getHotForumList(int size) throws Exception;
 	
 	public List<FeedForum> getHotForumList(Set<Long> forumIds) throws Exception;
+	
+	public Page<FeedForum> search(String forumName, int pageNum, int pageSize) throws Exception;
 }

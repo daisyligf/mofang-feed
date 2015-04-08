@@ -12,6 +12,8 @@ import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
  */
 public interface FeedSysRoleDao
 {
+	public int getMaxId() throws Exception;
+	
 	public void add(FeedSysRole model) throws Exception;
 	
 	public void update(FeedSysRole model) throws Exception;

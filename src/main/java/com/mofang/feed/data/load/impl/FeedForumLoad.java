@@ -40,7 +40,10 @@ public class FeedForumLoad implements FeedLoad
 			handleRedis(forumInfo);
 		}
 		
-		handleSolr();
+		///更新redis自增ID的值
+		initUniqueId();
+		
+		//handleSolr();
 		list = null;
 		System.gc();
 	}
@@ -58,6 +61,19 @@ public class FeedForumLoad implements FeedLoad
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedForumLoad.handleRedis throw an error.", e);
+		}
+	}
+	
+	private void initUniqueId()
+	{
+		try
+		{
+			long maxId = forumDao.getMaxId();
+			forumRedis.initUniqueId(maxId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedForumLoad.initUniqueId throw an error.", e);
 		}
 	}
 	

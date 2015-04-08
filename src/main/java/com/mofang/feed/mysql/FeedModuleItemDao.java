@@ -13,6 +13,8 @@ import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
  */
 public interface FeedModuleItemDao
 {
+	public long getMaxId() throws Exception;
+	
 	public void add(FeedModuleItem model) throws Exception;
 	
 	public void update(FeedModuleItem model) throws Exception;

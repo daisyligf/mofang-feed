@@ -33,6 +33,9 @@ public class FeedSysRoleLoad implements FeedLoad
 		{
 			handle(roleInfo);
 		}
+		
+		///更新redis自增ID的值
+		initUniqueId();
 	}
 	
 	private void handle(FeedSysRole roleInfo)
@@ -44,6 +47,19 @@ public class FeedSysRoleLoad implements FeedLoad
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedSysRoleLoad.handle throw an error.", e);
+		}
+	}
+	
+	private void initUniqueId()
+	{
+		try
+		{
+			int maxId = sysRoleDao.getMaxId();
+			sysRoleRedis.initUniqueId(maxId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysRoleLoad.initUniqueId throw an error.", e);
 		}
 	}
 	

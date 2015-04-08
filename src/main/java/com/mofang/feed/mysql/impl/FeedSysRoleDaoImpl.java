@@ -1,9 +1,13 @@
 package com.mofang.feed.mysql.impl;
 
+import java.util.List;
+
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.mysql.FeedSysRoleDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
+import com.mofang.framework.data.mysql.core.meta.ResultData;
+import com.mofang.framework.data.mysql.core.meta.RowData;
 
 /**
  * 
@@ -27,6 +31,22 @@ public class FeedSysRoleDaoImpl extends AbstractMysqlSupport<FeedSysRole> implem
 	public static FeedSysRoleDaoImpl getInstance()
 	{
 		return DAO;
+	}
+
+	@Override
+	public int getMaxId() throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select max(role_id) from feed_sys_role ");
+		ResultData result = super.executeQuery(strSql.toString());
+		if(null == result)
+			return 0;
+		
+		List<RowData> rows = result.getQueryResult();
+		if(null == rows || rows.size() == 0)
+			return 0;
+		
+		return rows.get(0).getInteger(0);
 	}
 
 	@Override

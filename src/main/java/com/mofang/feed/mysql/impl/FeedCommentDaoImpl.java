@@ -43,6 +43,23 @@ public class FeedCommentDaoImpl extends AbstractMysqlSupport<FeedComment> implem
 	}
 
 	@Override
+	public long getMaxId() throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select max(comment_id) from feed_comment ");
+		ResultData result = super.executeQuery(strSql.toString());
+		if(null == result)
+			return 0L;
+		
+		List<RowData> rows = result.getQueryResult();
+		if(null == rows || rows.size() == 0)
+			return 0L;
+		
+		String value = rows.get(0).getString(0);
+		return Long.parseLong(value);
+	}
+
+	@Override
 	public void add(FeedComment model) throws Exception
 	{
 		super.insert(model);

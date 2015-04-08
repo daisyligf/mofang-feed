@@ -17,6 +17,12 @@ public interface FeedSysRoleRedis
 	public int makeUniqueId() throws Exception;
 	
 	/**
+	 * 初始化主键ID
+	 * @throws Exception
+	 */
+	public void initUniqueId(int roleId) throws Exception;
+	
+	/**
 	 * 保存角色信息
 	 * @param model 角色实体信息
 	 * @return

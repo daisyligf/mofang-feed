@@ -1,14 +1,23 @@
 package com.mofang.feed.solr.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedForum;
+import com.mofang.feed.model.Page;
+import com.mofang.feed.redis.FeedForumRedis;
+import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.solr.FeedForumSolr;
+import com.mofang.framework.util.StringUtil;
 
 /**
  * 
@@ -18,6 +27,7 @@ import com.mofang.feed.solr.FeedForumSolr;
 public class FeedForumSolrImpl extends BaseSolr implements FeedForumSolr
 {
 	private final static FeedForumSolrImpl SOLR = new FeedForumSolrImpl();
+	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 	
 	private FeedForumSolrImpl()
 	{}
@@ -55,6 +65,41 @@ public class FeedForumSolrImpl extends BaseSolr implements FeedForumSolr
 		SolrServer solrServer = GlobalObject.SOLR_SERVER_FORUM;
 		IndexDeleteById delete = new IndexDeleteById(solrServer, forumIds);
 		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
+	}
+
+	@Override
+	public Page<FeedForum> search(String forumName, int start, int size) throws Exception
+	{
+		SolrQuery query = new SolrQuery();
+		query.setQuery("name:" + forumName);
+		query.setStart(start);
+		query.setRows(size);
+		SolrServer solrServer = GlobalObject.SOLR_SERVER_FORUM;
+		QueryResponse response = solrServer.query(query);
+		if(null == response)
+			return null;
+		
+		SolrDocumentList docList = response.getResults();
+		long total = docList.getNumFound();
+		
+		List<FeedForum> list = new ArrayList<FeedForum>();
+		FeedForum forumInfo = null;
+		Iterator<SolrDocument> iterator = docList.iterator();
+		String strForumId;
+		while(iterator.hasNext())
+		{
+			SolrDocument doc = iterator.next();
+			strForumId = doc.getFieldValue("id").toString();
+			if(!StringUtil.isLong(strForumId))
+				continue;
+			
+			forumInfo = forumRedis.getInfo(Long.parseLong(strForumId));
+			if(null == forumInfo)
+				continue;
+			
+			list.add(forumInfo);
+		}
+		return new Page<FeedForum>(total, list);
 	}
 
 	class IndexAdd implements Runnable

@@ -47,6 +47,23 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 	}
 
 	@Override
+	public long getMaxId() throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select max(thread_id) from feed_thread ");
+		ResultData result = super.executeQuery(strSql.toString());
+		if(null == result)
+			return 0L;
+		
+		List<RowData> rows = result.getQueryResult();
+		if(null == rows || rows.size() == 0)
+			return 0L;
+		
+		String value = rows.get(0).getString(0);
+		return Long.parseLong(value);
+	}
+
+	@Override
 	public void add(FeedThread model) throws Exception
 	{
 		super.insert(model);

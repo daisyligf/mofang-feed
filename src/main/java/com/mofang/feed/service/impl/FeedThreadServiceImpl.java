@@ -936,4 +936,21 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			throw e;
 		}
 	}
+
+	@Override
+	public Page<FeedThread> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int size = pageNumber.getEnd();
+			return threadSolr.search(forumId, forumName, author, keyword, status, start, size);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.search throw an error.", e);
+			throw e;
+		}
+	}
 }

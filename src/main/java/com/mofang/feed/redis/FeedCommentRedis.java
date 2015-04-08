@@ -20,6 +20,12 @@ public interface FeedCommentRedis
 	public long makeUniqueId() throws Exception;
 	
 	/**
+	 * 初始化主键ID
+	 * @throws Exception
+	 */
+	public void initUniqueId(long commentId) throws Exception;
+	
+	/**
 	 * 保存评论信息
 	 * @param model 评论实体信息
 	 * @return

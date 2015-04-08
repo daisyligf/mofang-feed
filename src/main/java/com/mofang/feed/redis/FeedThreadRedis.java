@@ -20,6 +20,12 @@ public interface FeedThreadRedis
 	public long makeUniqueId() throws Exception;
 	
 	/**
+	 * 初始化主键ID
+	 * @throws Exception
+	 */
+	public void initUniqueId(long threadId) throws Exception;
+	
+	/**
 	 * 保存主题信息
 	 * @param model 主题实体信息
 	 * @return

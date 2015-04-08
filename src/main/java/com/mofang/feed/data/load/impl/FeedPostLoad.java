@@ -58,11 +58,14 @@ public class FeedPostLoad implements FeedLoad
 				solrList.add(postInfo);
 				if(total % STEP == 0 || total == list.size())
 				{
-					handleSolr(solrList);
+					//handleSolr(solrList);
 					solrList.clear();
 				}
 				total++;
 			}
+			///更新redis自增ID的值
+			initUniqueId();
+			
 			list = null;
 			System.gc();
 		}
@@ -101,6 +104,19 @@ public class FeedPostLoad implements FeedLoad
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedPostLoad.handleRedis throw an error.", e);
+		}
+	}
+	
+	private void initUniqueId()
+	{
+		try
+		{
+			long maxId = postDao.getMaxId();
+			postRedis.initUniqueId(maxId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedPostLoad.initUniqueId throw an error.", e);
 		}
 	}
 	

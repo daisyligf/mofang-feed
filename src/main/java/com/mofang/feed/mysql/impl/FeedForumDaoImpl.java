@@ -13,6 +13,8 @@ import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.criterion.type.SortType;
+import com.mofang.framework.data.mysql.core.meta.ResultData;
+import com.mofang.framework.data.mysql.core.meta.RowData;
 
 /**
  * 
@@ -36,6 +38,23 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	public static FeedForumDaoImpl getInstance()
 	{
 		return DAO;
+	}
+
+	@Override
+	public long getMaxId() throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select max(forum_id) from feed_forum ");
+		ResultData result = super.executeQuery(strSql.toString());
+		if(null == result)
+			return 0L;
+		
+		List<RowData> rows = result.getQueryResult();
+		if(null == rows || rows.size() == 0)
+			return 0L;
+		
+		String value = rows.get(0).getString(0);
+		return Long.parseLong(value);
 	}
 	
 	@Override

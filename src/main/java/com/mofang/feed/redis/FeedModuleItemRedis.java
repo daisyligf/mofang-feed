@@ -20,6 +20,12 @@ public interface FeedModuleItemRedis
 	public long makeUniqueId() throws Exception;
 	
 	/**
+	 * 初始化主键ID
+	 * @throws Exception
+	 */
+	public void initUniqueId(long itemId) throws Exception;
+	
+	/**
 	 * 保存推送主题信息
 	 * @param model 推送主题实体信息
 	 * @return

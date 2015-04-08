@@ -321,4 +321,18 @@ public interface FeedThreadService
 	 * @throws Exception
 	 */
 	public Page<FeedThread> getForumEliteThreadList(Set<Long> forumIds, int pageNum, int pageSize) throws Exception;
+	
+	/**
+	 * 搜索主题
+	 * @param forumId 版块ID
+	 * @param forumName 版块名称
+	 * @param author 主题作者
+	 * @param keyword 关键字(标题+内容)
+	 * @param status 主题状态
+	 * @param pageNum 页数
+	 * @param pageSize 每页记录数
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<FeedThread> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 }

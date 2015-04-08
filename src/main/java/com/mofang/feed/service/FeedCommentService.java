@@ -86,4 +86,18 @@ public interface FeedCommentService
 	 * @throws Exception
 	 */
 	public long getUserCommentCount(long userId) throws Exception;
+	
+	/**
+	 * 搜索评论
+	 * @param forumId 版块ID
+	 * @param forumName 版块名称
+	 * @param author 评论作者
+	 * @param keyword 关键字
+	 * @param status 评论状态
+	 * @param pageNum 页数
+	 * @param pageSize 每页记录数
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<FeedComment> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 }

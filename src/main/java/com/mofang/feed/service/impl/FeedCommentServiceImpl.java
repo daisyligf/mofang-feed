@@ -286,6 +286,23 @@ public class FeedCommentServiceImpl implements FeedCommentService
 			throw e;
 		}
 	}
+
+	@Override
+	public Page<FeedComment> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int size = pageNumber.getEnd();
+			return commentSolr.search(forumId, forumName, author, keyword, status, start, size);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedCommentServiceImpl.search throw an error.", e);
+			throw e;
+		}
+	}
 	
 	private Page<FeedComment> convertEntityList(long total, Set<String> idSet) throws Exception
 	{

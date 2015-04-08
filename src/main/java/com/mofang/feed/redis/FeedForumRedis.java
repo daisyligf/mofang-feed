@@ -20,6 +20,12 @@ public interface FeedForumRedis
 	public long makeUniqueId() throws Exception;
 	
 	/**
+	 * 初始化主键ID
+	 * @throws Exception
+	 */
+	public void initUniqueId(long forumId) throws Exception;
+	
+	/**
 	 * 保存版块信息
 	 * @param model 版块实体信息
 	 * @return

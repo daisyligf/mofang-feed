@@ -17,6 +17,7 @@ import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.framework.data.redis.RedisWorker;
 import com.mofang.framework.data.redis.workers.DeleteWorker;
 import com.mofang.framework.data.redis.workers.IncrWorker;
+import com.mofang.framework.data.redis.workers.SetWorker;
 
 /**
  * 写这个类的时候，手都抽筋了……
@@ -41,6 +42,14 @@ public class FeedThreadRedisImpl implements FeedThreadRedis
 		String key = RedisKey.THREAD_INCREMENT_ID_KEY;
 		RedisWorker<Long> worker = new IncrWorker(key);
 		return GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+
+	@Override
+	public void initUniqueId(long threadId) throws Exception
+	{
+		String key = RedisKey.THREAD_INCREMENT_ID_KEY;
+		RedisWorker<Boolean> worker = new SetWorker(key, String.valueOf(threadId));
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 
 	@Override

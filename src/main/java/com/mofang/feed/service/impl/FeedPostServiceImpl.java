@@ -534,6 +534,23 @@ public class FeedPostServiceImpl implements FeedPostService
 		}
 	}
 
+	@Override
+	public Page<FeedPost> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int size = pageNumber.getEnd();
+			return postSolr.search(forumId, forumName, author, keyword, status, start, size);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedPostServiceImpl.search throw an error.", e);
+			throw e;
+		}
+	}
+
 	private Page<FeedPost> convertEntityList(long total, Set<String> idSet) throws Exception
 	{
 		if(null == idSet || idSet.size() == 0)

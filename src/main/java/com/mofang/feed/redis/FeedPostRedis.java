@@ -20,6 +20,12 @@ public interface FeedPostRedis
 	public long makeUniqueId() throws Exception;
 	
 	/**
+	 * 初始化主键ID
+	 * @throws Exception
+	 */
+	public void initUniqueId(long postId) throws Exception;
+	
+	/**
 	 * 保存楼层信息
 	 * @param model 楼层实体信息
 	 * @return

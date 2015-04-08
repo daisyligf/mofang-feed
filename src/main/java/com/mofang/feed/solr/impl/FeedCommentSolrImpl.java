@@ -1,19 +1,29 @@
 package com.mofang.feed.solr.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 
 import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedForum;
+import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.redis.FeedCommentRedis;
 import com.mofang.feed.redis.FeedForumRedis;
+import com.mofang.feed.redis.impl.FeedCommentRedisImpl;
 import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.solr.FeedCommentSolr;
+import com.mofang.framework.util.StringUtil;
 
 /**
  * 
@@ -24,6 +34,7 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 {
 	private final static FeedCommentSolrImpl SOLR = new FeedCommentSolrImpl();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
+	private FeedCommentRedis commentRedis = FeedCommentRedisImpl.getInstance();
 	
 	private FeedCommentSolrImpl()
 	{}
@@ -88,6 +99,57 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 		String query = "post_id:" + postId;
 		IndexDeleteByQuery delete = new IndexDeleteByQuery(solrServer, query);
 		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
+	}
+
+	@Override
+	public Page<FeedComment> search(long forumId, String forumName, String author, String keyword, int status, int start, int size) throws Exception
+	{
+		SolrQuery query = new SolrQuery();
+		StringBuilder strQuery = new StringBuilder();
+		if(forumId > 0)
+			strQuery.append(" AND forum_id:" + forumId);
+		if(!StringUtil.isNullOrEmpty(forumName))
+			strQuery.append(" AND forum_name:" + forumName);
+		if(!StringUtil.isNullOrEmpty(author))
+			strQuery.append(" AND nickname:" + author);
+		if(!StringUtil.isNullOrEmpty(keyword))
+			strQuery.append(" AND content:" + keyword);
+		strQuery.append(" AND status:" + status);
+		
+		if(strQuery.length() == 0)
+			return null;
+		String queryParam = strQuery.substring(4, strQuery.length());
+		queryParam = "(" + queryParam + ")";
+		
+		query.setStart(start);
+		query.setRows(size);
+		query.setSort("time", ORDER.desc);
+		SolrServer solrServer = GlobalObject.SOLR_SERVER_COMMENT;
+		QueryResponse response = solrServer.query(query);
+		if(null == response)
+			return null;
+		
+		SolrDocumentList docList = response.getResults();
+		long total = docList.getNumFound();
+		
+		List<FeedComment> list = new ArrayList<FeedComment>();
+		FeedComment commentInfo = null;
+		Iterator<SolrDocument> iterator = docList.iterator();
+		String strCommentId;
+		while(iterator.hasNext())
+		{
+			SolrDocument doc = iterator.next();
+			strCommentId = doc.getFieldValue("id").toString();
+			if(!StringUtil.isLong(strCommentId))
+				continue;
+			
+			commentInfo = commentRedis.getInfo(Long.parseLong(strCommentId));
+			if(null == commentInfo)
+				continue;
+			
+			list.add(commentInfo);
+		}
+		return new Page<FeedComment>(total, list);
 	}
 
 	class IndexAdd implements Runnable

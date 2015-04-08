@@ -33,6 +33,10 @@ public class FeedModuleItemLoad implements FeedLoad
 		{
 			handle(itemInfo);
 		}
+		
+		///更新redis自增ID的值
+		initUniqueId();
+				
 		list = null;
 		System.gc();
 	}
@@ -49,6 +53,19 @@ public class FeedModuleItemLoad implements FeedLoad
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedModuleItemLoad.handle throw an error.", e);
+		}
+	}
+	
+	private void initUniqueId()
+	{
+		try
+		{
+			long maxId = itemDao.getMaxId();
+			itemRedis.initUniqueId(maxId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedModuleItemLoad.initUniqueId throw an error.", e);
 		}
 	}
 	

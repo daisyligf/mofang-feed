@@ -14,6 +14,8 @@ import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
  */
 public interface FeedThreadDao
 {
+	public long getMaxId() throws Exception;
+	
 	public void add(FeedThread model) throws Exception;
 	
 	public void update(FeedThread model) throws Exception;

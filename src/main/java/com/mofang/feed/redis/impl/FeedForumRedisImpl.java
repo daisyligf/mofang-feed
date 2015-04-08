@@ -14,6 +14,7 @@ import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.framework.data.redis.RedisWorker;
 import com.mofang.framework.data.redis.workers.DeleteWorker;
 import com.mofang.framework.data.redis.workers.IncrWorker;
+import com.mofang.framework.data.redis.workers.SetWorker;
 
 /**
  * 
@@ -38,6 +39,14 @@ public class FeedForumRedisImpl implements FeedForumRedis
 		String key = RedisKey.FORUM_INCREMENT_ID_KEY;
 		RedisWorker<Long> worker = new IncrWorker(key);
 		return GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+
+	@Override
+	public void initUniqueId(long forumId) throws Exception
+	{
+		String key = RedisKey.FORUM_INCREMENT_ID_KEY;
+		RedisWorker<Boolean> worker = new SetWorker(key, String.valueOf(forumId));
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 
 	@Override
