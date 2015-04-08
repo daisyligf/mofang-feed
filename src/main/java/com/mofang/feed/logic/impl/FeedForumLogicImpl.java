@@ -451,27 +451,36 @@ public class FeedForumLogicImpl implements FeedForumLogic
 		{
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
-			List<FeedForum> list = forumService.getRecommendForumList();
-			if(null != list && list.size() > 0)
+			long total = 0L;
+			JSONArray arrayForums = new JSONArray();
+			Page<FeedForum> page = forumService.search(forumName, pageNum, pageSize);
+			if(null != page)
 			{
-				JSONObject jsonForum = null;
-				for(FeedForum forumInfo : list)
+				total = page.getTotal();
+				List<FeedForum> list = page.getList();
+				if(null != list && list.size() > 0)
 				{
-					jsonForum = new JSONObject();
-					jsonForum.put("fid", forumInfo.getForumId());
-					jsonForum.put("parent_id", forumInfo.getParentId());
-					jsonForum.put("name", forumInfo.getName());
-					jsonForum.put("name_spell", forumInfo.getNameSpell());
-					jsonForum.put("icon", forumInfo.getIcon());
-					jsonForum.put("color", forumInfo.getColor());
-					jsonForum.put("threads", forumInfo.getThreads());
-					jsonForum.put("today_threads", forumInfo.getTodayThreads());
-					jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-					jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
-					//data.put(jsonForum);
+					JSONObject jsonForum = null;
+					for(FeedForum forumInfo : list)
+					{
+						jsonForum = new JSONObject();
+						jsonForum.put("fid", forumInfo.getForumId());
+						jsonForum.put("parent_id", forumInfo.getParentId());
+						jsonForum.put("name", forumInfo.getName());
+						jsonForum.put("name_spell", forumInfo.getNameSpell());
+						jsonForum.put("icon", forumInfo.getIcon());
+						jsonForum.put("color", forumInfo.getColor());
+						jsonForum.put("threads", forumInfo.getThreads());
+						jsonForum.put("today_threads", forumInfo.getTodayThreads());
+						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
+						jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
+						arrayForums.put(jsonForum);
+					}
 				}
 			}
 			
+			data.put("total", total);
+			data.put("list", arrayForums);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);
