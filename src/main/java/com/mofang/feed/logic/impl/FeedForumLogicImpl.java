@@ -443,4 +443,43 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			throw new Exception("at FeedForumLogicImpl.getHotForumList throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue search(String forumName, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			List<FeedForum> list = forumService.getRecommendForumList();
+			if(null != list && list.size() > 0)
+			{
+				JSONObject jsonForum = null;
+				for(FeedForum forumInfo : list)
+				{
+					jsonForum = new JSONObject();
+					jsonForum.put("fid", forumInfo.getForumId());
+					jsonForum.put("parent_id", forumInfo.getParentId());
+					jsonForum.put("name", forumInfo.getName());
+					jsonForum.put("name_spell", forumInfo.getNameSpell());
+					jsonForum.put("icon", forumInfo.getIcon());
+					jsonForum.put("color", forumInfo.getColor());
+					jsonForum.put("threads", forumInfo.getThreads());
+					jsonForum.put("today_threads", forumInfo.getTodayThreads());
+					jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
+					jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
+					//data.put(jsonForum);
+				}
+			}
+			
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedForumLogicImpl.search throw an error.", e);
+		}
+	}
 }

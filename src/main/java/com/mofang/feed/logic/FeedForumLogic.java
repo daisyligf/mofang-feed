@@ -31,4 +31,6 @@ public interface FeedForumLogic
 	public ResultValue getHotForumList(int size) throws Exception;
 	
 	public ResultValue getHotForumList(Set<Long> forumIds) throws Exception;
+	
+	public ResultValue search(String forumName, int pageNum, int pageSize) throws Exception;
 }
