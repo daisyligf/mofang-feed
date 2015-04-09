@@ -187,7 +187,7 @@ public class HttpComponent
 	 */
 	public static SensitiveWord sensitiveFilter(String text)
 	{
-		String postData = "s=" + text;
+		String postData = text;
 		String result = post(GlobalObject.HTTP_CLIENT_SENSITIVEWORD, GlobalConfig.SENSITIVE_WORD_URL, postData);
 		if(StringUtil.isNullOrEmpty(result))
 			return null;
