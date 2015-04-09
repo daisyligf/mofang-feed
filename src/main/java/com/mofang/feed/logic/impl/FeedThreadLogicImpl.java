@@ -1626,6 +1626,141 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		}
 	}
 
+	@Override
+	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
+			Set<Long> uids = new HashSet<Long>();
+			Page<FeedThread> page = threadService.search(forumId, forumName, author, keyword, status, pageNum, pageSize);
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			long total = 0;
+			JSONArray arrayThreads = new JSONArray();
+			JSONObject jsonThread = null;
+			User userInfo = null;
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedThread> threads = page.getList();
+				if(null != threads)
+				{
+					for(FeedThread threadInfo : threads)
+					{
+						jsonThread = new JSONObject();
+						jsonThread.put("fid", threadInfo.getForumId());        ///所属版块ID
+						jsonThread.put("tid", threadInfo.getThreadId());       ///主题ID
+						jsonThread.put("user_id", threadInfo.getUserId());         ///发布主题的用户ID
+						jsonThread.put("title", threadInfo.getSubjectFilter());       ///主题标题
+						jsonThread.put("subject", threadInfo.getSubjectFilter());   ///主题标题
+						jsonThread.put("replies", threadInfo.getReplies());         ///主题回复数(楼层+评论)
+						jsonThread.put("pageview", threadInfo.getPageView());        ///主题浏览数
+						jsonThread.put("share_times", threadInfo.getShareTimes());        ///主题分享数
+						jsonThread.put("utime", threadInfo.getCreateTime() / 1000);        ///主题发布时间
+						jsonThread.put("last_poster_id", threadInfo.getLastPostUid());        ///主题最后回复用户ID
+						jsonThread.put("last_post_time", threadInfo.getLastPostTime() / 1000);        ///主题最后回复时间
+						jsonThread.put("is_closed", threadInfo.isClosed());        ///主题是否关闭(如果关闭, 则不能进行回复和评论)
+						jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
+						jsonThread.put("status", status);        ///主题状态
+						
+						///构建linkurl (linkurl是一种link规则，客户端根据link规则来进行跳转)
+						String linkurl = threadInfo.getLinkUrl();
+						if(StringUtil.isNullOrEmpty(linkurl))
+							linkurl = GlobalConfig.FEED_DETAIL_URL + "?tid=" + threadInfo.getThreadId() + "&type=0";
+						jsonThread.put("link_url", linkurl);
+						
+						///获取发布主题的用户信息
+						userInfo = UserComponent.getInfoFromCache(threadInfo.getUserId());
+						if(null == userInfo)
+							uids.add(threadInfo.getUserId());
+						else
+						{
+							jsonThread.put("nickname", userInfo.getNickName());
+							jsonThread.put("avatar", userInfo.getAvatar());
+							JSONObject jsonUser = new JSONObject();
+							jsonUser.put("level", userInfo.getLevel());
+							jsonUser.put("exp", userInfo.getExp());
+							jsonUser.put("coin", userInfo.getCoin());
+							jsonUser.put("diamond", userInfo.getDiamond());
+							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+							jsonUser.put("gained_exp", userInfo.getGainedExp());
+							jsonUser.put("badge", userInfo.getBadges());
+							jsonThread.put("user", jsonUser);
+						}
+						
+						///获取最后回复主题的用户信息
+						userInfo = UserComponent.getInfoFromCache(threadInfo.getLastPostUid());
+						if(null == userInfo)
+							uids.add(threadInfo.getLastPostUid());
+						else
+						{
+							jsonThread.put("last_poster_name", userInfo.getNickName());
+						}
+						
+						arrayThreads.put(jsonThread);
+					}
+				}
+			}
+			
+			///填充用户信息
+			if(uids.size() > 0)
+			{
+				Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
+				if(null != userMap)
+				{
+					for(int i=0; i<arrayThreads.length(); i++)
+					{
+						jsonThread = arrayThreads.getJSONObject(i);
+						String nickName = jsonThread.optString("nickname", "");
+						String lastPosterName = jsonThread.optString("last_poster_name", "");
+						long userId = jsonThread.optLong("uid", 0L);
+						long lastPosterId = jsonThread.optLong("last_poster_id", 0L);
+						
+						///填充发帖用户信息
+						if(StringUtil.isNullOrEmpty(nickName))
+						{
+							if(userMap.containsKey(userId))
+							{
+								userInfo = userMap.get(userId);
+								jsonThread.put("nickname", userInfo.getNickName());
+								jsonThread.put("avatar", userInfo.getAvatar());
+								JSONObject jsonUser = new JSONObject();
+								jsonUser.put("level", userInfo.getLevel());
+								jsonUser.put("exp", userInfo.getExp());
+								jsonUser.put("coin", userInfo.getCoin());
+								jsonUser.put("diamond", userInfo.getDiamond());
+								jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+								jsonUser.put("gained_exp", userInfo.getGainedExp());
+								jsonUser.put("badge", userInfo.getBadges());
+								jsonThread.put("user", jsonUser);
+							}
+						}
+						///填充最后回复用户信息
+						if(StringUtil.isNullOrEmpty(lastPosterName))
+						{
+							if(userMap.containsKey(lastPosterId))
+							{
+								jsonThread.put("last_poster_name", userInfo.getNickName());
+							}
+						}
+					}
+				}
+			}
+			
+			data.put("total", total);
+			data.put("list", arrayThreads);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.getForumEliteThreadList throw an error.", e);
+		}
+	}
+
 	private ResultValue formatForumThreads(long forumId, Page<FeedThread> page, long currentUserId) throws Exception
 	{
 		ResultValue result = new ResultValue();

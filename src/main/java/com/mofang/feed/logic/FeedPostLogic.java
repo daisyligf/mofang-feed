@@ -34,4 +34,6 @@ public interface FeedPostLogic
 	public ResultValue getUserPostList(long userId, int pageNum, int pageSize) throws Exception;
 	
 	public ResultValue getUserReplyList(long userId, int pageNum, int pageSize) throws Exception;
+	
+	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 }

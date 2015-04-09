@@ -23,6 +23,7 @@ import com.mofang.feed.global.common.ThreadTag;
 import com.mofang.feed.global.common.ThreadType;
 import com.mofang.feed.logic.FeedCommentLogic;
 import com.mofang.feed.model.FeedComment;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
@@ -34,12 +35,14 @@ import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
 import com.mofang.feed.service.FeedCommentService;
+import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
+import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
@@ -63,6 +66,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
 	private FeedOperateHistoryService operateService = FeedOperateHistoryServiceImpl.getInstance();
 	private FeedCommentService commentService = FeedCommentServiceImpl.getInstance();
+	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	
 	private FeedCommentLogicImpl()
 	{}
@@ -631,6 +635,109 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 		catch(Exception e)
 		{
 			throw new Exception("at FeedCommentLogicImpl.getUserCommentList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
+			Set<Long> uids = new HashSet<Long>();
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			JSONArray arrayComments = new JSONArray();
+			JSONObject jsonComment = null;
+			User userInfo = null;
+			long total = 0;
+			Page<FeedComment> page = commentService.search(forumId, forumName, author, keyword, status, pageNum, pageSize);
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedComment> comments = page.getList();
+				if(null != comments)
+				{
+					FeedThread threadInfo = null;
+					FeedForum forumInfo = null;
+					for(FeedComment commentInfo : comments)
+					{
+						jsonComment = new JSONObject();
+						jsonComment.put("fid", commentInfo.getForumId());
+						jsonComment.put("tid", commentInfo.getThreadId());
+						jsonComment.put("pid", commentInfo.getPostId());
+						jsonComment.put("user_id", commentInfo.getUserId());
+						jsonComment.put("message", commentInfo.getContentFilter());
+						jsonComment.put("original_message", commentInfo.getContent());
+						jsonComment.put("iscomment", 0);
+						jsonComment.put("replycnt", 0);
+						jsonComment.put("post_time", commentInfo.getCreateTime() / 1000);
+						jsonComment.put("createtime", commentInfo.getCreateTime() / 1000);
+						jsonComment.put("status", status);
+						
+						///获取主题信息
+						threadInfo = threadService.getInfo(commentInfo.getThreadId(), DataSource.REDIS);
+						if(null != threadInfo)
+						{
+							jsonComment.put("subject", threadInfo.getSubjectFilter());
+							jsonComment.put("thread_subject", threadInfo.getSubjectFilter());
+						}
+						
+						///获取版块信息
+						forumInfo = forumService.getInfo(commentInfo.getForumId());
+						if(null != forumInfo)
+						{
+							jsonComment.put("forum_name", forumInfo.getName());
+						}
+						
+						///获取发布主题的用户信息
+						userInfo = UserComponent.getInfoFromCache(threadInfo.getUserId());
+						if(null == userInfo)
+							uids.add(threadInfo.getUserId());
+						else
+						{
+							jsonComment.put("nickname", userInfo.getNickName());
+						}
+						arrayComments.put(jsonComment);
+					}
+				}
+			}
+			
+			///填充用户信息
+			if(uids.size() > 0)
+			{
+				Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
+				if(null != userMap)
+				{
+					for(int i=0; i<arrayComments.length(); i++)
+					{
+						jsonComment = arrayComments.getJSONObject(i);
+						String nickName = jsonComment.optString("nickname", "");
+						long userId = jsonComment.optLong("uid", 0L);
+						
+						///填充发帖用户信息
+						if(StringUtil.isNullOrEmpty(nickName))
+						{
+							if(userMap.containsKey(userId))
+							{
+								userInfo = userMap.get(userId);
+								jsonComment.put("nickname", userInfo.getNickName());
+							}
+						}
+					}
+				}
+			}
+
+			data.put("total", total);
+			data.put("list", arrayComments);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedCommentLogicImpl.search throw an error.", e);
 		}
 	}
 }

@@ -23,4 +23,6 @@ public interface FeedCommentLogic
 	public ResultValue getPostCommentList(long postId, int pageNum, int pageSize) throws Exception;
 	
 	public ResultValue getUserCommentList(long userId, int pageNum, int pageSize) throws Exception;
+	
+	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 }
