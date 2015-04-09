@@ -106,11 +106,13 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		Operand orderby = new OrderByOperand(entry);
 		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
 		
-		if(parentId > 0)
+		if(parentId > 0) {
 			where.append(parentIdEqual).append(orderby).append(limit);
-		else
-			where.append(orderby).append(limit);
-		return super.getList(where);
+			return super.getList(where);
+		} else {
+			orderby.append(limit);
+			return super.getList(orderby);
+		}
 	}
 
 	@Override
