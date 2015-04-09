@@ -874,6 +874,120 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			throw new Exception("at FeedPostLogicImpl.getUserReplyList throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
+			Set<Long> uids = new HashSet<Long>();
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			JSONArray arrayPosts = new JSONArray();
+			JSONObject jsonPost = null;
+			User userInfo = null;
+			long total = 0;
+			Page<FeedPost> page = postService.search(forumId, forumName, author, keyword, status, pageNum, pageSize);
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedPost> list = page.getList();
+				if(null != list)
+				{
+					FeedThread threadInfo = null;
+					FeedForum forumInfo = null;
+					for(FeedPost postInfo : list)
+					{
+						jsonPost = new JSONObject();
+						jsonPost.put("fid", postInfo.getForumId());
+						jsonPost.put("tid", postInfo.getThreadId());
+						jsonPost.put("pid", postInfo.getPostId());
+						jsonPost.put("position", postInfo.getPosition());
+						jsonPost.put("user_id", postInfo.getUserId());
+						jsonPost.put("message", postInfo.getContentFilter());
+						jsonPost.put("original_message", postInfo.getContent());
+						jsonPost.put("html_message", postInfo.getHtmlContentFilter());
+						jsonPost.put("original_html_message", postInfo.getHtmlContent());
+						jsonPost.put("video_id", postInfo.getVideoId());
+						jsonPost.put("thumbnail", postInfo.getThumbnail());
+						jsonPost.put("duration", postInfo.getDuration());
+						jsonPost.put("start", postInfo.getPosition() == 1 ? 1 : 0);
+						jsonPost.put("recommends", postInfo.getRecommends());
+						jsonPost.put("iscomment", 0);
+						jsonPost.put("comments", postInfo.getComments());
+						jsonPost.put("replycnt", 0);
+						jsonPost.put("post_time", postInfo.getCreateTime() / 1000);
+						jsonPost.put("createtime", postInfo.getCreateTime() / 1000);
+						jsonPost.put("isexistvideo", postInfo.getVideoId() > 0 ? 1 : 0);
+						jsonPost.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));
+						jsonPost.put("status", status);
+						
+						///获取主题信息
+						threadInfo = threadService.getInfo(postInfo.getThreadId(), DataSource.REDIS);
+						if(null != threadInfo)
+						{
+							jsonPost.put("subject", threadInfo.getSubjectFilter());
+							jsonPost.put("thread_subject", threadInfo.getSubjectFilter());
+						}
+						
+						///获取版块信息
+						forumInfo = forumService.getInfo(postInfo.getForumId());
+						if(null != forumInfo)
+						{
+							jsonPost.put("forum_name", forumInfo.getName());
+						}
+						
+						///获取发布主题的用户信息
+						userInfo = UserComponent.getInfoFromCache(threadInfo.getUserId());
+						if(null == userInfo)
+							uids.add(threadInfo.getUserId());
+						else
+						{
+							jsonPost.put("nickname", userInfo.getNickName());
+						}
+						arrayPosts.put(jsonPost);
+					}
+				}
+			}
+			
+			///填充用户信息
+			if(uids.size() > 0)
+			{
+				Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
+				if(null != userMap)
+				{
+					for(int i=0; i<arrayPosts.length(); i++)
+					{
+						jsonPost = arrayPosts.getJSONObject(i);
+						String nickName = jsonPost.optString("nickname", "");
+						long userId = jsonPost.optLong("uid", 0L);
+						
+						///填充发帖用户信息
+						if(StringUtil.isNullOrEmpty(nickName))
+						{
+							if(userMap.containsKey(userId))
+							{
+								userInfo = userMap.get(userId);
+								jsonPost.put("nickname", userInfo.getNickName());
+							}
+						}
+					}
+				}
+			}
+
+			data.put("total", total);
+			data.put("list", arrayPosts);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedPostLogicImpl.search throw an error.", e);
+		}
+	}
 	
 	private ResultValue getThreadPostListByApp(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{

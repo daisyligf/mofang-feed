@@ -14,10 +14,13 @@ import org.apache.solr.common.SolrInputDocument;
 
 import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.mysql.FeedPostDao;
+import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.FeedPostRedis;
 import com.mofang.feed.redis.impl.FeedForumRedisImpl;
@@ -35,6 +38,7 @@ public class FeedPostSolrImpl extends BaseSolr implements FeedPostSolr
 	private final static FeedPostSolrImpl SOLR = new FeedPostSolrImpl();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 	private FeedPostRedis postRedis = FeedPostRedisImpl.getInstance();
+	private FeedPostDao postDao = FeedPostDaoImpl.getInstance();
 	
 	private FeedPostSolrImpl()
 	{}
@@ -134,7 +138,10 @@ public class FeedPostSolrImpl extends BaseSolr implements FeedPostSolr
 			if(!StringUtil.isLong(strPostId))
 				continue;
 			
-			postInfo = postRedis.getInfo(Long.parseLong(strPostId));
+			if(status == PostStatus.NORMAL)
+				postInfo = postRedis.getInfo(Long.parseLong(strPostId));
+			else if(status == PostStatus.DELETED)
+				postInfo = postDao.getInfo(Long.parseLong(strPostId));
 			if(null == postInfo)
 				continue;
 			

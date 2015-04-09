@@ -14,10 +14,13 @@ import org.apache.solr.common.SolrInputDocument;
 
 import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.mysql.FeedThreadDao;
+import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.impl.FeedForumRedisImpl;
@@ -35,6 +38,7 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 	private final static FeedThreadSolrImpl SOLR = new FeedThreadSolrImpl();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
+	private FeedThreadDao  threadDao = FeedThreadDaoImpl.getInstance();
 	
 	private FeedThreadSolrImpl()
 	{}
@@ -125,7 +129,10 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 			if(!StringUtil.isLong(strThreadId))
 				continue;
 			
-			threadInfo = threadRedis.getInfo(Long.parseLong(strThreadId));
+			if(status == ThreadStatus.NORMAL)
+				threadInfo = threadRedis.getInfo(Long.parseLong(strThreadId));
+			else if(status == ThreadStatus.DELETED)
+				threadInfo = threadDao.getInfo(Long.parseLong(strThreadId));
 			if(null == threadInfo)
 				continue;
 			

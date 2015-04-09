@@ -14,10 +14,13 @@ import org.apache.solr.common.SolrInputDocument;
 
 import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.CommentStatus;
 import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.mysql.FeedCommentDao;
+import com.mofang.feed.mysql.impl.FeedCommentDaoImpl;
 import com.mofang.feed.redis.FeedCommentRedis;
 import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.impl.FeedCommentRedisImpl;
@@ -35,6 +38,7 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 	private final static FeedCommentSolrImpl SOLR = new FeedCommentSolrImpl();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 	private FeedCommentRedis commentRedis = FeedCommentRedisImpl.getInstance();
+	private FeedCommentDao commentDao = FeedCommentDaoImpl.getInstance();
 	
 	private FeedCommentSolrImpl()
 	{}
@@ -143,7 +147,10 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 			if(!StringUtil.isLong(strCommentId))
 				continue;
 			
-			commentInfo = commentRedis.getInfo(Long.parseLong(strCommentId));
+			if(status == CommentStatus.NORMAL)
+				commentInfo = commentRedis.getInfo(Long.parseLong(strCommentId));
+			else if(status == CommentStatus.DELETED)
+				commentInfo = commentDao.getInfo(Long.parseLong(strCommentId));
 			if(null == commentInfo)
 				continue;
 			
