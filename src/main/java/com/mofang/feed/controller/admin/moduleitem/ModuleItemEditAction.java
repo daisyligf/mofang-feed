@@ -55,7 +55,7 @@ public class ModuleItemEditAction extends AbstractActionExecutor
 		String strOnlineTime = json.optString("online_time", "");
 		
 		///参数检查
-		if(StringUtil.isInteger(strOnlineTime) || StringUtil.isInteger(title) || itemId <= 0 || StringUtil.isDate(strOnlineTime, "yyyy-MM-dd HH:mm:ss"))
+		if(itemId <= 0 || !StringUtil.isDate(strOnlineTime, "yyyy-MM-dd HH:mm:ss"))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
