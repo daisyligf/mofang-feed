@@ -126,7 +126,7 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 	public void updateTop(long threadId, boolean isTop, Date topTime) throws Exception
 	{
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("update feed_thread set is_top = " + isTop + ", top_time='" + topTime + "' where thread_id=" + threadId);
+		strSql.append("update feed_thread set is_top = " + isTop + ", top_time='" + topTime.getTime() + "' where thread_id=" + threadId);
 		super.execute(strSql.toString());
 	}
 
