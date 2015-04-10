@@ -40,7 +40,7 @@ public class ThreadBatchCancelTopAction extends AbstractActionExecutor
 		String reason = json.optString("reason", "");
 		
 		///参数检查
-		if(StringUtil.isInteger(threadIds) || operatorId <= 0)
+		if(!StringUtil.isInteger(threadIds) || operatorId <= 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
