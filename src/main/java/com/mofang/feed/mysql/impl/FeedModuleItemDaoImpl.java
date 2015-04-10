@@ -111,7 +111,7 @@ public class FeedModuleItemDaoImpl extends AbstractMysqlSupport<FeedModuleItem> 
 	public void updateOnlineTime(long itemId, Date onlineTime) throws Exception
 	{
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("update feed_module_item set online_time = '" + onlineTime + "' where item_id=" + itemId);
+		strSql.append("update feed_module_item set online_time = '" + onlineTime.getTime() + "' where item_id=" + itemId);
 		super.execute(strSql.toString());
 	}
 
