@@ -39,7 +39,7 @@ public class CommentBatchRemoveAction extends AbstractActionExecutor
 		String commentIds = json.optString("cids", "");
 		
 		///参数检查
-		if(!StringUtil.isNullOrEmpty(commentIds) || operatorId <= 0)
+		if(StringUtil.isNullOrEmpty(commentIds) || operatorId <= 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);

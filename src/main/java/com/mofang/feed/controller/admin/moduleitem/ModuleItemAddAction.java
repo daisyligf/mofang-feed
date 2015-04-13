@@ -49,7 +49,7 @@ public class ModuleItemAddAction extends AbstractActionExecutor
 		long moduleId = json.optLong("vid", 0L);
 		
 		///参数检查
-		if(!StringUtil.isNullOrEmpty(threadIds) || moduleId <= 0)
+		if(StringUtil.isNullOrEmpty(threadIds) || moduleId <= 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);

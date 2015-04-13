@@ -40,7 +40,7 @@ public class ThreadBatchDeleteAction extends AbstractActionExecutor
 		String reason = json.optString("reason", "管理后台操作");
 		
 		///参数检查
-		if(!StringUtil.isNullOrEmpty(threadIds) || operatorId <= 0)
+		if(StringUtil.isNullOrEmpty(threadIds) || operatorId <= 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
