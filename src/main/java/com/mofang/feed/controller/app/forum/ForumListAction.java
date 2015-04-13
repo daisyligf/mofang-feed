@@ -30,7 +30,7 @@ public class ForumListAction extends AbstractActionExecutor
 		String strForumIds = context.getParamMap().get("fids");
 		
 		///参数检查
-		if(!StringUtil.isLong(strForumIds))
+		if(!StringUtil.isNullOrEmpty(strForumIds))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
