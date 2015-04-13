@@ -382,7 +382,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		}
 		catch(Exception e)
 		{
-			throw new Exception("at FeedThreadLogicImpl.edit throw an error.", e);
+			throw new Exception("at FeedThreadLogicImpl.delete throw an error.", e);
 		}
 	}
 
