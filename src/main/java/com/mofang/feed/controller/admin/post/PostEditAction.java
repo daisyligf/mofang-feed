@@ -61,7 +61,7 @@ public class PostEditAction extends AbstractActionExecutor
 		
 		///构造Post实体对象
 		FeedPost postInfo = new FeedPost();
-		postInfo.setThreadId(postId);
+		postInfo.setPostId(postId);
 		postInfo.setContent(content);
 		postInfo.setHtmlContent(htmlContent);
 		postInfo.setPictures(pics);
