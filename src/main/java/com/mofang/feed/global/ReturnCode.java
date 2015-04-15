@@ -86,4 +86,14 @@ public class ReturnCode
 	 * 模块主题不存在
 	 */
 	public final static int MODULE_ITEM_NOT_EXISTS = 706;
+	
+	/**
+	 * 系统角色不存在
+	 */
+	public final static int SYS_ROLE_NOT_EXISTS = 707;
+	
+	/**
+	 * 用户角色不存在
+	 */
+	public final static int USER_ROLE_NOT_EXISTS = 708;
 }

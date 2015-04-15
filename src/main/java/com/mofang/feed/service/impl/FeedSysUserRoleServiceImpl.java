@@ -82,15 +82,32 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 	@Override
 	public void delete(long forumId, long userId) throws Exception
 	{
-		// TODO Auto-generated method stub
-		
+		try
+		{
+			/******************************redis操作******************************/
+			userRoleRedis.delete(forumId, userId);
+			/******************************数据库操作******************************/
+			userRoleDao.delete(forumId, userId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.delete throw an error.", e);
+			throw e;
+		}
 	}
 
 	@Override
 	public int getRoleId(long forumId, long userId) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		try
+		{
+			return userRoleRedis.getUserRole(forumId, userId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getRoleId throw an error.", e);
+			throw e;
+		}
 	}
 
 	@Override

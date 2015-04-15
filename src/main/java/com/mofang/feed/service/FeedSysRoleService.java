@@ -1,5 +1,7 @@
 package com.mofang.feed.service;
 
+import java.util.List;
+
 import com.mofang.feed.model.FeedSysRole;
 
 /**
@@ -16,4 +18,6 @@ public interface FeedSysRoleService
 	public void delete(int roleId) throws Exception;
 	
 	public FeedSysRole getInfo(int roleId) throws Exception;
+	
+	public List<FeedSysRole> getList() throws Exception;
 }

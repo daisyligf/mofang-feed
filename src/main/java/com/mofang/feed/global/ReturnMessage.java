@@ -86,4 +86,14 @@ public class ReturnMessage
 	 * 模块主题不存在
 	 */
 	public static String MODULE_ITEM_NOT_EXISTS;
+	
+	/**
+	 * 系统角色不存在
+	 */
+	public static String SYS_ROLE_NOT_EXISTS;
+	
+	/**
+	 * 用户角色不存在
+	 */
+	public static String USER_ROLE_NOT_EXISTS;
 }

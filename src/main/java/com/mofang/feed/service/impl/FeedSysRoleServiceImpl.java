@@ -119,4 +119,18 @@ public class FeedSysRoleServiceImpl implements FeedSysRoleService
 			throw e;
 		}
 	}
+
+	@Override
+	public List<FeedSysRole> getList() throws Exception
+	{
+		try
+		{
+			return roleDao.getList(null);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysRoleServiceImpl.getList throw an error.", e);
+			throw e;
+		}
+	}
 }

@@ -153,4 +153,34 @@ public class FeedPrivilege
 	 * 调整模块主题排序
 	 */
 	public final static int UPDATE_MODULE_ITEM_DISPLAYORDER = 218;
+	
+	/**
+	 * 添加系统角色
+	 */
+	public final static int ADD_SYS_ROLE = 219;
+	
+	/**
+	 * 编辑系统角色
+	 */
+	public final static int EDIT_SYS_ROLE = 220;
+	
+	/**
+	 * 删除系统角色
+	 */
+	public final static int DELETE_SYS_ROLE = 221;
+	
+	/**
+	 * 添加用户角色
+	 */
+	public final static int ADD_SYS_USER_ROLE = 222;
+	
+	/**
+	 * 编辑用户角色
+	 */
+	public final static int EDIT_SYS_USER_ROLE = 223;
+	
+	/**
+	 * 删除用户角色
+	 */
+	public final static int DELETE_SYS_USER_ROLE = 224;
 }

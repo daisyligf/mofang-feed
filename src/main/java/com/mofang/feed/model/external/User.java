@@ -22,6 +22,7 @@ public class User
 	private int upgradeExp = 0;
 	private int gainedExp = 0;
 	private JSONArray badges;
+	private long registerTime = System.currentTimeMillis();
 
 	public User() 
 	{}
@@ -40,6 +41,7 @@ public class User
 			this.upgradeExp = json.optInt("upgrade_exp", 0);
 			this.gainedExp = json.optInt("gained_exp", 0);
 			this.badges = json.optJSONArray("badges");
+			this.registerTime = json.optLong("register_time", System.currentTimeMillis());
 		} 
 		catch (Exception e)
 		{
@@ -126,6 +128,14 @@ public class User
 	public void setBadges(JSONArray badges) {
 		this.badges = badges;
 	}
+	
+	public long getRegisterTime() {
+		return registerTime;
+	}
+
+	public void setRegisterTime(long registerTime) {
+		this.registerTime = registerTime;
+	}
 
 	public JSONObject toJson() 
 	{
@@ -142,6 +152,7 @@ public class User
 			json.put("upgrade_exp", upgradeExp);
 			json.put("gained_exp", gainedExp);
 			json.put("badges", badges);
+			json.put("register_time", registerTime);
 			return json;
 		}
 		catch (Exception e)
