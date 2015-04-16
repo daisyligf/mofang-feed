@@ -299,7 +299,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.EDIT_THREAD);
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.EDIT_POST);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
