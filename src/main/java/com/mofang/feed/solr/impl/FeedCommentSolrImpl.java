@@ -126,6 +126,7 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 		queryParam = "(" + queryParam + ")";
 		
 		query.setQuery(queryParam);
+		
 		query.setStart(start);
 		query.setRows(size);
 		query.setSort("time", ORDER.desc);

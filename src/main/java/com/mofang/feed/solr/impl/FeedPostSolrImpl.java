@@ -117,6 +117,7 @@ public class FeedPostSolrImpl extends BaseSolr implements FeedPostSolr
 		queryParam = "(" + queryParam + ")";
 		
 		query.setQuery(queryParam);
+		
 		query.setStart(start);
 		query.setRows(size);
 		query.setSort("time", ORDER.desc);
