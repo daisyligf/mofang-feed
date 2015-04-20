@@ -6,6 +6,7 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedModeratorApply;
 import com.mofang.feed.mysql.FeedModeratorApplyDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
+import com.mofang.framework.data.mysql.core.criterion.operand.LimitOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
@@ -47,16 +48,15 @@ public class FeedModeratorApplyDaoImpl extends AbstractMysqlSupport<FeedModerato
 	}
 
 	@Override
-	public List<FeedModeratorApply> getApplyList(Operand operand) throws Exception
+	public List<FeedModeratorApply> getApplyList(int start, int end) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+		return super.getList(limit);
 	}
 
 	@Override
-	public long getApplyCount(Operand operand) throws Exception
+	public long getApplyCount() throws Exception
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return super.getCount(null);
 	}
 }
