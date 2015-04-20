@@ -1,5 +1,7 @@
 package com.mofang.feed.service.impl;
 
+import java.util.List;
+
 import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedForum;
@@ -11,6 +13,7 @@ import com.mofang.feed.mysql.impl.FeedModeratorApplyDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.service.FeedModeratorApplyService;
+import com.mofang.feed.util.MysqlPageNumber;
 
 /**
  * 
@@ -80,9 +83,21 @@ public class FeedModeratorApplyServiceImpl implements FeedModeratorApplyService
 	}
 
 	@Override
-	public Page<FeedModeratorApply> getList() throws Exception
+	public Page<FeedModeratorApply> getList(int pageNum, int pageSize) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{	
+			long total = applyDao.getApplyCount();
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int end = pageNumber.getEnd();
+			List<FeedModeratorApply> list = applyDao.getApplyList(start, end);
+			return new Page<FeedModeratorApply>(total, list);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedModeratorApplyServiceImpl.getList throw an error.", e);
+			throw e;
+		}
 	}
 }
