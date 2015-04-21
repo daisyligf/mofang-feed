@@ -93,6 +93,13 @@ public class FeedPostServiceImpl implements FeedPostService
 					model.setDuration(video.getDuration());
 				}
 			}
+			
+			///获取版块信息
+			FeedForum forumInfo = forumRedis.getInfo(model.getForumId());
+			boolean forumIsHidden = false;
+			if(null != forumInfo)
+				forumIsHidden = forumInfo.isHidden();
+			
 			/******************************redis操作******************************/
 			///保存楼层信息
 			postRedis.save(model);
@@ -126,8 +133,11 @@ public class FeedPostServiceImpl implements FeedPostService
 			threadDao.updateLastPost(threadId, userId, postTime);
 			
 			/******************************Solr操作******************************/
-			///保存到solr
-			postSolr.add(model);
+			if(!forumIsHidden) ///隐藏版块的楼层不进入solr(一般是cms的文章)
+			{
+				///保存到solr
+				postSolr.add(model);
+			}
 			
 			return postId;
 		}
@@ -153,6 +163,12 @@ public class FeedPostServiceImpl implements FeedPostService
 					model.setDuration(video.getDuration());
 				}
 			}
+			///获取版块信息
+			FeedForum forumInfo = forumRedis.getInfo(model.getForumId());
+			boolean forumIsHidden = false;
+			if(null != forumInfo)
+				forumIsHidden = forumInfo.isHidden();
+			
 			/******************************redis操作******************************/
 			///保存楼层信息
 			postRedis.save(model);
@@ -160,8 +176,11 @@ public class FeedPostServiceImpl implements FeedPostService
 			///保存楼层信息
 			postDao.update(model);
 			/******************************Solr操作******************************/
-			///保存到solr
-			postSolr.add(model);
+			if(!forumIsHidden) ///隐藏版块的楼层不进入solr(一般是cms的文章)
+			{
+				///保存到solr
+				postSolr.add(model);
+			}
 		}
 		catch(Exception e)
 		{
@@ -218,6 +237,13 @@ public class FeedPostServiceImpl implements FeedPostService
 			long userId = model.getUserId();
 			long forumId = model.getForumId();
 			long postTime = model.getCreateTime();
+			
+			///获取版块信息
+			FeedForum forumInfo = forumRedis.getInfo(model.getForumId());
+			boolean forumIsHidden = false;
+			if(null != forumInfo)
+				forumIsHidden = forumInfo.isHidden();
+			
 			/******************************redis操作******************************/
 			///保存楼层信息
 			postRedis.save(model);
@@ -247,8 +273,11 @@ public class FeedPostServiceImpl implements FeedPostService
 			if(position > 1)
 				threadDao.incrReplies(threadId);
 			/******************************Solr操作******************************/
-			///更新索引中楼层的状态值为1 (正常)
-			postSolr.add(model);
+			if(!forumIsHidden) ///隐藏版块的楼层不进入solr(一般是cms的文章)
+			{
+				///更新索引中楼层的状态值为1 (正常)
+				postSolr.add(model);
+			}
 		}
 		catch(Exception e)
 		{

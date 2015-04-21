@@ -81,8 +81,8 @@ public class FeedForumServiceImpl implements FeedForumService
 			forumDao.add(model);
 			
 			/******************************Solr操作******************************/
-			///保存到solr(非顶级版块和工会版块进入Solr)
-			if(model.getParentId() > 0 && model.getType() != ForumType.GUILD)
+			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
+			if(model.getParentId() > 0 && model.getType() != ForumType.GUILD && !model.isHidden())
 				forumSolr.add(model);
 			
 			return forumId;
@@ -111,8 +111,8 @@ public class FeedForumServiceImpl implements FeedForumService
 			forumDao.update(model);
 			
 			/******************************Solr操作******************************/
-			///保存到solr(非顶级版块和工会版块进入Solr)
-			if(model.getParentId() > 0 && model.getType() != ForumType.GUILD)
+			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
+			if(model.getParentId() > 0 && model.getType() != ForumType.GUILD && !model.isHidden())
 				forumSolr.add(model);
 		}
 		catch(Exception e)

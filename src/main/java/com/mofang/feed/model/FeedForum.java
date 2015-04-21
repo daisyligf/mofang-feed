@@ -34,6 +34,8 @@ public class FeedForum
 	private int type = ForumType.GAME;
 	@ColumnName(name = "is_edit")
 	private boolean isEdit = true;
+	@ColumnName(name = "is_hidden")
+	private boolean isHidden = false;
 	@ColumnName(name = "threads")
 	private int threads = 0;
 	@ColumnName(name = "create_time")
@@ -58,7 +60,8 @@ public class FeedForum
 			this.icon = decorator.optString("icon", "");
 			this.color = decorator.optString("color", "");
 			this.type = decorator.optInt("type", ForumType.GAME);
-			this.isEdit = decorator.optBoolean("is_edit", true); 
+			this.isEdit = decorator.optBoolean("is_edit", true);
+			this.isHidden = decorator.optBoolean("is_hidden", false);
 			this.threads = decorator.optInt("threads", 0); 
 			this.createTime = decorator.optLong("create_time", System.currentTimeMillis()); 
 			this.yestodayThreads = decorator.optInt("yestoday_threads", 0);
@@ -134,6 +137,14 @@ public class FeedForum
 		this.isEdit = isEdit;
 	}
 
+	public boolean isHidden() {
+		return isHidden;
+	}
+
+	public void setHidden(boolean isHidden) {
+		this.isHidden = isHidden;
+	}
+
 	public int getThreads() {
 		return threads;
 	}
@@ -191,6 +202,7 @@ public class FeedForum
 			decorator.put("color", color);
 			decorator.put("type", type);
 			decorator.put("is_edit", isEdit);
+			decorator.put("is_hidden", isHidden);
 			decorator.put("threads", threads);
 			decorator.put("create_time", createTime);
 			decorator.put("yestoday_threads", yestodayThreads);

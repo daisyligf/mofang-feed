@@ -10,6 +10,7 @@ import com.mofang.feed.global.common.CommentStatus;
 import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.global.common.ThreadStatus;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.FeedThreadRecommend;
 import com.mofang.feed.model.Page;
@@ -87,29 +88,42 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			long threadId = threadRedis.makeUniqueId();
 			model.setThreadId(threadId);
 			long forumId = model.getForumId();
+			///获取版块信息
+			FeedForum forumInfo = forumRedis.getInfo(forumId);
+			boolean forumIsHidden = false;
+			if(null != forumInfo)
+				forumIsHidden = forumInfo.isHidden();
+			
 			long userId = model.getUserId();
 			long createTime = model.getCreateTime();
+			
 			/******************************redis操作******************************/
-			///保存主题信息
-			threadRedis.save(model);
-			///保存到版块对应的帖子列表
-			threadRedis.addForumThreadList(forumId, threadId, createTime);
-			///更新用户最后发帖时间
-			waterproofWallRedis.updateUserLastPostTime(userId, createTime);
-			///版块主题数+1
-			forumRedis.incrThreads(forumId);
-			///版块今日发帖数 +1
-			forumRedis.incrTodayThreads(forumId);
+			if(!forumIsHidden)   ///隐藏版块的主题不进入redis和solr(一般是cms的文章)
+			{
+				///保存主题信息
+				threadRedis.save(model);
+				///保存到版块对应的帖子列表
+				threadRedis.addForumThreadList(forumId, threadId, createTime);
+				///更新用户最后发帖时间
+				waterproofWallRedis.updateUserLastPostTime(userId, createTime);
+				///版块主题数+1
+				forumRedis.incrThreads(forumId);
+				///版块今日发帖数 +1
+				forumRedis.incrTodayThreads(forumId);
+			}
 			
 			/******************************数据库操作******************************/
 			///保存主题信息
 			threadDao.add(model);
 			///版块主题数 +1
 			forumDao.incrThreads(forumId);
-			
+
 			/******************************Solr操作******************************/
-			///保存到solr
-			threadSolr.add(model);
+			if(!forumIsHidden)   ///隐藏版块的主题不进入redis和solr(一般是cms的文章)
+			{
+				///保存到solr
+				threadSolr.add(model);
+			}
 			
 			return threadId;
 		}
@@ -125,19 +139,31 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	{
 		try
 		{
-			model.setUpdateTime(System.currentTimeMillis());
+			///获取版块信息
+			FeedForum forumInfo = forumRedis.getInfo(model.getForumId());
+			boolean forumIsHidden = false;
+			if(null != forumInfo)
+				forumIsHidden = forumInfo.isHidden();
 			
+			model.setUpdateTime(System.currentTimeMillis());
+
 			/******************************redis操作******************************/
-			///保存主题信息
-			threadRedis.save(model);
+			if(!forumIsHidden)   ///隐藏版块的主题不进入redis和solr(一般是cms的文章)
+			{
+				///保存主题信息
+				threadRedis.save(model);
+			}
 			
 			/******************************数据库操作******************************/
 			///保存主题信息
 			threadDao.update(model);
 			
 			/******************************Solr操作******************************/
-			///保存到solr
-			threadSolr.add(model);
+			if(!forumIsHidden)   ///隐藏版块的主题不进入redis和solr(一般是cms的文章)
+			{
+				///保存到solr
+				threadSolr.add(model);
+			}
 		}
 		catch(Exception e)
 		{
@@ -218,22 +244,31 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			long forumId = model.getForumId();
 			long createTime = model.getCreateTime();
 			long topTime = model.getTopTime();
+			///获取版块信息
+			FeedForum forumInfo = forumRedis.getInfo(forumId);
+			boolean forumIsHidden = false;
+			if(null != forumInfo)
+				forumIsHidden = forumInfo.isHidden();
+			
 			/******************************redis操作******************************/
-			///保存主题信息
-			threadRedis.save(model);
-			///保存到版块对应的帖子列表
-			threadRedis.addForumThreadList(forumId, threadId, createTime);
-			///如果是置顶帖
-			if(model.isTop())
+			if(!forumIsHidden)   ///隐藏版块的主题不进入redis和solr(一般是cms的文章)
 			{
-				///保存到版块置顶主题列表
-				threadRedis.addForumTopThreadList(forumId, threadId, topTime);
+				///保存主题信息
+				threadRedis.save(model);
+				///保存到版块对应的帖子列表
+				threadRedis.addForumThreadList(forumId, threadId, createTime);
+				///如果是置顶帖
+				if(model.isTop())
+				{
+					///保存到版块置顶主题列表
+					threadRedis.addForumTopThreadList(forumId, threadId, topTime);
+				}
+				///版块主题数+1
+				forumRedis.incrThreads(forumId);
+				///版块今日发帖数 +1
+				forumRedis.incrTodayThreads(forumId);
+				///ps: 全局精华帖列表是无法恢复的
 			}
-			///版块主题数+1
-			forumRedis.incrThreads(forumId);
-			///版块今日发帖数 +1
-			forumRedis.incrTodayThreads(forumId);
-			///ps: 全局精华帖列表是无法恢复的
 			
 			/******************************数据库操作******************************/
 			///更新主题信息的状态值为1 (正常)
@@ -246,8 +281,11 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			forumDao.incrThreads(forumId);
 			
 			/******************************Solr操作******************************/
-			///更新索引中主题的状态值为1 (正常)
-			threadSolr.add(model);
+			if(!forumIsHidden)   ///隐藏版块的主题不进入redis和solr(一般是cms的文章)
+			{
+				///更新索引中主题的状态值为1 (正常)
+				threadSolr.add(model);
+			}
 		}
 		catch(Exception e)
 		{
