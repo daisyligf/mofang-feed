@@ -81,8 +81,8 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 					objHotForum.put("forum_name", feedForum.getName());
 					objHotForum.put("icon", feedForum.getIcon());
 					objHotForum.put("today_threads", feedForum.getTodayThreads());
-					objHotForum.put("total_threads", feedForum.getTodayThreads());
-					objHotForum.put("forum_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
+					objHotForum.put("total_threads", feedForum.getThreads());
+					//objHotForum.put("forum_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
 					objHotForum.put("prefecture_url", model.getPrefectureUrl());//专区地址 调用产品库
 					objHotForum.put("gift_url", model.getGiftUrl());//自己拼
 					

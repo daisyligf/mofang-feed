@@ -12,7 +12,7 @@ public class FeedHomeNewspaper {
 	private int displayOrder;
 	@ColumnName(name = "icon")
 	private String icon;
-	@ColumnName(name = "linkUrl")
+	@ColumnName(name = "link_url")
 	private String linkUrl;
 
 	public int getDisplayOrder() {

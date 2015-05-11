@@ -5,7 +5,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
@@ -56,10 +55,12 @@ public class FeedHomeForumRankLogicImpl implements FeedHomeForumRankLogic {
 					
 					long forumId = model.getForumId();
 					FeedForum forum = forumService.getInfo(forumId);
+					if(forum == null)
+						continue;
+					
 					objForumRank.put("forum_id", forumId);
 					objForumRank.put("forum_name", forum.getName());
 					objForumRank.put("up_down", model.getUpDown());
-					objForumRank.put("link_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
 					
 					data.put(objForumRank);
 					
@@ -68,6 +69,7 @@ public class FeedHomeForumRankLogicImpl implements FeedHomeForumRankLogic {
 			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
 			return result;
 		} catch (Exception e) {
 			throw new Exception("at FeedHomeForumRankLogicImpl.getList throw an error.", e);

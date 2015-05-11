@@ -72,11 +72,12 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 					long forumId = model.getForumId();
 					
 					FeedForum forum = forumService.getInfo(forumId);
-					
+					if(forum == null)
+						continue;
 					objRecommendGameRank.put("forum_id", forumId);
 					objRecommendGameRank.put("forum_name", forum.getName());
 					objRecommendGameRank.put("icon", forum.getIcon());
-					objRecommendGameRank.put("link_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
+					//objRecommendGameRank.put("link_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
 					objRecommendGameRank.put("download_url", model.getDownloadUrl());
 					objRecommendGameRank.put("gift_url", model.getGiftUrl());
 					

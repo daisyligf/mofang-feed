@@ -69,6 +69,9 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 					int displayOrder = model.getDisplayOrder();
 					
 					FeedThread thread = threadService.getFullInfo(threadId);
+					if(thread == null)
+						continue;
+					
 					//String subject = thread.getSubjectFilter();
 					String content = thread.getPost().getContentFilter();
 					String linkUrl = thread.getLinkUrl();

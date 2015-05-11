@@ -71,13 +71,14 @@ public class FeedHomeRecommendGameLogicImpl implements
 					long forumId = model.getForumId();
 					
 					FeedForum feedForum = forumService.getInfo(forumId);
-					
+					if(feedForum == null)
+						continue;
 					objRecommendGame.put("forum_id", forumId);
 					objRecommendGame.put("forum_name", feedForum.getName());
 					objRecommendGame.put("icon", feedForum.getIcon());
 					objRecommendGame.put("today_threads", feedForum.getTodayThreads());
 					objRecommendGame.put("total_threads", feedForum.getTodayThreads());
-					objRecommendGame.put("forum_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
+					//objRecommendGame.put("forum_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
 					objRecommendGame.put("download_url", model.getDownloadUrl());
 					objRecommendGame.put("gift_url", model.getGiftUrl());
 					

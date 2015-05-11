@@ -7,7 +7,7 @@ import com.mofang.feed.logic.impl.FeedHomeNewspaperLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "/feed/v2/home/newsPaper")
+@Action(url = "feed/v2/home/newsPaper")
 public class HomeNewspaperAction extends AbstractActionExecutor {
 
 	private FeedHomeNewspaperLogic logic = FeedHomeNewspaperLogicImpl.getInstance();
