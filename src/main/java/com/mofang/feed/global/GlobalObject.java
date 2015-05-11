@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -73,6 +74,16 @@ public class GlobalObject
 	public static CloseableHttpClient HTTP_CLIENT_VIDEOSERVICE;
 	
 	/**
+	 * Global Game Http Client Instance
+	 */
+	public static CloseableHttpClient HTTP_CLIENT_GAMESERVICE;
+	
+	/**
+	 * Global Fahao Http Client Instance
+	 */
+	public static CloseableHttpClient HTTP_CLIENT_FAHAOSERVICE;
+	
+	/**
 	 * Global Solr Server for Forum Core
 	 */
 	public static SolrServer SOLR_SERVER_FORUM = new HttpSolrServer(GlobalConfig.SOLR_SERVER_HOST + GlobalConfig.SOLR_CORE_FORUM);
@@ -101,6 +112,11 @@ public class GlobalObject
 	 * Global Async Operation Executor Pool, as push notify ect. 
 	 */
 	public static ExecutorService ASYN_EXECUTOR = Executors.newFixedThreadPool(20);
+	
+	/**
+	 * Gloabl Scheduled Opration Executor Pool
+	 */
+	public static final ScheduledExecutorService SCHED_EXECUTOR = Executors.newScheduledThreadPool(1);
 	
 	/**
 	 * Global Info Logger Instance 
@@ -261,6 +277,32 @@ public class GlobalObject
         {
         		HttpClientProvider provider = getHttpClientProvider(configPath);
 			HTTP_CLIENT_VIDEOSERVICE = provider.getHttpClient();
+        }
+        catch(Exception e)
+        {
+        		throw e;
+        }
+	}
+	
+	public static void initGameServiceHttpClient(String configPath) throws Exception
+	{
+        try
+        {
+        		HttpClientProvider provider = getHttpClientProvider(configPath);
+			   HTTP_CLIENT_GAMESERVICE = provider.getHttpClient();
+        }
+        catch(Exception e)
+        {
+        		throw e;
+        }
+	}
+	
+	public static void initFahaoServiceHttpClient(String configPath) throws Exception
+	{
+        try
+        {
+        		HttpClientProvider provider = getHttpClientProvider(configPath);
+			   HTTP_CLIENT_FAHAOSERVICE = provider.getHttpClient();
         }
         catch(Exception e)
         {

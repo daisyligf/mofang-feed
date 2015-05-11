@@ -33,6 +33,10 @@ public class GlobalConfig
 	
 	public static String HTTP_CLIENT_VIDEOSERVICE_CONFIG_PATH;
 	
+	public static String HTTP_CLIENT_GAMESERVICE_CONFIG_PATH;
+	
+	public static String HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH;
+	
 	public static String CHAT_SERVICE_URL;
 	
 	public static String TASK_EXEC_URL;
@@ -45,6 +49,12 @@ public class GlobalConfig
 	
 	public static String USER_FLLOW_FORUM_URL;
 	
+	public static String RECOMMEND_GAME_URL;
+	
+	public static String FORUM_PARTITION_URL;
+	
+	public static String GIFT_LIST_URL;
+	
 	public static String SENSITIVE_WORD_URL;
 	
 	public static String FEED_DETAIL_URL;
@@ -56,6 +66,10 @@ public class GlobalConfig
 	public static String FEED_VIDEO_URL;
 	
 	public static String IMAGE_PREFIX_URL;
+	
+	public static String GAME_DOWNLOAD_URL;
+	
+	public static String GIFT_INFO_URL;
 	
 	public static String SOLR_SERVER_HOST;
 	
@@ -90,6 +104,8 @@ public class GlobalConfig
 	public static long SQUARE_VIDEO_ROLL_ID;
 	
 	public static long SQUARE_IMAGE_MODULE_ID;
+	
+	public static String HOME_PREFECTURE_IDS;
 	
 	public static boolean LOAD_DATA = false;
 	

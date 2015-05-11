@@ -1,7 +1,9 @@
 package com.mofang.feed.component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.external.FeedRecommendNotify;
 import com.mofang.feed.model.external.PostReplyNotify;
+import com.mofang.feed.model.external.RecommendGame;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.SysMessageNotify;
 import com.mofang.feed.model.external.Task;
@@ -78,6 +81,91 @@ public class HttpComponent
 			return;
 		
 		post(GlobalObject.HTTP_CLIENT_TASKSERVICE, GlobalConfig.TASK_EXEC_URL, json.toString());
+	}
+	
+	/**
+	 *  获取专区地址
+	 * @param forumId
+	 * @return
+	 */
+	public static String getPrefectureUrl(long forumId){
+		String requestUrl = GlobalConfig.FORUM_PARTITION_URL + "?forum_id=" + forumId;
+		String result = get(GlobalObject.HTTP_CLIENT_GAMESERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return null;
+		try {
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return null;
+			String data = json.optString("data");
+			if(StringUtil.isNullOrEmpty(data))
+				return null;
+			return data;
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getPrefectureUrl throw an error.", e);
+			return null;
+		}
+	}
+	
+	/***
+	 * 判断是否有礼包
+	 * @param gameId
+	 * @return
+	 */
+	public static boolean checkGift(long gameId){
+		String requestUrl = GlobalConfig.GIFT_LIST_URL + "?game_id=" + gameId + "&limit=1";
+		String result = get(GlobalObject.HTTP_CLIENT_FAHAOSERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return false;
+	   try{
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return false;
+			String data = json.optString("data");
+			if(StringUtil.isNullOrEmpty(data))
+				return false;
+			return true;
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at HttpComponent.checkGift throw an error.", e);
+			return false;
+		}
+	}
+	
+	/***
+	 * 获取 新游推荐 列表
+	 * @return
+	 */
+	public static List<RecommendGame> getRecommendGameList(){
+		String requestUrl = GlobalConfig.RECOMMEND_GAME_URL;
+		String result = get(GlobalObject.HTTP_CLIENT_GAMESERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return null;
+		try {
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return null;
+			String data = json.optString("data");
+			if(StringUtil.isNullOrEmpty(data))
+				return null;
+			JSONArray jsonArr = new JSONArray(data);
+			int length = jsonArr.length();
+			List<RecommendGame> list = new ArrayList<RecommendGame>(length);
+			for(int idx=0; idx < length; idx++){
+				JSONObject obj = jsonArr.getJSONObject(idx);
+				RecommendGame game = new RecommendGame();
+				game.setForumId(obj.optLong("forum_id", 0l));
+				game.setGameId(obj.optLong("game_id", 0l));
+				game.setGiftUrl(obj.optString("gift_url", ""));
+				list.add(game);
+			}
+			return list;
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getRecommendGameList throw an error.", e);
+			return null;
+		}
 	}
 	
 	/**

@@ -22,5 +22,7 @@ public class GlobalObjectInitializer extends AbstractInitializer
 		GlobalObject.initUserServiceHttpClient(GlobalConfig.HTTP_CLIENT_USERSERVICE_CONFIG_PATH);
 		GlobalObject.initSensitiveWordHttpClient(GlobalConfig.HTTP_CLIENT_SENSITIVEWORD_CONFIG_PATH);
 		GlobalObject.initVideoServiceHttpClient(GlobalConfig.HTTP_CLIENT_VIDEOSERVICE_CONFIG_PATH);
+		GlobalObject.initGameServiceHttpClient(GlobalConfig.HTTP_CLIENT_GAMESERVICE_CONFIG_PATH);
+		GlobalObject.initFahaoServiceHttpClient(GlobalConfig.HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH);
 	}
 }

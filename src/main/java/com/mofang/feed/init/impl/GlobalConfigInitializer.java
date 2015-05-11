@@ -38,6 +38,8 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.HTTP_CLIENT_USERSERVICE_CONFIG_PATH = config.get("conf", "http_client_userservice_config_path");
 		GlobalConfig.HTTP_CLIENT_SENSITIVEWORD_CONFIG_PATH = config.get("conf", "http_client_sensitiveword_config_path");
 		GlobalConfig.HTTP_CLIENT_VIDEOSERVICE_CONFIG_PATH = config.get("conf", "http_client_videoservice_config_path");
+		GlobalConfig.HTTP_CLIENT_GAMESERVICE_CONFIG_PATH = config.get("conf", "http_client_gameservice_config_path");
+		GlobalConfig.HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH = config.get("conf", "http_client_fahaoservice_config_path");
 		
 		GlobalConfig.CHAT_SERVICE_URL = config.get("api", "chat_service_url");
 		GlobalConfig.TASK_EXEC_URL = config.get("api", "task_exec_url");
@@ -46,12 +48,17 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.SENSITIVE_WORD_URL = config.get("api", "sensitive_word_url");
 		GlobalConfig.VIDEO_INFO_URL = config.get("api", "video_info_url");
 		GlobalConfig.USER_FLLOW_FORUM_URL = config.get("api", "user_follow_forum_url");
+		GlobalConfig.RECOMMEND_GAME_URL = config.get("api", "recommend_game_url");
+		GlobalConfig.FORUM_PARTITION_URL = config.get("api", "forum_partition_url");
+		GlobalConfig.GIFT_LIST_URL = config.get("api", "gift_list_url");
 		
 		GlobalConfig.FEED_DETAIL_URL = config.get("link", "feed_detail_url");
 		GlobalConfig.FORUM_DETAIL_URL = config.get("link", "forum_detail_url");
 		GlobalConfig.AREA_DETAIL_URL = config.get("link", "area_detail_url");
 		GlobalConfig.FEED_VIDEO_URL = config.get("link", "feed_video_url");
 		GlobalConfig.IMAGE_PREFIX_URL = config.get("link", "image_prefix_url");
+		GlobalConfig.GAME_DOWNLOAD_URL = config.get("link", "game_download_url");
+		GlobalConfig.GIFT_INFO_URL = config.get("link", "gift_info_url");
 		
 		GlobalConfig.SOLR_SERVER_HOST = config.get("solr", "server_host");
 		GlobalConfig.SOLR_CORE_FORUM = config.get("solr", "core_forum");
@@ -71,6 +78,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.SQUARE_VIDEO_MODULE_ID = config.getInt("param", "square_video_module_id");
 		GlobalConfig.SQUARE_VIDEO_ROLL_ID = config.getInt("param", "square_video_roll_id");
 		GlobalConfig.SQUARE_IMAGE_MODULE_ID = config.getInt("param", "square_image_module_id");
+		GlobalConfig.HOME_PREFECTURE_IDS = config.get("param", "home_prefecture_ids");
 		
 		GlobalConfig.LOAD_DATA = config.getBoolean("load", "load_data");
 		GlobalConfig.LOAD_LIST =config.get("load", "load_list");

@@ -1,0 +1,97 @@
+package com.mofang.feed.logic.impl;
+
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.mofang.feed.component.HttpComponent;
+import com.mofang.feed.global.GlobalConfig;
+import com.mofang.feed.global.ResultValue;
+import com.mofang.feed.global.ReturnCode;
+import com.mofang.feed.global.ReturnMessage;
+import com.mofang.feed.logic.FeedHomeRecommendGameRankLogic;
+import com.mofang.feed.model.FeedForum;
+import com.mofang.feed.model.FeedHomeRecommendGameRank;
+import com.mofang.feed.service.FeedForumService;
+import com.mofang.feed.service.FeedHomeRecommendGameRankService;
+import com.mofang.feed.service.impl.FeedForumServiceImpl;
+import com.mofang.feed.service.impl.FeedHomeRecommendGameRankServiceImpl;
+
+public class FeedHomeRecommendGameRankLogicImpl implements
+		FeedHomeRecommendGameRankLogic {
+
+	private static final FeedHomeRecommendGameRankLogicImpl LOGIC = new FeedHomeRecommendGameRankLogicImpl();
+	private FeedHomeRecommendGameRankService recommendGameRankService = FeedHomeRecommendGameRankServiceImpl.getInstance();
+	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	
+	private FeedHomeRecommendGameRankLogicImpl(){}
+	
+	public static FeedHomeRecommendGameRankLogicImpl getInstance(){
+		return LOGIC;
+	}
+	
+	@Override
+	public ResultValue update(List<FeedHomeRecommendGameRank> modelList)
+			throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			for(FeedHomeRecommendGameRank model : modelList){
+				long forumId = model.getForumId();
+				
+				FeedForum forum = forumService.getInfo(forumId);
+				//设置下载地址
+				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
+				
+				//设置礼包地址
+				boolean flag = HttpComponent.checkGift(forum.getGameId());
+				if(flag){
+					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
+				}
+			}
+			recommendGameRankService.update(modelList);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedHomeRecommendGameRankLogicImpl.update throw an error.",e);
+		}
+	}
+
+	@Override
+	public ResultValue getList() throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			JSONArray data = new JSONArray();
+			List<FeedHomeRecommendGameRank> list = recommendGameRankService.getList();
+			if(list != null){
+				JSONObject objRecommendGameRank = null;
+				for(FeedHomeRecommendGameRank model : list){
+					objRecommendGameRank = new JSONObject();
+					
+					long forumId = model.getForumId();
+					
+					FeedForum forum = forumService.getInfo(forumId);
+					
+					objRecommendGameRank.put("forum_id", forumId);
+					objRecommendGameRank.put("forum_name", forum.getName());
+					objRecommendGameRank.put("icon", forum.getIcon());
+					objRecommendGameRank.put("link_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
+					objRecommendGameRank.put("download_url", model.getDownloadUrl());
+					objRecommendGameRank.put("gift_url", model.getGiftUrl());
+					
+					data.put(objRecommendGameRank);
+				}
+				
+			}
+			
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedHomeRecommendGameRankLogicImpl.getList throw an error.",e);
+		}
+	}
+
+}

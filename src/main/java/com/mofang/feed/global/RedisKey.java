@@ -228,6 +228,13 @@ public class RedisKey
 	 */
 	public final static String CACHE_USER_KEY_PREFIX = "cache_user_info_";
 	
+	/***
+	 * 新游推荐列表
+	 * 结构: Set
+	 * 示例：sadd recommend_game_rank {forum_id:xx, game_id:xx, gift_url:xx}
+	 */
+	public final static String RECOMMEND_GAME_RANK_KEY = "recommend_game_list";
+	
 	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀

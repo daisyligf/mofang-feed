@@ -44,6 +44,8 @@ public class FeedForum
 	private long updateTime = System.currentTimeMillis();
 	private int yestodayThreads = 0;
 	private int todayThreads = 0;
+	@ColumnName(name = "game_id")
+	private long gameId;
 	
 	public FeedForum()
 	{}
@@ -183,6 +185,14 @@ public class FeedForum
 
 	public void setTodayThreads(int todayThreads) {
 		this.todayThreads = todayThreads;
+	}
+
+	public long getGameId() {
+		return gameId;
+	}
+
+	public void setGameId(long gameId) {
+		this.gameId = gameId;
 	}
 
 	/**
