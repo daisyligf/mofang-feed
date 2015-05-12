@@ -36,10 +36,10 @@ public class FeedHomeTitleServiceImpl implements FeedHomeTitleService {
 	}
 
 	@Override
-	public void update(List<FeedHomeTitle> modelList) throws Exception {
+	public void edit(List<FeedHomeTitle> modelList) throws Exception {
 		try {
 			for(FeedHomeTitle model : modelList){
-				homeTitleDao.update(model);
+				homeTitleDao.edit(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error(

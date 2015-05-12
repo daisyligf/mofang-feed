@@ -17,6 +17,8 @@ public class RankComponent {
 	 */
 	private static void refreshHotForumRank() {
 		try {
+			//uv+发帖*10+回复*3+关注*5+赞*2
+
 			// 根据设计提供的算法 排序列表
 
 			// 获取前10数据 更新排行榜

@@ -27,11 +27,11 @@ public class FeedHomeRecommendGameRankServiceImpl implements
 	}
 
 	@Override
-	public void update(List<FeedHomeRecommendGameRank> modelList)
+	public void edit(List<FeedHomeRecommendGameRank> modelList)
 			throws Exception {
 		try {
 			for(FeedHomeRecommendGameRank model : modelList){
-				recommendGameRankDao.update(model);
+				recommendGameRankDao.edit(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedHomeRecommendGameRankServiceImpl.update throw an error.", e);

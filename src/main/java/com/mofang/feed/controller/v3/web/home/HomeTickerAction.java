@@ -2,15 +2,15 @@ package com.mofang.feed.controller.v3.web.home;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
-import com.mofang.feed.logic.FeedHomeHotForumLogic;
-import com.mofang.feed.logic.impl.FeedHomeHotForumLogicImpl;
+import com.mofang.feed.logic.FeedHomeTickerLogic;
+import com.mofang.feed.logic.impl.FeedHomeTickerLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/home/hotForumList")
-public class HomeHotForumAction extends AbstractActionExecutor {
+@Action(url = "feed/v2/home/ticker")
+public class HomeTickerAction extends AbstractActionExecutor {
 
-	private FeedHomeHotForumLogic logic = FeedHomeHotForumLogicImpl.getInstance();
+	private FeedHomeTickerLogic logic = FeedHomeTickerLogicImpl.getInstance();
 	
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception {

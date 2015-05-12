@@ -32,7 +32,7 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 	}
 	
 	@Override
-	public ResultValue update(List<FeedHomeRecommendGameRank> modelList)
+	public ResultValue edit(List<FeedHomeRecommendGameRank> modelList)
 			throws Exception {
 		try {
 			ResultValue result = new ResultValue();
@@ -40,6 +40,12 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 				long forumId = model.getForumId();
 				
 				FeedForum forum = forumService.getInfo(forumId);
+				if(forum == null){
+					result.setCode(ReturnCode.FORUM_NOT_EXISTS);
+					result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
+					return result;
+				}
+				
 				//设置下载地址
 				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
 				
@@ -49,7 +55,7 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
 				}
 			}
-			recommendGameRankService.update(modelList);
+			recommendGameRankService.edit(modelList);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			return result;

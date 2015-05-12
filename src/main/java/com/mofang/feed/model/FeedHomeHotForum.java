@@ -4,7 +4,7 @@ import com.mofang.framework.data.mysql.core.annotation.ColumnName;
 import com.mofang.framework.data.mysql.core.annotation.PrimaryKey;
 import com.mofang.framework.data.mysql.core.annotation.TableName;
 
-@TableName(name = "feed_home_hot_forum")
+@TableName(name = "feed_home_hot_forum_list")
 public class FeedHomeHotForum {
 
 	@PrimaryKey

@@ -3,11 +3,11 @@ package com.mofang.feed.logic;
 import java.util.List;
 
 import com.mofang.feed.global.ResultValue;
-import com.mofang.feed.model.FeedHomeTitle;
+import com.mofang.feed.model.FeedHomeTicker;
 
-public interface FeedHomeTitleLogic {
+public interface FeedHomeTickerLogic {
 
-	public ResultValue edit(List<FeedHomeTitle> modelList) throws Exception;
+	public ResultValue edit(List<FeedHomeTicker> modelList) throws Exception;
 	
 	public ResultValue getList() throws Exception;
 }

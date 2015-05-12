@@ -31,7 +31,7 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 	}
 	
 	@Override
-	public ResultValue update(List<FeedHomeHotForum> modelList)
+	public ResultValue edit(List<FeedHomeHotForum> modelList)
 			throws Exception {
 		try {
 			ResultValue result = new ResultValue();
@@ -48,12 +48,18 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 				 * 2、如果有礼包，设置礼包地址s
 				 */
 				FeedForum forum = forumService.getInfo(forumId);
+				if(forum == null){
+					result.setCode(ReturnCode.FORUM_NOT_EXISTS);
+					result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
+					return result;
+				}
+				
 				boolean flag = HttpComponent.checkGift(forum.getGameId());
 				if(flag){
 					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
 				}
 			}
-			hotForumService.update(modelList);
+			hotForumService.edit(modelList);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			return result;

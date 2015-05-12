@@ -34,7 +34,7 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 	}
 	
 	@Override
-	public ResultValue update(List<FeedHomeTitle> modelList) throws Exception {
+	public ResultValue edit(List<FeedHomeTitle> modelList) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
 			for(FeedHomeTitle model : modelList){
@@ -45,7 +45,7 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 					return result;
 				}
 			}
-			homeTitleService.update(modelList);
+			homeTitleService.edit(modelList);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			return result;
@@ -81,7 +81,7 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 					
 					objTitle.put("forum_name", forumName);
 					objTitle.put("thread_id", threadId);
-					objTitle.put("thread_name", model.getThreadName());
+					objTitle.put("subject", model.getSubject());
 					objTitle.put("content", content);
 					objTitle.put("display_order", displayOrder);
 					objTitle.put("link_url", linkUrl);

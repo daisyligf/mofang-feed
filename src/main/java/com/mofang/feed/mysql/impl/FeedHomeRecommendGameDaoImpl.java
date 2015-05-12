@@ -31,7 +31,7 @@ public class FeedHomeRecommendGameDaoImpl extends
 	}
 	
 	@Override
-	public void update(FeedHomeRecommendGame model) throws Exception {
+	public void edit(FeedHomeRecommendGame model) throws Exception {
 		Operand where = new WhereOperand();
 		Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
 		where.append(equal);

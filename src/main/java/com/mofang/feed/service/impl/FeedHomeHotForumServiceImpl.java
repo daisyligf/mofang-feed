@@ -25,10 +25,10 @@ public class FeedHomeHotForumServiceImpl implements FeedHomeHotForumService {
 	}
 	
 	@Override
-	public void update(List<FeedHomeHotForum> modelList) throws Exception {
+	public void edit(List<FeedHomeHotForum> modelList) throws Exception {
 		try {
 			for(FeedHomeHotForum model : modelList){
-				hotForumDao.update(model);
+				hotForumDao.edit(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedHomeHotForumServiceImpl.update throw an error.", e);

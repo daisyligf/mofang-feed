@@ -32,13 +32,18 @@ public class FeedHomeRecommendGameLogicImpl implements
 	}
 	
 	@Override
-	public ResultValue update(List<FeedHomeRecommendGame> modelList) throws Exception {
+	public ResultValue edit(List<FeedHomeRecommendGame> modelList) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
 			for(FeedHomeRecommendGame model : modelList){
 				long forumId = model.getForumId();
 				
 				FeedForum forum = forumService.getInfo(forumId);
+				if(forum == null){
+					result.setCode(ReturnCode.FORUM_NOT_EXISTS);
+					result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
+					return result;
+				}
 				//设置下载地址
 				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
 				
@@ -48,7 +53,7 @@ public class FeedHomeRecommendGameLogicImpl implements
 					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
 				}
 			}
-			recommendGameService.update(modelList);
+			recommendGameService.edit(modelList);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			return result;

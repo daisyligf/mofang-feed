@@ -6,7 +6,7 @@ import com.mofang.feed.model.FeedHomeHotForum;
 
 public interface FeedHomeHotForumDao {
 
-	public void update(FeedHomeHotForum model) throws Exception;
+	public void edit(FeedHomeHotForum model) throws Exception;
 	
 	public List<FeedHomeHotForum> getList() throws Exception;
 }

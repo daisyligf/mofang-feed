@@ -10,17 +10,17 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.FeedHomeNewspaperLogic;
-import com.mofang.feed.logic.impl.FeedHomeNewspaperLogicImpl;
-import com.mofang.feed.model.FeedHomeNewspaper;
+import com.mofang.feed.logic.FeedHomeTickerLogic;
+import com.mofang.feed.logic.impl.FeedHomeTickerLogicImpl;
+import com.mofang.feed.model.FeedHomeTicker;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "backend/home/updateNewspaper")
-public class HomeNewspaperUpdateAction extends AbstractActionExecutor {
+@Action(url = "backend/home/ticker/edit")
+public class HomeTickerEditAction extends AbstractActionExecutor {
 
-	private FeedHomeNewspaperLogic logic = FeedHomeNewspaperLogicImpl
+	private FeedHomeTickerLogic logic = FeedHomeTickerLogicImpl
 			.getInstance();
 
 	@Override
@@ -41,11 +41,11 @@ public class HomeNewspaperUpdateAction extends AbstractActionExecutor {
 			return result;
 		}
 		int length = jsonArr.length();
-		List<FeedHomeNewspaper> modelList = new ArrayList<FeedHomeNewspaper>(
+		List<FeedHomeTicker> modelList = new ArrayList<FeedHomeTicker>(
 				length);
 		for (int idx = 0; idx < length; idx++) {
 			JSONObject jsonObj = jsonArr.getJSONObject(idx);
-			FeedHomeNewspaper model = new FeedHomeNewspaper();
+			FeedHomeTicker model = new FeedHomeTicker();
 
 			int displayOrder = idx + 1;
 			String linkUrl = jsonObj.optString("link_url", "");
@@ -55,7 +55,7 @@ public class HomeNewspaperUpdateAction extends AbstractActionExecutor {
 			model.setIcon(icon);
 			modelList.add(model);
 		}
-		return logic.update(modelList);
+		return logic.edit(modelList);
 	}
 
 }

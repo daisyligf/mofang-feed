@@ -8,28 +8,28 @@ import org.json.JSONObject;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.FeedHomeNewspaperLogic;
-import com.mofang.feed.model.FeedHomeNewspaper;
-import com.mofang.feed.service.FeedHomeNewspaperService;
-import com.mofang.feed.service.impl.FeedHomeNewspaperServiceImpl;
+import com.mofang.feed.logic.FeedHomeTickerLogic;
+import com.mofang.feed.model.FeedHomeTicker;
+import com.mofang.feed.service.FeedHomeTickerService;
+import com.mofang.feed.service.impl.FeedHomeTickerServiceImpl;
 
-public class FeedHomeNewspaperLogicImpl implements FeedHomeNewspaperLogic {
+public class FeedHomeTickerLogicImpl implements FeedHomeTickerLogic {
 
-	private static final FeedHomeNewspaperLogicImpl LOGIC = new FeedHomeNewspaperLogicImpl();
-	private FeedHomeNewspaperService newsPaperService = FeedHomeNewspaperServiceImpl.getInstance();
+	private static final FeedHomeTickerLogicImpl LOGIC = new FeedHomeTickerLogicImpl();
+	private FeedHomeTickerService newsPaperService = FeedHomeTickerServiceImpl.getInstance();
 	
-	public static FeedHomeNewspaperLogicImpl getInstance(){
+	public static FeedHomeTickerLogicImpl getInstance(){
 		return LOGIC;
 	}
 	
-	private FeedHomeNewspaperLogicImpl(){}
+	private FeedHomeTickerLogicImpl(){}
 	
 
 	@Override
-	public ResultValue update(List<FeedHomeNewspaper> modelList) throws Exception {
+	public ResultValue edit(List<FeedHomeTicker> modelList) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
-			newsPaperService.update(modelList);
+			newsPaperService.edit(modelList);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			return result;
@@ -43,10 +43,10 @@ public class FeedHomeNewspaperLogicImpl implements FeedHomeNewspaperLogic {
 		try {
 			ResultValue result = new ResultValue();
 			JSONArray data = new JSONArray();
-			List<FeedHomeNewspaper> list = newsPaperService.getList();
+			List<FeedHomeTicker> list = newsPaperService.getList();
 			if(list != null){
 				JSONObject objNewspaper = null;
-				for(FeedHomeNewspaper model : list){
+				for(FeedHomeTicker model : list){
 					objNewspaper = new JSONObject();
 					
 					objNewspaper.put("icon", model.getIcon());
@@ -62,7 +62,7 @@ public class FeedHomeNewspaperLogicImpl implements FeedHomeNewspaperLogic {
 			result.setData(data);
 			return result;
 		} catch (Exception e) {
-			throw new Exception("at FeedHomeNewspaperLogicImpl.delete getList an error.", e);
+			throw new Exception("at FeedHomeNewspaperLogicImpl.getList getList an error.", e);
 		}
 	}
 

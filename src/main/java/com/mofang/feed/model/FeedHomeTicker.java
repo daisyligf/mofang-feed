@@ -4,8 +4,8 @@ import com.mofang.framework.data.mysql.core.annotation.ColumnName;
 import com.mofang.framework.data.mysql.core.annotation.PrimaryKey;
 import com.mofang.framework.data.mysql.core.annotation.TableName;
 
-@TableName(name = "feed_home_newspaper")
-public class FeedHomeNewspaper {
+@TableName(name = "feed_home_ticker")
+public class FeedHomeTicker {
 
 	@PrimaryKey
 	@ColumnName(name = "display_order")

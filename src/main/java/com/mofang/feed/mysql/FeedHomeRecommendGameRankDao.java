@@ -6,7 +6,7 @@ import com.mofang.feed.model.FeedHomeRecommendGameRank;
 
 public interface FeedHomeRecommendGameRankDao {
 
-	public void update(FeedHomeRecommendGameRank model) throws Exception;
+	public void edit(FeedHomeRecommendGameRank model) throws Exception;
 	
 	public List<FeedHomeRecommendGameRank> getList() throws Exception;
 }

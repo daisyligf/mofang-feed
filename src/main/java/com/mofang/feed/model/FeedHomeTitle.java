@@ -10,8 +10,8 @@ public class FeedHomeTitle {
 	@PrimaryKey
 	@ColumnName(name = "thread_id")
 	private long threadId;
-	@ColumnName(name = "thread_name")
-	private String threadName;
+	@ColumnName(name = "subject")
+	private String subject;
 	@ColumnName(name = "display_order")
 	private int displayOrder;
 
@@ -26,12 +26,12 @@ public class FeedHomeTitle {
 		this.threadId = threadId;
 	}
 
-	public String getThreadName() {
-		return threadName;
+	public String getSubject() {
+		return subject;
 	}
 
-	public void setThreadName(String threadName) {
-		this.threadName = threadName;
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
 	public int getDisplayOrder() {

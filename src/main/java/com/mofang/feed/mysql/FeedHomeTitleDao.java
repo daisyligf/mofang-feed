@@ -5,7 +5,7 @@ import com.mofang.feed.model.FeedHomeTitle;
 
 public interface FeedHomeTitleDao {
 	
-	public void update(FeedHomeTitle model) throws Exception;
+	public void edit(FeedHomeTitle model) throws Exception;
 	
 	public List<FeedHomeTitle> getList() throws Exception;
 }

@@ -8,31 +8,31 @@ import org.json.JSONObject;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.FeedHomeForumRankLogic;
+import com.mofang.feed.logic.FeedHomeHotForumRankLogic;
 import com.mofang.feed.model.FeedForum;
-import com.mofang.feed.model.FeedHomeForumRank;
+import com.mofang.feed.model.FeedHomeHotForumRank;
 import com.mofang.feed.service.FeedForumService;
-import com.mofang.feed.service.FeedHomeForumRankService;
+import com.mofang.feed.service.FeedHomeHotForumRankService;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
-import com.mofang.feed.service.impl.FeedHomeForumRankServiceImpl;
+import com.mofang.feed.service.impl.FeedHomeHotForumRankServiceImpl;
 
-public class FeedHomeForumRankLogicImpl implements FeedHomeForumRankLogic {
+public class FeedHomeHotForumRankLogicImpl implements FeedHomeHotForumRankLogic {
 
-	private static final FeedHomeForumRankLogicImpl LOGIC = new FeedHomeForumRankLogicImpl();
-	private FeedHomeForumRankService forumRankService = FeedHomeForumRankServiceImpl.getInstance();
+	private static final FeedHomeHotForumRankLogicImpl LOGIC = new FeedHomeHotForumRankLogicImpl();
+	private FeedHomeHotForumRankService forumRankService = FeedHomeHotForumRankServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	
-	private FeedHomeForumRankLogicImpl(){}
+	private FeedHomeHotForumRankLogicImpl(){}
 	
-	public static FeedHomeForumRankLogicImpl getInstance(){
+	public static FeedHomeHotForumRankLogicImpl getInstance(){
 		return LOGIC;
 	}
 	
 	@Override
-	public ResultValue update(List<FeedHomeForumRank> modelList) throws Exception {
+	public ResultValue edit(List<FeedHomeHotForumRank> modelList) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
-			forumRankService.update(modelList);
+			forumRankService.edit(modelList);
 			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
@@ -47,10 +47,10 @@ public class FeedHomeForumRankLogicImpl implements FeedHomeForumRankLogic {
 		try {
 			ResultValue result = new ResultValue();
 			JSONArray data = new JSONArray();
-			List<FeedHomeForumRank> list = forumRankService.getList();
+			List<FeedHomeHotForumRank> list = forumRankService.getList();
 			if(list != null){
 				JSONObject objForumRank = null;
-				for(FeedHomeForumRank model : list){
+				for(FeedHomeHotForumRank model : list){
 					objForumRank = new JSONObject();
 					
 					long forumId = model.getForumId();

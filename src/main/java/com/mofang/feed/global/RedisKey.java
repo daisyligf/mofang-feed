@@ -235,6 +235,13 @@ public class RedisKey
 	 */
 	public final static String RECOMMEND_GAME_RANK_KEY = "recommend_game_list";
 	
+	/***
+	 * 首页默认 搜索关键词
+	 * 结构: String
+	 * 示例：set home_key_word xxx
+	 */
+	public final static String HOME_DEFAULT_KEY_WORD_KEY = "home_key_word";
+	
 	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀

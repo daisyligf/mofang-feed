@@ -3,8 +3,8 @@ package com.mofang.feed.mysql.impl;
 import java.util.List;
 
 import com.mofang.feed.global.GlobalObject;
-import com.mofang.feed.model.FeedHomeNewspaper;
-import com.mofang.feed.mysql.FeedHomeNewspaperDao;
+import com.mofang.feed.model.FeedHomeHotForumRank;
+import com.mofang.feed.mysql.FeedHomeHotForumRankDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
@@ -13,36 +13,35 @@ import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 
-public class FeedHomeNewspaperDaoImpl extends
-		AbstractMysqlSupport<FeedHomeNewspaper> implements FeedHomeNewspaperDao {
+public class FeedHomeHotForumRankDaoImpl extends AbstractMysqlSupport<FeedHomeHotForumRank> implements
+		FeedHomeHotForumRankDao {
 
-	private static final FeedHomeNewspaperDaoImpl DAO = new FeedHomeNewspaperDaoImpl();
-
-	private FeedHomeNewspaperDaoImpl() {
+	private static final FeedHomeHotForumRankDaoImpl DAO = new FeedHomeHotForumRankDaoImpl();
+	
+	private FeedHomeHotForumRankDaoImpl(){
 		try {
 			super.setMysqlPool(GlobalObject.MYSQL_CONNECTION_POOL);
 		} catch (Exception e) {
 		}
 	}
-
-	public static FeedHomeNewspaperDaoImpl getInstance() {
+	
+	public static FeedHomeHotForumRankDaoImpl getInstance(){
 		return DAO;
 	}
-
+	
 	@Override
-	public void update(FeedHomeNewspaper model) throws Exception {
+	public void edit(FeedHomeHotForumRank model) throws Exception {
 		Operand where = new WhereOperand();
-		Operand equal = new EqualOperand("display_order",
-				model.getDisplayOrder());
+		Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
 		where.append(equal);
 		boolean flag = super.updateByWhere(model, where);
-		if (!flag) {
+		if(!flag){
 			super.insert(model);
 		}
 	}
 
 	@Override
-	public List<FeedHomeNewspaper> getList() throws Exception {
+	public List<FeedHomeHotForumRank> getList() throws Exception {
 		Operand none = new Operand() {
 			@Override
 			protected String toExpression() {

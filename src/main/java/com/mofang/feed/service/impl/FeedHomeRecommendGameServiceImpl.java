@@ -26,10 +26,10 @@ public class FeedHomeRecommendGameServiceImpl implements
 	private FeedHomeRecommendGameServiceImpl(){}
 	
 	@Override
-	public void update(List<FeedHomeRecommendGame> modelList) throws Exception {
+	public void edit(List<FeedHomeRecommendGame> modelList) throws Exception {
 		try {
 			for(FeedHomeRecommendGame model : modelList){
-				recommendGameDao.update(model);
+				recommendGameDao.edit(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedHomeRecommendGameServiceImpl.update throw an error.", e);

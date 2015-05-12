@@ -30,7 +30,7 @@ public class FeedHomeTitleDaoImpl extends AbstractMysqlSupport<FeedHomeTitle>
 	}
 	
 	@Override
-	public void update(FeedHomeTitle model) throws Exception {
+	public void edit(FeedHomeTitle model) throws Exception {
 		Operand where = new WhereOperand();
 		Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
 		where.append(equal);

@@ -4,7 +4,7 @@ import com.mofang.framework.data.mysql.core.annotation.ColumnName;
 import com.mofang.framework.data.mysql.core.annotation.PrimaryKey;
 import com.mofang.framework.data.mysql.core.annotation.TableName;
 
-@TableName(name = "feed_home_recommend_game")
+@TableName(name = "feed_home_recommend_game_list")
 public class FeedHomeRecommendGame {
 	@PrimaryKey
 	@ColumnName(name = "forum_id")

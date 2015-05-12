@@ -45,7 +45,7 @@ public class FeedForum
 	private int yestodayThreads = 0;
 	private int todayThreads = 0;
 	@ColumnName(name = "game_id")
-	private long gameId;
+	private int gameId;
 	
 	public FeedForum()
 	{}
@@ -187,11 +187,11 @@ public class FeedForum
 		this.todayThreads = todayThreads;
 	}
 
-	public long getGameId() {
+	public int getGameId() {
 		return gameId;
 	}
 
-	public void setGameId(long gameId) {
+	public void setGameId(int gameId) {
 		this.gameId = gameId;
 	}
 
