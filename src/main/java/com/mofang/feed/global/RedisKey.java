@@ -47,6 +47,11 @@ public class RedisKey
 	public final static String MODULE_ITEM_INCREMENT_ID_KEY = "module_item_increment_id";
 	
 	/**
+	 * 板块标签自增ID
+	 */
+	public final static String TAG_INCREMENT_ID_KEY = "forum_tag_increment_id";
+	
+	/**
 	 * 楼层数key前缀
 	 * 结构: String
 	 * 示例: incr post_position_${thread_id}
@@ -229,11 +234,32 @@ public class RedisKey
 	public final static String CACHE_USER_KEY_PREFIX = "cache_user_info_";
 	
 	/***
-	 * 新游推荐列表
-	 * 结构: Set
-	 * 示例：sadd recommend_game_rank {forum_id:xx, game_id:xx, gift_url:xx}
+	 * 新游推荐 列表
+	 * 结构: SortedSet
+	 * 说明:
+	 *          score: 板块创建时间
+	 *          value: 板块ID
+	 * 示例: zadd recommend_game_list_${ABCDE} score ${forum_id}
 	 */
-	public final static String RECOMMEND_GAME_RANK_KEY = "recommend_game_list";
+	public final static String RECOMMEND_GAME_LIST_KEY_PREFIX = "recommend_game_list_";
+	
+	/***
+	 * 热门游戏 列表
+	 * 说明:
+	 *          score: 板块创建时间
+	 *          value: 板块ID
+	 * 示例: zadd hot_forum_list_${ABCDE} score ${forum_id}}
+	 */
+	public final static String HOT_FORUM_LIST_KEY_PREFIX = "hot_forum_list_";
+	
+	/***
+	 * 板块 重复覆盖内容的 结构
+	 * 结构: Hash
+	 * 示例: hset forum_extend_${forumId} ${download_url} ${xx}
+	 *                                                           gift_url
+	 *                                                           prefecture_url
+	 */
+	public final static String FORUM_EXTEND_KEY_PREFIX = "forum_extend_";
 	
 	/***
 	 * 首页默认 搜索关键词

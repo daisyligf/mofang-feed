@@ -5,6 +5,7 @@ import java.util.Set;
 import redis.clients.jedis.Jedis;
 
 import com.mofang.framework.data.redis.RedisWorker;
+import com.mofang.framework.data.redis.workers.IncrWorker;
 
 /**
  * Redis命令快速执行工具(只提供部分方法)
@@ -147,4 +148,10 @@ public class RedisFaster
 		};
 		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
 	}
+	
+	public static long makeUniqueId(final String key) throws Exception{
+		RedisWorker<Long> worker =new IncrWorker(key);
+		return GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+	
 }

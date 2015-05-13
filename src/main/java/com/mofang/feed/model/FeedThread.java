@@ -68,6 +68,8 @@ public class FeedThread
 	private long updownTime = System.currentTimeMillis();
 	@ColumnName(name = "game_id")
 	private int gameId = 0;
+	@ColumnName(name = "tag_id")
+	private int tagId = 0;
 	@ColumnName(name = "create_time")
 	private long createTime = System.currentTimeMillis();
 	@ColumnName(name = "update_time")
@@ -329,6 +331,14 @@ public class FeedThread
 
 	public void setPost(FeedPost post) {
 		this.post = post;
+	}
+	
+	public int getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(int tagId) {
+		this.tagId = tagId;
 	}
 
 	/**
