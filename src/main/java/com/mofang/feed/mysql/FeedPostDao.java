@@ -1,9 +1,11 @@
 package com.mofang.feed.mysql;
 
 import java.util.List;
+import java.util.Set;
 
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedReply;
+import com.mofang.feed.model.external.ForumCount;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
@@ -99,5 +101,5 @@ public interface FeedPostDao
 	 */
 	public long getUserReplyCount(long userId) throws Exception;
 	
-	public long getReplyCount(long forumId, long startTime, long endTime) throws Exception;
+	public List<ForumCount> getReplyCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 }

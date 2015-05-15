@@ -44,13 +44,13 @@ public class RecommendGameListRedisImpl implements RecommendGameListRedis {
 
 	@Override
 	public Set<String> getList(String key, int start, int end) throws Exception {
-		key = RedisKey.buildRedisKey(RedisKey.HOT_FORUM_LIST_KEY_PREFIX, key);
+		key = RedisKey.buildRedisKey(RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX, key);
 		return RedisFaster.zrevrange(key, start, end) ;
 	}
 
 	@Override
 	public long getForumCount(String key) throws Exception {
-		key = RedisKey.buildRedisKey(RedisKey.HOT_FORUM_LIST_KEY_PREFIX, key);
+		key = RedisKey.buildRedisKey(RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX, key);
 		return RedisFaster.zcard(key);
 	}
 

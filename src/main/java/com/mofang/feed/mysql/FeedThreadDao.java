@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.mofang.feed.model.FeedThread;
+import com.mofang.feed.model.external.ForumCount;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
@@ -240,5 +241,5 @@ public interface FeedThreadDao
 	 */
 	public long getForumEliteThreadCount(Set<Long> forumIds) throws Exception;
 	
-	public long getThreadCount(long forumId, long startTime, long endTime) throws Exception;
+	public List<ForumCount> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 }

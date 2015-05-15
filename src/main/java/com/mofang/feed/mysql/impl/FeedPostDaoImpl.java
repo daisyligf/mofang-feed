@@ -2,10 +2,12 @@ package com.mofang.feed.mysql.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedReply;
+import com.mofang.feed.model.external.ForumCount;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
@@ -276,18 +278,31 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 	}
 
 	@Override
-	public long getReplyCount(long forumId, long startTime, long endTime) throws Exception{
+	public List<ForumCount> getReplyCount(Set<Long> forumIds, long startTime, long endTime) throws Exception{
+		String strForumIds = "";
+		for (long strForumId : forumIds)
+			strForumIds += strForumId + ",";
+		if (strForumIds.length() > 0)
+			strForumIds = strForumIds.substring(0, strForumIds.length() - 1);
+		
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select count(1) from feed_post where forum_id = "
-				+ forumId);
+		strSql.append("select count(1),forum_id from feed_post where forum_id in (" + strForumIds + ")");
 		strSql.append(" and create_time > " + startTime);
 		strSql.append(" and create_time < " + endTime);
+		strSql.append(" group by forum_id");
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
-			return 0;
+			return null;
 		List<RowData> rows = data.getQueryResult();
 		if (rows == null || rows.size() == 0)
-			return 0;
-		return rows.get(0).getLong(0);
+			return null;
+		List<ForumCount> list = new ArrayList<ForumCount>(rows.size());
+		for (RowData row : rows){
+			ForumCount count = new ForumCount();
+			count.count  = row.getLong(0);
+			count.forumId = row.getLong(1);
+			list.add(count);
+		}
+		return list;
 	}
 }
