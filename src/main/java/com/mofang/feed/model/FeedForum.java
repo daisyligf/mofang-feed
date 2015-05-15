@@ -42,10 +42,10 @@ public class FeedForum
 	private long createTime = System.currentTimeMillis();
 	@ColumnName(name = "update_time")
 	private long updateTime = System.currentTimeMillis();
-	private int yestodayThreads = 0;
-	private int todayThreads = 0;
 	@ColumnName(name = "game_id")
 	private int gameId;
+	private int yestodayThreads = 0;
+	private int todayThreads = 0;
 	
 	public FeedForum()
 	{}

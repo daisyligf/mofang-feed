@@ -1,5 +1,6 @@
 package com.mofang.feed.mysql.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mofang.feed.global.GlobalObject;
@@ -127,5 +128,22 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 			where.append(new EqualOperand("1", "1"));
 		
 		return super.getCount(where);
+	}
+
+	@Override
+	public List<Long> getForumIdList(long type) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select forum_id from feed_forum ");
+		strSql.append("where type = "+ type);
+		ResultData data = super.executeQuery(strSql.toString());
+		if (data == null)
+			return null;
+		List<RowData> rows = data.getQueryResult();
+		if (rows == null || rows.size() == 0)
+			return null;
+		List<Long> list = new ArrayList<Long>(rows.size());
+		for (RowData row : rows)
+			list.add(row.getLong(0));
+		return list;
 	}
 }

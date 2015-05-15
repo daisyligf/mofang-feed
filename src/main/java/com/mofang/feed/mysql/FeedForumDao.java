@@ -31,4 +31,6 @@ public interface FeedForumDao
 	public List<FeedForum> getForumList(long parentId, int start, int end) throws Exception;
 	
 	public long getForumCount(long parentId) throws Exception;
+	
+	public List<Long> getForumIdList(long type) throws Exception;
 }

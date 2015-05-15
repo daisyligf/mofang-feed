@@ -98,4 +98,6 @@ public interface FeedPostDao
 	 * @throws Exception
 	 */
 	public long getUserReplyCount(long userId) throws Exception;
+	
+	public long getReplyCount(long forumId, long startTime, long endTime) throws Exception;
 }

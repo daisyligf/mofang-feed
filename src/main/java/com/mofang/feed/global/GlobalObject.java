@@ -114,11 +114,6 @@ public class GlobalObject
 	public static ExecutorService ASYN_EXECUTOR = Executors.newFixedThreadPool(20);
 	
 	/**
-	 * Gloabl Scheduled Opration Executor Pool
-	 */
-	public static final ScheduledExecutorService SCHED_EXECUTOR = Executors.newScheduledThreadPool(1);
-	
-	/**
 	 * Global Info Logger Instance 
 	 */
 	public final static Logger INFO_LOG = Logger.getLogger("feed.info");

@@ -239,4 +239,6 @@ public interface FeedThreadDao
 	 * @throws Exception
 	 */
 	public long getForumEliteThreadCount(Set<Long> forumIds) throws Exception;
+	
+	public long getThreadCount(long forumId, long startTime, long endTime) throws Exception;
 }

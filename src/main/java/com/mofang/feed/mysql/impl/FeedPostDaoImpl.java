@@ -274,4 +274,20 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		
 		return rows.get(0).getLong(0);
 	}
+
+	@Override
+	public long getReplyCount(long forumId, long startTime, long endTime) throws Exception{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select count(1) from feed_post where forum_id = "
+				+ forumId);
+		strSql.append(" and create_time > " + startTime);
+		strSql.append(" and create_time < " + endTime);
+		ResultData data = super.executeQuery(strSql.toString());
+		if (data == null)
+			return 0;
+		List<RowData> rows = data.getQueryResult();
+		if (rows == null || rows.size() == 0)
+			return 0;
+		return rows.get(0).getLong(0);
+	}
 }
