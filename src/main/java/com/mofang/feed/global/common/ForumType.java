@@ -21,4 +21,9 @@ public class ForumType
 	 * 官方专区
 	 */
 	public final static int OFFICAL = 3;
+	
+	
+	public final static int HOT_FORUM = 1;
+	
+	public final static int RECOMMEND_GAME = 2;
 }

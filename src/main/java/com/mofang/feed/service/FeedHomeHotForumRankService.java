@@ -9,4 +9,6 @@ public interface FeedHomeHotForumRankService {
 	public void edit(List<FeedHomeHotForumRank> modelList) throws Exception;
 	
 	public List<FeedHomeHotForumRank> getList() throws Exception;
+	
+	
 }

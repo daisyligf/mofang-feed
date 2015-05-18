@@ -18,6 +18,14 @@ import com.mofang.framework.data.redis.RedisWorker;
  */
 public class RecommendGameListRedisImpl implements RecommendGameListRedis {
 
+	private static final RecommendGameListRedisImpl REDIS = new RecommendGameListRedisImpl();
+	
+	private RecommendGameListRedisImpl(){}
+	
+	public static RecommendGameListRedisImpl getInstance(){
+		return REDIS;
+	}
+	
 	@Override
 	public void addRecommendGameList(String key, long forumId, long score)
 			throws Exception {

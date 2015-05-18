@@ -18,6 +18,14 @@ import com.mofang.framework.data.redis.RedisWorker;
  */
 public class HotForumListRedisImpl implements HotForumListRedis {
 
+	private static final HotForumListRedisImpl REDIS = new HotForumListRedisImpl();
+	
+	private HotForumListRedisImpl(){}
+	
+	public static HotForumListRedisImpl getInstance(){
+		return REDIS;
+	}
+	
 	@Override
 	public void addHotForumList(String key, long forumId, long score)
 			throws Exception {

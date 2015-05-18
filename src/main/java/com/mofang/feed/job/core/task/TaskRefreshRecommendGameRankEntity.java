@@ -3,7 +3,9 @@ package com.mofang.feed.job.core.task;
 import java.util.concurrent.TimeUnit;
 
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.job.core.TaskEntity;
+import com.mofang.feed.service.impl.HomeRankServiceImpl;
 import com.mofang.feed.util.TimeUtil;
 
 /***
@@ -24,6 +26,7 @@ public class TaskRefreshRecommendGameRankEntity extends TaskEntity {
 				//排序列表 存入 热门游戏redis结构
 
 				//板块的url列表数据 存入 redis结构
+				HomeRankServiceImpl.getInstance().refresh(ForumType.RECOMMEND_GAME);
 
 			} catch (Exception e) {
 				GlobalObject.ERROR_LOG
