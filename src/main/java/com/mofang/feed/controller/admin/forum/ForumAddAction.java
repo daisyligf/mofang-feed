@@ -50,7 +50,7 @@ public class ForumAddAction extends AbstractActionExecutor
 		String name = json.optString("name", "");
 		String color = json.optString("color", "");
 		String icon = json.optString("icon", "");
-		int type = json.optInt("type", ForumType.GAME);
+		int type = json.optInt("type", ForumType.HOT_FORUM);
 		
 		///参数检查
 		if(parentId < 0 || StringUtil.isNullOrEmpty(name))
