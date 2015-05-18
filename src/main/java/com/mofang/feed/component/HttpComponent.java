@@ -1,9 +1,7 @@
 package com.mofang.feed.component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,8 +12,8 @@ import org.json.JSONObject;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.external.FeedRecommendNotify;
+import com.mofang.feed.model.external.Game;
 import com.mofang.feed.model.external.PostReplyNotify;
-import com.mofang.feed.model.external.RecommendGame;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.SysMessageNotify;
 import com.mofang.feed.model.external.Task;
@@ -133,37 +131,37 @@ public class HttpComponent
 		}
 	}
 	
-	/***
-	 * 获取 新游推荐 列表
+	/**
+	 * 获取游戏信息
+	 * @param gameId 游戏ID
 	 * @return
 	 */
-	public static List<RecommendGame> getRecommendGameList(){
-		String requestUrl = GlobalConfig.RECOMMEND_GAME_URL;
+	public static Game getGameInfo(int gameId)
+	{
+		String requestUrl = GlobalConfig.GAME_INFO_URL + "?id=" + gameId;
 		String result = get(GlobalObject.HTTP_CLIENT_GAMESERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
 			return null;
-		try {
+		
+		try
+		{
 			JSONObject json = new JSONObject(result);
 			int code = json.optInt("code", -1);
 			if(0 != code)
 				return null;
-			String data = json.optString("data");
-			if(StringUtil.isNullOrEmpty(data))
+			
+			JSONObject data = json.optJSONObject("data");
+			if(null == data)
 				return null;
-			JSONArray jsonArr = new JSONArray(data);
-			int length = jsonArr.length();
-			List<RecommendGame> list = new ArrayList<RecommendGame>(length);
-			for(int idx=0; idx < length; idx++){
-				JSONObject obj = jsonArr.getJSONObject(idx);
-				RecommendGame game = new RecommendGame();
-				game.setForumId(obj.optLong("forum_id", 0l));
-				game.setGameId(obj.optLong("game_id", 0l));
-				game.setGiftUrl(obj.optString("gift_url", ""));
-				list.add(game);
-			}
-			return list;
-		} catch (Exception e) {
-			GlobalObject.ERROR_LOG.error("at HttpComponent.getRecommendGameList throw an error.", e);
+			
+			Game game = new Game();
+			game.setGameId(gameId);
+			game.setIcon(data.optString("icon", ""));
+			return game;
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getGameInfo throw an error.", e);
 			return null;
 		}
 	}

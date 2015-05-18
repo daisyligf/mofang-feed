@@ -1,5 +1,9 @@
-package com.mofang.feed.controller.admin.forum;
+package com.mofang.feed.controller.v3.admin.forum;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
@@ -19,8 +23,8 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "backend/forum/addForum")
-public class ForumAddAction extends AbstractActionExecutor
+@Action(url = "backend/forum/create")
+public class ForumCreateAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();
 
@@ -51,13 +55,34 @@ public class ForumAddAction extends AbstractActionExecutor
 		String color = json.optString("color", "");
 		String icon = json.optString("icon", "");
 		int type = json.optInt("type", ForumType.HOT_FORUM);
+		int gameId = json.optInt("game_id", 0);
+		JSONArray arrTags = json.optJSONArray("tags");
 		
 		///参数检查
-		if(parentId < 0 || StringUtil.isNullOrEmpty(name))
+		if(StringUtil.isNullOrEmpty(name))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
+		}
+		
+		if(type != ForumType.OFFICAL)
+		{
+			if(gameId <= 0)
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+		}
+		else
+		{
+			if(StringUtil.isNullOrEmpty(icon))
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
 		}
 		
 		///构造Forum实体对象
@@ -68,6 +93,13 @@ public class ForumAddAction extends AbstractActionExecutor
 		forumInfo.setColor(color);
 		forumInfo.setType(type);
 		forumInfo.setEdit(true);
+		forumInfo.setHidden(false);
+		
+		List<Integer> tagList = new ArrayList<Integer>();
+		for(int i=0; i<arrTags.length(); i++)
+			tagList.add(arrTags.getInt(i));
+		
+		forumInfo.setTags(tagList);
 		
 		return logic.add(forumInfo, operatorId);
 	}

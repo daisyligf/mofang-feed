@@ -8,14 +8,17 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.FeedPrivilege;
+import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.logic.FeedForumLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.Game;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
@@ -60,19 +63,22 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			}
 			
 			///根据gameId获取游戏信息
-			
+			if(model.getType() != ForumType.OFFICAL)
+			{
+				Game gameInfo = HttpComponent.getGameInfo(model.getGameId());
+				if(null != gameInfo)
+				{
+					String icon = gameInfo.getIcon();
+					model.setIcon(icon);
+				}
+			}
 			
 			///保存版块信息
-			long forumId = forumService.build(model);
-			
-			///构建返回结果
-			JSONObject data = new JSONObject();
-			data.put("fid", forumId);
+			forumService.build(model);
 			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
 			return result;
 		}
 		catch(Exception e)

@@ -8,22 +8,17 @@ package com.mofang.feed.global.common;
 public class ForumType
 {
 	/**
-	 * 游戏专区
+	 * 热游版块
 	 */
-	public final static int GAME = 1;
+	public final static int HOT_FORUM = 1;
 	
 	/**
-	 * 公会专区
+	 * 新游版块
 	 */
-	public final static int GUILD = 2;
+	public final static int RECOMMEND_GAME = 2;
 	
 	/**
 	 * 官方专区
 	 */
 	public final static int OFFICAL = 3;
-	
-	
-	public final static int HOT_FORUM = 1;
-	
-	public final static int RECOMMEND_GAME = 2;
 }
