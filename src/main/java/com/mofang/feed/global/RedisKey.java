@@ -52,6 +52,13 @@ public class RedisKey
 	public final static String TAG_INCREMENT_ID_KEY = "forum_tag_increment_id";
 	
 	/**
+	 * 标签名字key前缀
+	 * 结构: String
+	 * 示例: set forum_tag_{tag_id} name
+	 */
+	public final static String TAG_NAME_KEY_PREFIX = "forum_tag_";
+	
+	/**
 	 * 楼层数key前缀
 	 * 结构: String
 	 * 示例: incr post_position_${thread_id}

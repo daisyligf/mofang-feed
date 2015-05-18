@@ -38,6 +38,8 @@ public class FeedForum
 	private boolean isHidden = false;
 	@ColumnName(name = "threads")
 	private int threads = 0;
+	@ColumnName(name = "today_threads")	
+	private int todayThreads = 0;
 	@ColumnName(name = "yestoday_threads")
 	private int yestodayThreads = 0;
 	@ColumnName(name = "follows")
@@ -70,6 +72,7 @@ public class FeedForum
 			this.isEdit = decorator.optBoolean("is_edit", true);
 			this.isHidden = decorator.optBoolean("is_hidden", false);
 			this.threads = decorator.optInt("threads", 0); 
+			this.todayThreads = decorator.optInt("today_threads", 0);
 			this.yestodayThreads = decorator.optInt("yestoday_threads", 0);
 			this.follows = decorator.optInt("follows", 0);
 			this.yestodayFollows = decorator.optInt("yestoday_follows", 0);
@@ -200,6 +203,14 @@ public class FeedForum
 	public void setFollows(int follows) {
 		this.follows = follows;
 	}
+	
+	public int getTodayThreads() {
+		return todayThreads;
+	}
+
+	public void setTodayThreads(int todayThreads) {
+		this.todayThreads = todayThreads;
+	}
 
 	/**
 	 * 将实体对象转换为redis的hashmap
@@ -221,6 +232,7 @@ public class FeedForum
 			decorator.put("is_edit", isEdit);
 			decorator.put("is_hidden", isHidden);
 			decorator.put("threads", threads);
+			decorator.put("today_threads", todayThreads);
 			decorator.put("yestoday_threads", yestodayThreads);
 			decorator.put("follows", follows);
 			decorator.put("yestoday_follows", yestodayFollows);

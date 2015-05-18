@@ -73,6 +73,9 @@ public class FeedTagLogicImpl implements FeedTagLogic {
 
 			int tagId = (int)RedisFaster.makeUniqueId(RedisKey.TAG_INCREMENT_ID_KEY);
 			model.setTagId(tagId);
+			
+			//缓存标签名字
+			RedisFaster.set(RedisKey.TAG_NAME_KEY_PREFIX + tagId, model.getTagName());
 
 			tagService.add(model);
 			result.setCode(ReturnCode.SUCCESS);

@@ -154,4 +154,15 @@ public class RedisFaster
 		return GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 	
+	public static void set(final String key, final Object value) throws Exception{
+		RedisWorker<Boolean> worker = new RedisWorker<Boolean>() {
+			@Override
+			public Boolean execute(Jedis jedis) throws Exception {
+				jedis.set(key, value.toString());
+				return true;
+			}
+		};
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+	
 }
