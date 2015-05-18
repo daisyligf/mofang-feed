@@ -1,5 +1,6 @@
 package com.mofang.feed.model;
 
+import java.util.List;
 import java.util.Map;
 
 import com.mofang.feed.global.GlobalObject;
@@ -31,7 +32,7 @@ public class FeedForum
 	@ColumnName(name = "color")
 	private String color = "";
 	@ColumnName(name = "type")
-	private int type = ForumType.GAME;
+	private int type = ForumType.HOT_FORUM;
 	@ColumnName(name = "is_edit")
 	private boolean isEdit = true;
 	@ColumnName(name = "is_hidden")
@@ -53,6 +54,8 @@ public class FeedForum
 	@ColumnName(name = "game_id")
 	private int gameId;
 	
+	private List<Integer> tags;
+	
 	public FeedForum()
 	{}
 	
@@ -68,7 +71,7 @@ public class FeedForum
 			this.nameSpell = decorator.optString("name_spell", ""); 
 			this.icon = decorator.optString("icon", "");
 			this.color = decorator.optString("color", "");
-			this.type = decorator.optInt("type", ForumType.GAME);
+			this.type = decorator.optInt("type", ForumType.HOT_FORUM);
 			this.isEdit = decorator.optBoolean("is_edit", true);
 			this.isHidden = decorator.optBoolean("is_hidden", false);
 			this.threads = decorator.optInt("threads", 0); 
@@ -210,6 +213,22 @@ public class FeedForum
 
 	public void setTodayThreads(int todayThreads) {
 		this.todayThreads = todayThreads;
+	}
+
+	public int getYestodayFollows() {
+		return yestodayFollows;
+	}
+
+	public void setYestodayFollows(int yestodayFollows) {
+		this.yestodayFollows = yestodayFollows;
+	}
+
+	public List<Integer> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Integer> tags) {
+		this.tags = tags;
 	}
 
 	/**
