@@ -55,7 +55,7 @@ public class FeedForumLoad implements FeedLoad
 			forumRedis.save(forumInfo);
 			
 			///保存到Solr(非顶级版块和非公会版块才进入solr)
-			if(forumInfo.getParentId() > 0 && forumInfo.getType() != ForumType.GUILD)
+			if(forumInfo.getParentId() > 0)
 				solrList.add(forumInfo);
 		}
 		catch(Exception e)
