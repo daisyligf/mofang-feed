@@ -82,7 +82,7 @@ public class FeedForumServiceImpl implements FeedForumService
 			
 			/******************************Solr操作******************************/
 			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
-			if(model.getParentId() > 0 && model.getType() != ForumType.GUILD && !model.isHidden())
+			if(model.getParentId() > 0 && !model.isHidden())
 				forumSolr.add(model);
 			
 			return forumId;
@@ -112,7 +112,7 @@ public class FeedForumServiceImpl implements FeedForumService
 			
 			/******************************Solr操作******************************/
 			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
-			if(model.getParentId() > 0 && model.getType() != ForumType.GUILD && !model.isHidden())
+			if(model.getParentId() > 0 && !model.isHidden())
 				forumSolr.add(model);
 		}
 		catch(Exception e)
