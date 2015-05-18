@@ -20,9 +20,11 @@ import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.Game;
 import com.mofang.feed.service.FeedForumService;
+import com.mofang.feed.service.FeedForumTagService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
+import com.mofang.feed.service.impl.FeedForumTagServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 
@@ -37,6 +39,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
+	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
 	
 	private FeedForumLogicImpl()
 	{}
@@ -74,7 +77,10 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			}
 			
 			///保存版块信息
-			forumService.build(model);
+			long forumId = forumService.build(model);
+			
+			///保存版块标签
+			forumTagService.addBatch(forumId, model.getTags());
 			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);

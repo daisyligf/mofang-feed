@@ -1,14 +1,19 @@
-package com.mofang.feed.mysql;
+package com.mofang.feed.service;
 
 import java.util.List;
 
 import com.mofang.feed.model.FeedForumTag;
 
-public interface FeedForumTagDao
+/**
+ * 
+ * @author zhaodx
+ *
+ */
+public interface FeedForumTagService
 {
-	public boolean exists(long forumId, int tagId) throws Exception;
-	
 	public void add(FeedForumTag model) throws Exception;
+	
+	public void addBatch(long forumId, List<Integer> tagList) throws Exception;
 	
 	public void delete(long forumId, long tagId) throws Exception;
 	

@@ -37,6 +37,18 @@ public class FeedForumTagDaoImpl extends AbstractMysqlSupport<FeedForumTag> impl
 	}
 
 	@Override
+	public boolean exists(long forumId, int tagId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		Operand tagEqual = new EqualOperand("tag_id", tagId);
+		Operand and = new AndOperand();
+		where.append(forumEqual).append(and).append(tagEqual);
+		long count = super.getCount(where);
+		return count > 0L;
+	}
+
+	@Override
 	public void add(FeedForumTag model) throws Exception
 	{
 		super.insert(model);
