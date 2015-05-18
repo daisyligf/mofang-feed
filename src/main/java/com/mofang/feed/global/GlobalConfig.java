@@ -47,6 +47,8 @@ public class GlobalConfig
 	
 	public static String VIDEO_INFO_URL;
 	
+	public static String GAME_INFO_URL;
+	
 	public static String USER_FLLOW_FORUM_URL;
 	
 	public static String RECOMMEND_GAME_URL;
