@@ -6,6 +6,8 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedTag;
 import com.mofang.feed.mysql.FeedTagDao;
 import com.mofang.feed.mysql.impl.FeedTagDaoImpl;
+import com.mofang.feed.redis.FeedTagRedis;
+import com.mofang.feed.redis.impl.FeedTagRedisImpl;
 import com.mofang.feed.service.FeedTagService;
 
 /***
@@ -17,6 +19,7 @@ public class FeedTagServiceImpl implements FeedTagService {
 	
 	private static final FeedTagServiceImpl SERVICE = new FeedTagServiceImpl();
 	private FeedTagDao tagDao = FeedTagDaoImpl.getInstance();
+	private FeedTagRedis tagRedis =  FeedTagRedisImpl.getInstance();
 	
 	private FeedTagServiceImpl(){}
 	
@@ -48,6 +51,7 @@ public class FeedTagServiceImpl implements FeedTagService {
 	@Override
 	public void add(FeedTag tag) throws Exception {
 		try {
+			tagRedis.set(tag.getTagId(), tag.getTagName());
 			tagDao.add(tag);
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedTagServiceImpl.add throw an error.", e);
