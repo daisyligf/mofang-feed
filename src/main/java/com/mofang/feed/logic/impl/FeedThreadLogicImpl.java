@@ -1786,7 +1786,6 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			jsonForum.put("icon", forumInfo.getIcon());
 			jsonForum.put("name", forumInfo.getName());
 			jsonForum.put("edit", forumInfo.isEdit() ? 1 : 0);
-			jsonForum.put("today_threads", forumInfo.getTodayThreads());
 			jsonForum.put("users", "");
 		}
 		

@@ -38,14 +38,18 @@ public class FeedForum
 	private boolean isHidden = false;
 	@ColumnName(name = "threads")
 	private int threads = 0;
+	@ColumnName(name = "yestoday_threads")
+	private int yestodayThreads = 0;
+	@ColumnName(name = "follows")
+	private int follows = 0;
+	@ColumnName(name = "yestoday_follows")
+	private int yestodayFollows = 0;
 	@ColumnName(name = "create_time")
 	private long createTime = System.currentTimeMillis();
 	@ColumnName(name = "update_time")
 	private long updateTime = System.currentTimeMillis();
 	@ColumnName(name = "game_id")
 	private int gameId;
-	private int yestodayThreads = 0;
-	private int todayThreads = 0;
 	
 	public FeedForum()
 	{}
@@ -57,6 +61,7 @@ public class FeedForum
 			MapDecorator decorator = new MapDecorator(map);
 			this.forumId = decorator.optLong("forum_id", 0L);
 			this.parentId = decorator.optLong("parent_id", 0L); 
+			this.gameId = decorator.optInt("game_id", 0);
 			this.name = decorator.optString("name", ""); 
 			this.nameSpell = decorator.optString("name_spell", ""); 
 			this.icon = decorator.optString("icon", "");
@@ -65,9 +70,10 @@ public class FeedForum
 			this.isEdit = decorator.optBoolean("is_edit", true);
 			this.isHidden = decorator.optBoolean("is_hidden", false);
 			this.threads = decorator.optInt("threads", 0); 
-			this.createTime = decorator.optLong("create_time", System.currentTimeMillis()); 
 			this.yestodayThreads = decorator.optInt("yestoday_threads", 0);
-			this.todayThreads = decorator.optInt("today_threads", 0);
+			this.follows = decorator.optInt("follows", 0);
+			this.yestodayFollows = decorator.optInt("yestoday_follows", 0);
+			this.createTime = decorator.optLong("create_time", System.currentTimeMillis()); 
 		}
 		catch(Exception e)
 		{
@@ -179,20 +185,20 @@ public class FeedForum
 		this.yestodayThreads = yestodayThreads;
 	}
 
-	public int getTodayThreads() {
-		return todayThreads;
-	}
-
-	public void setTodayThreads(int todayThreads) {
-		this.todayThreads = todayThreads;
-	}
-
 	public int getGameId() {
 		return gameId;
 	}
 
 	public void setGameId(int gameId) {
 		this.gameId = gameId;
+	}
+
+	public int getFollows() {
+		return follows;
+	}
+
+	public void setFollows(int follows) {
+		this.follows = follows;
 	}
 
 	/**
@@ -206,6 +212,7 @@ public class FeedForum
 			MapDecorator decorator = new MapDecorator();
 			decorator.put("forum_id", forumId);
 			decorator.put("parent_id", parentId);
+			decorator.put("game_id", gameId);
 			decorator.put("name", name);
 			decorator.put("name_spell", nameSpell);
 			decorator.put("icon", icon);
@@ -214,9 +221,10 @@ public class FeedForum
 			decorator.put("is_edit", isEdit);
 			decorator.put("is_hidden", isHidden);
 			decorator.put("threads", threads);
-			decorator.put("create_time", createTime);
 			decorator.put("yestoday_threads", yestodayThreads);
-			decorator.put("today_threads", todayThreads);
+			decorator.put("follows", follows);
+			decorator.put("yestoday_follows", yestodayFollows);
+			decorator.put("create_time", createTime);
 			return decorator.toMap();
 		}
 		catch(Exception e)

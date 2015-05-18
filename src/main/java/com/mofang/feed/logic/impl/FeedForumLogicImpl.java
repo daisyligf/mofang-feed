@@ -59,6 +59,9 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				return result;
 			}
 			
+			///根据gameId获取游戏信息
+			
+			
 			///保存版块信息
 			long forumId = forumService.build(model);
 			
@@ -173,7 +176,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			data.put("icon", forumInfo.getIcon());
 			data.put("color", forumInfo.getColor());
 			data.put("threads", forumInfo.getThreads());
-			data.put("today_threads", forumInfo.getTodayThreads());
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
 			data.put("create_time", forumInfo.getCreateTime() / 1000);
 			
@@ -222,7 +224,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 						jsonForum.put("icon", forumInfo.getIcon());
 						jsonForum.put("color", forumInfo.getColor());
 						jsonForum.put("threads", forumInfo.getThreads());
-						jsonForum.put("today_threads", forumInfo.getTodayThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 						jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
 						arrayForums.put(jsonForum);
@@ -266,7 +267,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				jsonForum.put("icon", forumInfo.getIcon());
 				jsonForum.put("color", forumInfo.getColor());
 				jsonForum.put("threads", forumInfo.getThreads());
-				jsonForum.put("today_threads", forumInfo.getTodayThreads());
 				jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 				jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
 				
@@ -368,7 +368,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					jsonForum.put("icon", forumInfo.getIcon());
 					jsonForum.put("color", forumInfo.getColor());
 					jsonForum.put("threads", forumInfo.getThreads());
-					jsonForum.put("today_threads", forumInfo.getTodayThreads());
 					jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 					jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
 					data.put(jsonForum);
@@ -413,7 +412,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					jsonForum.put("icon", forumInfo.getIcon());
 					jsonForum.put("color", forumInfo.getColor());
 					jsonForum.put("threads", forumInfo.getThreads());
-					jsonForum.put("today_threads", forumInfo.getTodayThreads());
 					jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 					jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
 					
@@ -471,7 +469,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 						jsonForum.put("icon", forumInfo.getIcon());
 						jsonForum.put("color", forumInfo.getColor());
 						jsonForum.put("threads", forumInfo.getThreads());
-						jsonForum.put("today_threads", forumInfo.getTodayThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 						jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
 						arrayForums.put(jsonForum);
