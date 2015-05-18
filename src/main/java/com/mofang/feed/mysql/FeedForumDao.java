@@ -1,8 +1,12 @@
 package com.mofang.feed.mysql;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.mofang.feed.model.FeedForum;
+import com.mofang.feed.model.external.FeedForumOrder;
+import com.mofang.feed.model.external.ForumCount;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
@@ -32,5 +36,7 @@ public interface FeedForumDao
 	
 	public long getForumCount(long parentId) throws Exception;
 	
-	public List<Long> getForumIdList(long type) throws Exception;
+	public List<FeedForumOrder> getForumOrderList(long type) throws Exception;
+	
+	public Map<Long,ForumCount> getRecommendCount(Set<Long> forumids, long startTime, long endTime) throws Exception;
 }

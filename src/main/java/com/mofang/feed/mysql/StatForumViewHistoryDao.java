@@ -1,6 +1,6 @@
 package com.mofang.feed.mysql;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.model.StatForumViewHistory;
@@ -10,5 +10,5 @@ public interface StatForumViewHistoryDao {
 
 	public void add(StatForumViewHistory model) throws Exception;
 	
-	public List<ForumCount> getUV(Set<Long> forumIds, long startTime, long endTime) throws Exception;
+	public Map<Long, ForumCount> getUV(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 }

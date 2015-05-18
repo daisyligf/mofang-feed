@@ -4,6 +4,7 @@ import com.mofang.feed.data.load.LoadManager;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.init.Initializer;
 import com.mofang.feed.init.impl.MainInitializer;
+import com.mofang.feed.job.core.ScheduledManager;
 import com.mofang.framework.web.server.action.ActionResolve;
 import com.mofang.framework.web.server.action.impl.DefaultHttpActionResolve;
 import com.mofang.framework.web.server.conf.ChannelConfig;
@@ -35,6 +36,9 @@ public class Server
 			Initializer initializer = new MainInitializer(configpath);
 			initializer.init();
 			System.out.println("initialize config completed!");
+			
+			//启动定时器
+			ScheduledManager.getInstance().execute();
 			
 			///初始化redis数据
 			if(GlobalConfig.LOAD_DATA)
