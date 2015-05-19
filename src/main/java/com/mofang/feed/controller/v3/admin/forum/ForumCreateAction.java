@@ -50,7 +50,6 @@ public class ForumCreateAction extends AbstractActionExecutor
 		
 		long operatorId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
-		long parentId = json.optLong("parent_id", 0L);
 		String name = json.optString("name", "");
 		String color = json.optString("color", "");
 		String icon = json.optString("icon", "");
@@ -87,7 +86,6 @@ public class ForumCreateAction extends AbstractActionExecutor
 		
 		///构造Forum实体对象
 		FeedForum forumInfo = new FeedForum();
-		forumInfo.setParentId(parentId);
 		forumInfo.setGameId(gameId);
 		forumInfo.setName(name);
 		forumInfo.setIcon(icon);
