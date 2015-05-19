@@ -13,6 +13,7 @@ import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.FeedHomeHotForumLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeHotForum;
+import com.mofang.feed.model.Page;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeHotForumService;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
@@ -80,15 +81,14 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 					objHotForum = new JSONObject();
 					
 					long forumId = model.getForumId();
-					
 					FeedForum feedForum = forumService.getInfo(forumId);
-					
+					if(feedForum == null)
+						continue;
 					objHotForum.put("forum_id", forumId);
 					objHotForum.put("forum_name", feedForum.getName());
 					objHotForum.put("icon", feedForum.getIcon());
 					objHotForum.put("today_threads", feedForum.getTodayThreads());
 					objHotForum.put("total_threads", feedForum.getThreads());
-					//objHotForum.put("forum_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
 					objHotForum.put("prefecture_url", model.getPrefectureUrl());//专区地址 调用产品库
 					objHotForum.put("gift_url", model.getGiftUrl());//自己拼
 					
@@ -101,6 +101,45 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 			return result;
 		} catch (Exception e) {
 			throw new Exception("at FeedHomeHotForumLogicImpl.getList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue getListByLetterGroup(String letterGroup, int pageNum, int pageSize)
+			throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			Page<FeedHomeHotForum> page = hotForumService.getListByLetterGroup(letterGroup, pageNum, pageSize);
+			long total = page.getTotal();
+			data.put("total", total);
+			JSONArray jsonArray = new JSONArray();
+			List<FeedHomeHotForum> list= page.getList();
+			JSONObject objHotForum = null;
+			for(FeedHomeHotForum model : list){
+				objHotForum = new JSONObject();
+				
+				long forumId = model.getForumId();
+				FeedForum feedForum = forumService.getInfo(forumId);
+				if(feedForum == null)
+					continue;
+				objHotForum.put("forum_id", forumId);
+				objHotForum.put("forum_name", feedForum.getName());
+				objHotForum.put("icon", feedForum.getIcon());
+				objHotForum.put("today_threads", feedForum.getTodayThreads());
+				objHotForum.put("total_threads", feedForum.getThreads());
+				objHotForum.put("prefecture_url", model.getPrefectureUrl());
+				objHotForum.put("gift_url", model.getGiftUrl());
+				
+				jsonArray.put(objHotForum);
+			}
+			data.put("list", jsonArray);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedHomeHotForumLogicImpl.getListByLetterGroup throw an error.", e);
 		}
 	}
 
