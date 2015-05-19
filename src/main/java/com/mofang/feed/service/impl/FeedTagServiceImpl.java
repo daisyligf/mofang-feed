@@ -59,4 +59,15 @@ public class FeedTagServiceImpl implements FeedTagService {
 		}
 	}
 
+	@Override
+	public String getTagName(int tagId) throws Exception {
+		try{
+			String name = tagRedis.get(tagId);
+			return name;
+		} catch(Exception e){
+			GlobalObject.ERROR_LOG.error("at FeedTagService.getTagName throw an error.", e);
+			throw e;
+		}
+	}
+
 }

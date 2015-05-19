@@ -12,4 +12,6 @@ public interface FeedTagService {
 	
 	public void add(FeedTag tag) throws Exception;
 	
+	public String getTagName(int tagId) throws Exception;
+	
 }
