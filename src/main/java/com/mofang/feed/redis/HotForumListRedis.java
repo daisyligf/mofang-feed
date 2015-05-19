@@ -17,7 +17,7 @@ public interface HotForumListRedis {
 	/***
 	 * 
 	 * @param forumId
-	 * @param urlJson
+	 * @param urlMap
 	 * 					{
 	 * 					   "download_url":xx
 	 *                    "gift_url":xx
@@ -26,6 +26,8 @@ public interface HotForumListRedis {
 	 * @throws Exception
 	 */
 	public void setUrl(long forumId, Map<String, String> urlMap) throws Exception;
+	
+	public Map<String, String> getUrl(long forumId) throws Exception;
 	
 	/***
 	 * 

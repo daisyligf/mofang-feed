@@ -8,6 +8,7 @@ import redis.clients.jedis.Jedis;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.RedisFaster;
 import com.mofang.feed.global.RedisKey;
+import com.mofang.feed.global.common.ForumURLKey;
 import com.mofang.feed.redis.RecommendGameListRedis;
 import com.mofang.framework.data.redis.RedisWorker;
 
@@ -40,9 +41,9 @@ public class RecommendGameListRedisImpl implements RecommendGameListRedis {
 			@Override
 			public Boolean execute(Jedis jedis) throws Exception {
 				String key = RedisKey.buildRedisKey(RedisKey.FORUM_EXTEND_KEY_PREFIX, forumId);
-				jedis.hset(key, "download_url", urlMap.get("download_url"));
-				jedis.hset(key, "gift_url", urlMap.get("gift_url"));
-				jedis.hset(key, "prefecture_url", urlMap.get("prefecture_url"));
+				jedis.hset(key, ForumURLKey.DOWNLOAD_URL_KEY, urlMap.get(ForumURLKey.DOWNLOAD_URL_KEY));
+				jedis.hset(key, ForumURLKey.GIFT_URL_KEY, urlMap.get(ForumURLKey.GIFT_URL_KEY));
+				jedis.hset(key, ForumURLKey.PREFECTURE_URL_KEY, urlMap.get(ForumURLKey.PREFECTURE_URL_KEY));
 				return true;
 			}
 			
@@ -60,6 +61,21 @@ public class RecommendGameListRedisImpl implements RecommendGameListRedis {
 	public long getForumCount(String key) throws Exception {
 		key = RedisKey.buildRedisKey(RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX, key);
 		return RedisFaster.zcard(key);
+	}
+
+	@Override
+	public Map<String, String> getUrl(final long forumId) throws Exception {
+		RedisWorker<Map<String, String>> worker = new RedisWorker<Map<String,String>>() {
+			@Override
+			public Map<String, String> execute(Jedis jedis) throws Exception {
+				String key = RedisKey.buildRedisKey(RedisKey.FORUM_EXTEND_KEY_PREFIX, forumId);
+				Map<String, String> map = jedis.hgetAll(key);
+				if(null == map || map.size() == 0)
+					return null;
+				return map;
+			}
+		};
+		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
 	}
 
 }

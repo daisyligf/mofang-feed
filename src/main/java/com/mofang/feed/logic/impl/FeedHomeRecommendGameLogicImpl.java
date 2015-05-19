@@ -13,6 +13,7 @@ import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.FeedHomeRecommendGameLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeRecommendGame;
+import com.mofang.feed.model.Page;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeRecommendGameService;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
@@ -74,7 +75,6 @@ public class FeedHomeRecommendGameLogicImpl implements
 					objRecommendGame = new JSONObject();
 					
 					long forumId = model.getForumId();
-					
 					FeedForum feedForum = forumService.getInfo(forumId);
 					if(feedForum == null)
 						continue;
@@ -83,20 +83,57 @@ public class FeedHomeRecommendGameLogicImpl implements
 					objRecommendGame.put("icon", feedForum.getIcon());
 					objRecommendGame.put("today_threads", feedForum.getTodayThreads());
 					objRecommendGame.put("total_threads", feedForum.getThreads());
-					//objRecommendGame.put("forum_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
 					objRecommendGame.put("download_url", model.getDownloadUrl());
 					objRecommendGame.put("gift_url", model.getGiftUrl());
 					
 					data.put(objRecommendGame);
 				}
 			}
-			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);
 			return result;
 		} catch (Exception e) {
 			throw new Exception("at FeedHomeRecommendGameLogicImp.update throw an error.",e);
+		}
+	}
+
+	@Override
+	public ResultValue getListByLetterGroup(String letterGroup, int pageNum,
+			int pageSize) throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			Page<FeedHomeRecommendGame> page = recommendGameService.getListByLetterGroup(letterGroup, pageNum, pageSize);
+			long total = page.getTotal();
+			data.put("total", total);
+			JSONArray jsonArray = new JSONArray();
+			List<FeedHomeRecommendGame> list = page.getList();
+			JSONObject objRecommendGame = null;
+			for(FeedHomeRecommendGame model : list){
+				objRecommendGame = new JSONObject();
+				
+				long forumId = model.getForumId();
+				FeedForum feedForum = forumService.getInfo(forumId);
+				if(feedForum == null)
+					continue;
+				objRecommendGame.put("forum_id", forumId);
+				objRecommendGame.put("forum_name", feedForum.getName());
+				objRecommendGame.put("icon", feedForum.getIcon());
+				objRecommendGame.put("today_threads", feedForum.getTodayThreads());
+				objRecommendGame.put("total_threads", feedForum.getThreads());
+				objRecommendGame.put("download_url", model.getDownloadUrl());
+				objRecommendGame.put("gift_url", model.getGiftUrl());
+				
+				jsonArray.put(objRecommendGame);
+			}
+			data.put("list", jsonArray);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedHomeRecommendGameLogicImpl.getListByLetterGroup throw an error.", e);
 		}
 	}
 
