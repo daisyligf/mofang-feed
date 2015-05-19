@@ -118,11 +118,29 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				return result;
 			}
 			
+			///根据gameId获取游戏信息
+			if(model.getType() != ForumType.OFFICAL)
+			{
+				if(forumInfo.getGameId() != model.getGameId())
+				{
+					Game gameInfo = HttpComponent.getGameInfo(model.getGameId());
+					if(null != gameInfo)
+					{
+						String icon = gameInfo.getIcon();
+						forumInfo.setIcon(icon);
+						forumInfo.setGameId(model.getGameId());
+					}
+				}
+			}
+			
 			///保存版块信息
 			forumInfo.setName(model.getName());
 			forumInfo.setIcon(model.getIcon());
 			forumInfo.setColor(model.getColor());
 			forumService.edit(forumInfo);
+			
+			///保存版块标签
+			forumTagService.addBatch(model.getForumId(), model.getTags());
 			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
@@ -181,22 +199,29 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			}
 			
 			JSONObject data = new JSONObject();
-			data.put("fid", forumInfo.getForumId());
-			data.put("parent_id", forumInfo.getParentId());
+			data.put("forum_id", forumInfo.getForumId());
 			data.put("name", forumInfo.getName());
 			data.put("name_spell", forumInfo.getNameSpell());
 			data.put("icon", forumInfo.getIcon());
 			data.put("color", forumInfo.getColor());
 			data.put("threads", forumInfo.getThreads());
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
+			data.put("follows", forumInfo.getFollows());
+			data.put("yestoday_follows", forumInfo.getYestodayFollows());
 			data.put("create_time", forumInfo.getCreateTime() / 1000);
 			
-			///老版本字段
-			data.put("is_up", 0);
-			data.put("tags", "");
-			data.put("up_time", 0);
-			data.put("display_order", 0);
-			data.put("is_show", 0);
+			List<Integer> tagList = forumInfo.getTags();
+			JSONArray arrayTags = new JSONArray();
+			if(null != tagList)
+			{
+				JSONObject jsonTag = null;
+				for(int tagId : tagList)
+				{
+					
+				}
+			}
+			
+			data.put("tags", arrayTags);
 			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);

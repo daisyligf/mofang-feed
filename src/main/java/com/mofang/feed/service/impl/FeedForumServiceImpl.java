@@ -6,17 +6,18 @@ import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.CommentStatus;
-import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedCommentDao;
 import com.mofang.feed.mysql.FeedForumDao;
+import com.mofang.feed.mysql.FeedForumTagDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.feed.mysql.impl.FeedCommentDaoImpl;
 import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
+import com.mofang.feed.mysql.impl.FeedForumTagDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
@@ -53,6 +54,7 @@ public class FeedForumServiceImpl implements FeedForumService
 	private FeedThreadSolr threadSolr = FeedThreadSolrImpl.getInstance();
 	private FeedPostSolr postSolr = FeedPostSolrImpl.getInstance();
 	private FeedCommentSolr commentSolr = FeedCommentSolrImpl.getInstance();
+	private FeedForumTagDao forumTagDao = FeedForumTagDaoImpl.getInstance();
 	
 	private FeedForumServiceImpl()
 	{}
@@ -179,7 +181,11 @@ public class FeedForumServiceImpl implements FeedForumService
 	{
 		try
 		{
-			return forumRedis.getInfo(forumId);
+			FeedForum forumInfo = forumRedis.getInfo(forumId);
+			List<Integer> tagList = forumTagDao.getTagIdListByForumId(forumId);
+			if(null != forumInfo)
+				forumInfo.setTags(tagList);
+			return forumInfo;
 		}
 		catch(Exception e)
 		{
