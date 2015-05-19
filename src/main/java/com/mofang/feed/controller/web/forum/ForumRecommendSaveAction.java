@@ -29,30 +29,6 @@ public class ForumRecommendSaveAction extends AbstractActionExecutor
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
-		ResultValue result = new ResultValue();
-		String postData = context.getPostData();
-		if(StringUtil.isNullOrEmpty(postData))
-		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
-			return result;
-		}
-		
-		JSONObject json = new JSONObject(postData);
-		JSONArray arrayForumIds = json.optJSONArray("fids");
-		if(null == arrayForumIds || arrayForumIds.length() == 0)
-		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
-			return result;
-		}
-		
-		Set<Long> forumIds = new HashSet<Long>();
-		for(int i=0; i < arrayForumIds.length(); i++)
-		{
-			forumIds.add(arrayForumIds.getLong(i));
-		}
-		
-		return logic.saveRecommendForumList(forumIds);
+		return null;
 	}
 }

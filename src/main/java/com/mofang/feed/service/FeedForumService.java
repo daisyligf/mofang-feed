@@ -27,17 +27,9 @@ public interface FeedForumService
 	
 	public FeedForum getInfo(long forumId) throws Exception;
 	
-	public Page<FeedForum> getForumList(long parentId, int pageNum, int pageSize) throws Exception;
+	public Page<FeedForum> getForumList(int type, int pageNum, int pageSize) throws Exception;
 	
 	public List<FeedForum> getForumList(Set<Long> forumIds) throws Exception;
-	
-	public void saveRecommendForumList(Set<Long> forumIds) throws Exception;
-	
-	public List<FeedForum> getRecommendForumList() throws Exception;
-	
-	public List<FeedForum> getHotForumList(int size) throws Exception;
-	
-	public List<FeedForum> getHotForumList(Set<Long> forumIds) throws Exception;
 	
 	public Page<FeedForum> search(String forumName, int pageNum, int pageSize) throws Exception;
 }

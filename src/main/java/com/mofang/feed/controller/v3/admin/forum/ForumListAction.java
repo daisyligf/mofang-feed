@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.admin.forum;
+package com.mofang.feed.controller.v3.admin.forum;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
@@ -13,7 +13,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="backend/forum/list")
+@Action(url="feed/v2/backend/forum/list")
 public class ForumListAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();

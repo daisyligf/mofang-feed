@@ -32,9 +32,9 @@ public interface FeedForumDao
 	
 	public List<FeedForum> getList(Operand operand) throws Exception;
 	
-	public List<FeedForum> getForumList(long parentId, int start, int end) throws Exception;
+	public List<FeedForum> getForumList(int type, int start, int end) throws Exception;
 	
-	public long getForumCount(long parentId) throws Exception;
+	public long getForumCount(int type) throws Exception;
 	
 	public List<FeedForumOrder> getForumOrderList(long type) throws Exception;
 	

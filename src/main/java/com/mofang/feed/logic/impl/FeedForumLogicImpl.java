@@ -1,8 +1,6 @@
 package com.mofang.feed.logic.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -22,11 +20,14 @@ import com.mofang.feed.model.external.Game;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedForumTagService;
 import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.service.FeedTagService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedForumTagServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
+import com.mofang.feed.service.impl.FeedTagServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
+import com.mofang.framework.util.StringUtil;
 
 /**
  * 
@@ -40,6 +41,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
 	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
+	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
 	
 	private FeedForumLogicImpl()
 	{}
@@ -199,28 +201,36 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			}
 			
 			JSONObject data = new JSONObject();
-			data.put("forum_id", forumInfo.getForumId());
+			data.put("fid", forumInfo.getForumId());
 			data.put("name", forumInfo.getName());
 			data.put("name_spell", forumInfo.getNameSpell());
 			data.put("icon", forumInfo.getIcon());
 			data.put("color", forumInfo.getColor());
+			data.put("type", forumInfo.getType());
 			data.put("threads", forumInfo.getThreads());
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
 			data.put("follows", forumInfo.getFollows());
 			data.put("yestoday_follows", forumInfo.getYestodayFollows());
-			data.put("create_time", forumInfo.getCreateTime() / 1000);
+			data.put("create_time", forumInfo.getCreateTime());
 			
 			List<Integer> tagList = forumInfo.getTags();
 			JSONArray arrayTags = new JSONArray();
 			if(null != tagList)
 			{
 				JSONObject jsonTag = null;
+				String tagName;
 				for(int tagId : tagList)
 				{
+					tagName = tagService.getTagName(tagId);
+					if(StringUtil.isNullOrEmpty(tagName))
+						continue;
 					
+					jsonTag = new JSONObject();
+					jsonTag.put("tag_id", tagId);
+					jsonTag.put("tag_name", tagName);
+					arrayTags.put(jsonTag);
 				}
 			}
-			
 			data.put("tags", arrayTags);
 			
 			///返回结果
@@ -236,7 +246,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 	}
 
 	@Override
-	public ResultValue getForumList(long parentId, int pageNum, int pageSize) throws Exception
+	public ResultValue getForumList(int type, int pageNum, int pageSize) throws Exception
 	{
 		try
 		{
@@ -244,7 +254,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			JSONObject data = new JSONObject();
 			long total = 0;
 			JSONArray arrayForums =new JSONArray();
-			Page<FeedForum> page = forumService.getForumList(parentId, pageNum, pageSize);
+			Page<FeedForum> page = forumService.getForumList(type, pageNum, pageSize);
 			if(null != page)
 			{
 				total = page.getTotal();
@@ -254,15 +264,19 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					JSONObject jsonForum = null;
 					for(FeedForum forumInfo : forums)
 					{
-						jsonForum = new JSONObject();data.put("fid", forumInfo.getForumId());
+						jsonForum = new JSONObject();
+						jsonForum.put("fid", forumInfo.getForumId());
 						jsonForum.put("parent_id", forumInfo.getParentId());
 						jsonForum.put("name", forumInfo.getName());
 						jsonForum.put("name_spell", forumInfo.getNameSpell());
 						jsonForum.put("icon", forumInfo.getIcon());
 						jsonForum.put("color", forumInfo.getColor());
+						jsonForum.put("type", forumInfo.getType());
 						jsonForum.put("threads", forumInfo.getThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-						jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
+						jsonForum.put("follows", forumInfo.getFollows());
+						jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
+						jsonForum.put("create_time", forumInfo.getCreateTime());
 						arrayForums.put(jsonForum);
 					}
 				}
@@ -305,7 +319,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				jsonForum.put("color", forumInfo.getColor());
 				jsonForum.put("threads", forumInfo.getThreads());
 				jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-				jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
+				jsonForum.put("create_time", forumInfo.getCreateTime());
 				
 				///获取版块精华帖
 				Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, 1, 10);
@@ -336,150 +350,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 	}
 
 	@Override
-	public ResultValue saveRecommendForumList(Set<Long> forumIds) throws Exception
-	{
-		try
-		{
-			forumService.saveRecommendForumList(forumIds);
-			ResultValue result = new ResultValue();
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedForumLogicImpl.saveRecommendForumList throw an error.", e);
-		}
-	}
-
-	@Override
-	public ResultValue getRecommendForumList() throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			JSONArray data = new JSONArray();
-			List<FeedForum> list = forumService.getRecommendForumList();
-			if(null != list && list.size() > 0)
-			{
-				JSONObject jsonForum = null;
-				for(FeedForum forumInfo : list)
-				{
-					jsonForum = new JSONObject();
-					jsonForum.put("fid", forumInfo.getForumId());
-					jsonForum.put("name", forumInfo.getName());
-					jsonForum.put("icon", forumInfo.getIcon());
-					data.put(jsonForum);
-				}
-			}
-			
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedForumLogicImpl.getRecommendForumList throw an error.", e);
-		}
-	}
-
-	@Override
-	public ResultValue getHotForumList(int size) throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			JSONArray data = new JSONArray();
-			List<FeedForum> list = forumService.getRecommendForumList();
-			if(null != list && list.size() > 0)
-			{
-				JSONObject jsonForum = null;
-				for(FeedForum forumInfo : list)
-				{
-					jsonForum = new JSONObject();
-					jsonForum.put("fid", forumInfo.getForumId());
-					jsonForum.put("parent_id", forumInfo.getParentId());
-					jsonForum.put("name", forumInfo.getName());
-					jsonForum.put("name_spell", forumInfo.getNameSpell());
-					jsonForum.put("icon", forumInfo.getIcon());
-					jsonForum.put("color", forumInfo.getColor());
-					jsonForum.put("threads", forumInfo.getThreads());
-					jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-					jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
-					data.put(jsonForum);
-				}
-			}
-			
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedForumLogicImpl.getHotForumList throw an error.", e);
-		}
-	}
-
-	@Override
-	public ResultValue getHotForumList(Set<Long> forumIds) throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			JSONObject data = new JSONObject();
-			List<FeedForum> list = null;
-			if(null != forumIds && forumIds.size() > 0)
-				list = forumService.getHotForumList(forumIds);
-			else
-				list = forumService.getHotForumList(200);
-			
-			Map<Character, JSONArray> map = new HashMap<Character, JSONArray>();
-			if(null != list && list.size() > 0)
-			{
-				JSONObject jsonForum = null;
-				for(FeedForum forumInfo : list)
-				{
-					jsonForum = new JSONObject();
-					jsonForum.put("fid", forumInfo.getForumId());
-					jsonForum.put("parent_id", forumInfo.getParentId());
-					jsonForum.put("name", forumInfo.getName());
-					jsonForum.put("name_spell", forumInfo.getNameSpell());
-					jsonForum.put("icon", forumInfo.getIcon());
-					jsonForum.put("color", forumInfo.getColor());
-					jsonForum.put("threads", forumInfo.getThreads());
-					jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-					jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
-					
-					if(forumInfo.getNameSpell().length() > 0)
-					{
-						char firstChar = forumInfo.getNameSpell().charAt(0);
-						JSONArray arrayItems = new JSONArray();
-						if(map.containsKey(firstChar))
-							arrayItems = map.get(firstChar);
-						
-						arrayItems.put(jsonForum);
-						map.put(firstChar, arrayItems);
-					}
-				}
-			}
-			
-			for(char key : map.keySet())
-				data.put(String.valueOf(key), map.get(key));
-			
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedForumLogicImpl.getHotForumList throw an error.", e);
-		}
-	}
-
-	@Override
 	public ResultValue search(String forumName, int pageNum, int pageSize) throws Exception
 	{
 		try
@@ -505,9 +375,12 @@ public class FeedForumLogicImpl implements FeedForumLogic
 						jsonForum.put("name_spell", forumInfo.getNameSpell());
 						jsonForum.put("icon", forumInfo.getIcon());
 						jsonForum.put("color", forumInfo.getColor());
+						jsonForum.put("type", forumInfo.getType());
 						jsonForum.put("threads", forumInfo.getThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-						jsonForum.put("create_time", forumInfo.getCreateTime() / 1000);
+						jsonForum.put("follows", forumInfo.getFollows());
+						jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
+						jsonForum.put("create_time", forumInfo.getCreateTime());
 						arrayForums.put(jsonForum);
 					}
 				}

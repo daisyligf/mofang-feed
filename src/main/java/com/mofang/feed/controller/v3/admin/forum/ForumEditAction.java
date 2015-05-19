@@ -23,8 +23,8 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/forum/create")
-public class ForumCreateAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/forum/edit")
+public class ForumEditAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();
 
@@ -50,7 +50,7 @@ public class ForumCreateAction extends AbstractActionExecutor
 		
 		long operatorId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
-		long parentId = json.optLong("parent_id", 0L);
+		long forumId = json.optLong("fid", 0L);
 		String name = json.optString("name", "");
 		String color = json.optString("color", "");
 		String icon = json.optString("icon", "");
@@ -59,7 +59,7 @@ public class ForumCreateAction extends AbstractActionExecutor
 		JSONArray arrTags = json.optJSONArray("tags");
 		
 		///参数检查
-		if(StringUtil.isNullOrEmpty(name))
+		if(forumId < 0 || StringUtil.isNullOrEmpty(name))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -87,14 +87,11 @@ public class ForumCreateAction extends AbstractActionExecutor
 		
 		///构造Forum实体对象
 		FeedForum forumInfo = new FeedForum();
-		forumInfo.setParentId(parentId);
+		forumInfo.setForumId(forumId);
 		forumInfo.setGameId(gameId);
 		forumInfo.setName(name);
 		forumInfo.setIcon(icon);
 		forumInfo.setColor(color);
-		forumInfo.setType(type);
-		forumInfo.setEdit(true);
-		forumInfo.setHidden(false);
 		
 		List<Integer> tagList = new ArrayList<Integer>();
 		for(int i=0; i<arrTags.length(); i++)
@@ -102,6 +99,6 @@ public class ForumCreateAction extends AbstractActionExecutor
 		
 		forumInfo.setTags(tagList);
 		
-		return logic.add(forumInfo, operatorId);
+		return logic.edit(forumInfo, operatorId);
 	}
 }

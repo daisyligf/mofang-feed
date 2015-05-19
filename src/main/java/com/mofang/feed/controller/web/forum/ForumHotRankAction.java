@@ -20,6 +20,6 @@ public class ForumHotRankAction extends AbstractActionExecutor
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
-		return logic.getHotForumList(10);
+		return null;
 	}
 }

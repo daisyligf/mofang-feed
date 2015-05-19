@@ -1,7 +1,9 @@
-package com.mofang.feed.controller.admin.forum;
+package com.mofang.feed.controller.v3.admin.forum;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
+import com.mofang.feed.global.ReturnCode;
+import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.FeedForumLogic;
 import com.mofang.feed.logic.impl.FeedForumLogicImpl;
 import com.mofang.framework.util.StringUtil;
@@ -13,21 +15,25 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="backend/forum/list")
-public class ForumListAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/forum/search")
+public class ForumSearchAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
-		String strType = context.getParameters("type");
+		ResultValue result = new ResultValue();
+		String forumName = context.getParameters("name");
 		String strPageNum = context.getParameters("startPage");
 		String strPageSize = context.getParameters("pageSize");
 		
-		int type = 0;
-		if(StringUtil.isInteger(strType))
-			type = Integer.parseInt(strType);
+		if(StringUtil.isNullOrEmpty(forumName))
+		{
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
 		
 		int pageNum = 1;
 		if(StringUtil.isInteger(strPageNum))
@@ -37,6 +43,6 @@ public class ForumListAction extends AbstractActionExecutor
 		if(StringUtil.isInteger(strPageSize))
 			pageSize = Integer.parseInt(strPageSize);
 		
-		return logic.getForumList(type, pageNum, pageSize);
+		return logic.search(forumName, pageNum, pageSize);
 	}
 }

@@ -28,33 +28,6 @@ public class ForumListAction extends AbstractActionExecutor
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
-		ResultValue result = new ResultValue();
-		String postData = context.getPostData();
-		if(StringUtil.isNullOrEmpty(postData))
-		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
-			return result;
-		}
-		
-		JSONObject json = new JSONObject(postData);
-		String strForumIds = json.optString("fids", "");
-		
-		if(!StringUtil.isNullOrEmpty(strForumIds))
-		{
-			String[] arrForumIds = strForumIds.split(",");
-			Set<Long> forumIds = new HashSet<Long>();
-			if(arrForumIds.length > 0)
-			{
-				for(String strForumId : arrForumIds)
-				{
-					if(StringUtil.isLong(strForumId))
-						forumIds.add(Long.parseLong(strForumId));
-				}
-			}
-			return logic.getHotForumList(forumIds);
-		}
-		else
-			return logic.getHotForumList(200);
+		return null;
 	}
 }

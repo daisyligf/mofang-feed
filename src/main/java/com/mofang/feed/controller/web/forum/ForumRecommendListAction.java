@@ -20,6 +20,6 @@ public class ForumRecommendListAction extends AbstractActionExecutor
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
-		return logic.getRecommendForumList();
+		return null;
 	}
 }

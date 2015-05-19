@@ -195,15 +195,15 @@ public class FeedForumServiceImpl implements FeedForumService
 	}
 
 	@Override
-	public Page<FeedForum> getForumList(long parentId, int pageNum, int pageSize) throws Exception
+	public Page<FeedForum> getForumList(int type, int pageNum, int pageSize) throws Exception
 	{
 		try
 		{
-			long total = forumDao.getForumCount(parentId);
+			long total = forumDao.getForumCount(type);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<FeedForum> list = forumDao.getForumList(parentId, start, end);
+			List<FeedForum> list = forumDao.getForumList(type, start, end);
 			return new Page<FeedForum>(total, list);
 		}
 		catch(Exception e)
@@ -233,79 +233,6 @@ public class FeedForumServiceImpl implements FeedForumService
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getForumList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public void saveRecommendForumList(Set<Long> forumIds) throws Exception
-	{
-		try
-		{
-			///清空推荐列表
-			forumRedis.clearRecommendForumList();
-			///将版块ID添加到推荐列表中
-			int position = forumIds.size();
-			for(long forumId : forumIds)
-				forumRedis.addRecommendForumList(forumId, position);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.saveRecommendForumList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public List<FeedForum> getRecommendForumList() throws Exception
-	{
-		try
-		{
-			Set<String> idSet = forumRedis.getRecommendForumList();
-			return forumRedis.convertEntityList(idSet);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getRecommendForumList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public List<FeedForum> getHotForumList(int size) throws Exception
-	{
-		try
-		{
-			Set<String> idSet = forumRedis.getHotForumList(size);
-			return forumRedis.convertEntityList(idSet);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getHotForumList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public List<FeedForum> getHotForumList(Set<Long> forumIds) throws Exception
-	{
-		try
-		{
-			List<FeedForum> list = new ArrayList<FeedForum>();
-			FeedForum forumInfo = null;
-			for(long forumId : forumIds)
-			{
-				forumInfo = forumRedis.getInfo(forumId);
-				if(null == forumInfo)
-					continue;
-				
-				list.add(forumInfo);
-			}
-			return list;
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getHotForumList throw an error.", e);
 			throw e;
 		}
 	}

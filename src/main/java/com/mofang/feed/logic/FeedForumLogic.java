@@ -20,17 +20,9 @@ public interface FeedForumLogic
 	
 	public ResultValue getInfo(long forumId) throws Exception;
 	
-	public ResultValue getForumList(long parentId, int pageNum, int pageSize) throws Exception;
+	public ResultValue getForumList(int type, int pageNum, int pageSize) throws Exception;
 	
 	public ResultValue getForumList(Set<Long> forumIds) throws Exception;
-	
-	public ResultValue saveRecommendForumList(Set<Long> forumIds) throws Exception;
-	
-	public ResultValue getRecommendForumList() throws Exception;
-	
-	public ResultValue getHotForumList(int size) throws Exception;
-	
-	public ResultValue getHotForumList(Set<Long> forumIds) throws Exception;
 	
 	public ResultValue search(String forumName, int pageNum, int pageSize) throws Exception;
 }

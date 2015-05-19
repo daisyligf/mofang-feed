@@ -104,34 +104,23 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	}
 
 	@Override
-	public List<FeedForum> getForumList(long parentId, int start, int end) throws Exception
+	public List<FeedForum> getForumList(int type, int start, int end) throws Exception
 	{
 		Operand where = new WhereOperand();
-		Operand parentIdEqual = new EqualOperand("parent_id", parentId);
+		Operand parentIdEqual = new EqualOperand("type", type);
 		OrderByEntry entry = new OrderByEntry("forum_id", SortType.Desc);
 		Operand orderby = new OrderByOperand(entry);
 		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
-		
-		if(parentId > 0) {
-			where.append(parentIdEqual).append(orderby).append(limit);
-			return super.getList(where);
-		} else {
-			orderby.append(limit);
-			return super.getList(orderby);
-		}
+		where.append(parentIdEqual).append(orderby).append(limit);
+		return super.getList(where);
 	}
 
 	@Override
-	public long getForumCount(long parentId) throws Exception
+	public long getForumCount(int type) throws Exception
 	{
 		Operand where = new WhereOperand();
-		Operand parentIdEqual = new EqualOperand("parent_id", parentId);
-		
-		if(parentId > 0)
-			where.append(parentIdEqual);
-		else
-			where.append(new EqualOperand("1", "1"));
-		
+		Operand parentIdEqual = new EqualOperand("type", type);
+		where.append(parentIdEqual);
 		return super.getCount(where);
 	}
 
