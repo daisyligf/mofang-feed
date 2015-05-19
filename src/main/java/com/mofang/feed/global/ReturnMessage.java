@@ -96,4 +96,14 @@ public class ReturnMessage
 	 * 用户角色不存在
 	 */
 	public static String USER_ROLE_NOT_EXISTS;
+	
+	/**
+	 * 用户已关注指定版块
+	 */
+	public static String USER_FOLLOWED_FORUM;
+	
+	/**
+	 * 用户未关注指定版块
+	 */
+	public static String USER_UNFOLLOW_FORUM;
 }

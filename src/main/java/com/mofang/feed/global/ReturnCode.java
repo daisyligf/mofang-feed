@@ -96,4 +96,14 @@ public class ReturnCode
 	 * 用户角色不存在
 	 */
 	public final static int USER_ROLE_NOT_EXISTS = 708;
+	
+	/**
+	 * 用户已关注指定版块
+	 */
+	public final static int USER_FOLLOWED_FORUM = 709;
+	
+	/**
+	 * 用户未关注指定版块
+	 */
+	public final static int USER_UNFOLLOW_FORUM = 710;
 }

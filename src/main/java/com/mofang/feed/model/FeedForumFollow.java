@@ -13,7 +13,7 @@ public class FeedForumFollow {
 	@ColumnName(name = "user_id")
 	private long userId;
 	@ColumnName(name = "is_follow")
-	private int isFollow;
+	private boolean isFollow;
 	@ColumnName(name = "create_time")
 	private long createTime;
 
@@ -33,11 +33,11 @@ public class FeedForumFollow {
 		this.userId = userId;
 	}
 
-	public int getIsFollow() {
+	public boolean getIsFollow() {
 		return isFollow;
 	}
 
-	public void setIsFollow(int isFollow) {
+	public void setIsFollow(boolean isFollow) {
 		this.isFollow = isFollow;
 	}
 

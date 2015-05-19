@@ -10,6 +10,10 @@ import com.mofang.feed.model.FeedForumFollow;
 import com.mofang.feed.model.external.ForumCount;
 import com.mofang.feed.mysql.FeedForumFollowDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
+import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
+import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.meta.ResultData;
 import com.mofang.framework.data.mysql.core.meta.RowData;
 
@@ -27,6 +31,31 @@ public class FeedForumFollowDaoImpl extends AbstractMysqlSupport<FeedForumFollow
 	
 	public static FeedForumFollowDaoImpl getInstance(){
 		return DAO;
+	}
+
+	@Override
+	public boolean isFollow(long forumId, long userId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand followEqual = new EqualOperand("is_follow", 1);
+		Operand and = new AndOperand();
+		where.append(forumEqual).append(and).append(userEqual).append(and).append(followEqual);
+		long count = super.getCount(where);
+		return count > 0;
+	}
+
+	@Override
+	public boolean exists(long forumId, long userId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand and = new AndOperand();
+		where.append(forumEqual).append(and).append(userEqual);
+		long count = super.getCount(where);
+		return count > 0;
 	}
 	
 	@Override
@@ -67,5 +96,4 @@ public class FeedForumFollowDaoImpl extends AbstractMysqlSupport<FeedForumFollow
 		}
 		return map;
 	}
-
 }
