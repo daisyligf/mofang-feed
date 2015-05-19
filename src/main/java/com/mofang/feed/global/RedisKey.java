@@ -73,26 +73,6 @@ public class RedisKey
 	public final static String FORUM_INFO_KEY_PREFIX = "forum_info_";
 	
 	/**
-	 * 推荐吧列表key(web端使用)
-	 * 结构: SortSet
-	 * 说明: 
-	 *          score: position 
-	 *          value: 版块ID
-	 * 示例: zadd recommend_forum_list 1 100
-	 */
-	public final static String RECOMMEND_FORUM_LIST_KEY = "recommend_forum_list";
-	
-	/**
-	 * 热吧排行榜key(web端使用)
-	 * 结构: SortSet
-	 * 说明:
-	 *          score: 昨日发帖数
-	 *          value: 版块ID
-	 * 示例: zadd hot_forum_list 234 100
-	 */
-	public final static String HOT_FORUM_LIST_KEY = "hot_forum_list";
-	
-	/**
 	 * 主题信息key前缀
 	 * 结构: Hash
 	 * 示例: hset thread_info_${thread_id} subject test

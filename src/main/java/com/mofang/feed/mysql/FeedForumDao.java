@@ -28,6 +28,10 @@ public interface FeedForumDao
 	
 	public void decrThreads(long forumId) throws Exception;
 	
+	public void incrFollows(long forumId) throws Exception;
+	
+	public void decrFollows(long forumId) throws Exception;
+	
 	public FeedForum getInfo(long forumId) throws Exception;
 	
 	public List<FeedForum> getList(Operand operand) throws Exception;

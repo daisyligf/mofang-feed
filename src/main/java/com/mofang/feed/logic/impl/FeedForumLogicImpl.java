@@ -205,7 +205,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			data.put("name", forumInfo.getName());
 			data.put("name_spell", forumInfo.getNameSpell());
 			data.put("icon", forumInfo.getIcon());
-			data.put("color", forumInfo.getColor());
 			data.put("type", forumInfo.getType());
 			data.put("threads", forumInfo.getThreads());
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
@@ -266,11 +265,9 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					{
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", forumInfo.getForumId());
-						jsonForum.put("parent_id", forumInfo.getParentId());
 						jsonForum.put("name", forumInfo.getName());
 						jsonForum.put("name_spell", forumInfo.getNameSpell());
 						jsonForum.put("icon", forumInfo.getIcon());
-						jsonForum.put("color", forumInfo.getColor());
 						jsonForum.put("type", forumInfo.getType());
 						jsonForum.put("threads", forumInfo.getThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
@@ -312,13 +309,14 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				
 				jsonForum = new JSONObject();
 				jsonForum.put("fid", forumInfo.getForumId());
-				jsonForum.put("parent_id", forumInfo.getParentId());
 				jsonForum.put("name", forumInfo.getName());
 				jsonForum.put("name_spell", forumInfo.getNameSpell());
 				jsonForum.put("icon", forumInfo.getIcon());
 				jsonForum.put("color", forumInfo.getColor());
 				jsonForum.put("threads", forumInfo.getThreads());
 				jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
+				jsonForum.put("follows", forumInfo.getFollows());
+				jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
 				jsonForum.put("create_time", forumInfo.getCreateTime());
 				
 				///获取版块精华帖
@@ -370,11 +368,9 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					{
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", forumInfo.getForumId());
-						jsonForum.put("parent_id", forumInfo.getParentId());
 						jsonForum.put("name", forumInfo.getName());
 						jsonForum.put("name_spell", forumInfo.getNameSpell());
 						jsonForum.put("icon", forumInfo.getIcon());
-						jsonForum.put("color", forumInfo.getColor());
 						jsonForum.put("type", forumInfo.getType());
 						jsonForum.put("threads", forumInfo.getThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());

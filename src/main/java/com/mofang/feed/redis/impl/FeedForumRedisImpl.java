@@ -131,6 +131,44 @@ public class FeedForumRedisImpl implements FeedForumRedis
 	}
 
 	@Override
+	public void incrFollows(final long forumId) throws Exception
+	{
+		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
+		{
+			@Override
+			public Boolean execute(Jedis jedis) throws Exception
+			{
+				String key = RedisKey.buildRedisKey(RedisKey.FORUM_INFO_KEY_PREFIX, forumId);
+				if(!jedis.exists(key))
+					return false;
+				
+				jedis.hincrBy(key, "follows", 1);
+				return true;
+			}
+		};
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+
+	@Override
+	public void decrFollows(final long forumId) throws Exception
+	{
+		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
+		{
+			@Override
+			public Boolean execute(Jedis jedis) throws Exception
+			{
+				String key = RedisKey.buildRedisKey(RedisKey.FORUM_INFO_KEY_PREFIX, forumId);
+				if(!jedis.exists(key))
+					return false;
+				
+				jedis.hincrBy(key, "follows", -1);
+				return true;
+			}
+		};
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+
+	@Override
 	public void incrTodayThreads(final long forumId) throws Exception
 	{
 		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
@@ -165,116 +203,6 @@ public class FeedForumRedisImpl implements FeedForumRedis
 				return true;
 			}
 		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void addRecommendForumList(final long forumId, final int position) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.RECOMMEND_FORUM_LIST_KEY;
-				jedis.zadd(key, position, String.valueOf(forumId));
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void deleteFromRecommendForumList(final long forumId) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.RECOMMEND_FORUM_LIST_KEY;
-				jedis.zrem(key, String.valueOf(forumId));
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public Set<String> getRecommendForumList() throws Exception
-	{
-		RedisWorker<Set<String>> worker = new RedisWorker<Set<String>>()
-		{
-			@Override
-			public Set<String> execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.RECOMMEND_FORUM_LIST_KEY;
-				return jedis.zrange(key, 0, Short.MAX_VALUE);
-			}
-		};
-		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void clearRecommendForumList() throws Exception
-	{
-		String key = RedisKey.RECOMMEND_FORUM_LIST_KEY;
-		RedisWorker<Boolean> worker = new DeleteWorker(key);
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void addHotForumList(final long forumId, final int threads) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.HOT_FORUM_LIST_KEY;
-				jedis.zadd(key, threads, String.valueOf(forumId));
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void deleteFromHotForumList(final long forumId) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.HOT_FORUM_LIST_KEY;
-				jedis.zrem(key, String.valueOf(forumId));
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public Set<String> getHotForumList(final int size) throws Exception
-	{
-		RedisWorker<Set<String>> worker = new RedisWorker<Set<String>>()
-		{
-			@Override
-			public Set<String> execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.HOT_FORUM_LIST_KEY;
-				return jedis.zrevrange(key, 0, size - 1);
-			}
-		};
-		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void clearHotForumList() throws Exception
-	{
-		String key = RedisKey.HOT_FORUM_LIST_KEY;
-		RedisWorker<Boolean> worker = new DeleteWorker(key);
 		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 

@@ -132,10 +132,6 @@ public class FeedForumServiceImpl implements FeedForumService
 			/******************************redis操作******************************/
 			///删除版块信息
 			forumRedis.delete(forumId);
-			///将版块从推荐吧列表中删除
-			forumRedis.deleteFromRecommendForumList(forumId);
-			///将版块从热吧排行榜中删除
-			forumRedis.deleteFromHotForumList(forumId);
 			
 			///将所属该版块的主题信息(thread_info)删除
 			Set<String> threadSet = threadRedis.getForumThreadList(forumId, 0, -1);
