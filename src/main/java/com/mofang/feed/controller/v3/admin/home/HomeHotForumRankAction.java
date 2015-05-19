@@ -7,7 +7,7 @@ import com.mofang.feed.logic.impl.FeedHomeHotForumRankLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "backend/home/rank/hotforum/get")
+@Action(url = "feed/v2/backend/home/rank/hotforum/get")
 public class HomeHotForumRankAction extends AbstractActionExecutor {
 
 	private FeedHomeHotForumRankLogic logic = FeedHomeHotForumRankLogicImpl

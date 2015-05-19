@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedTag;
+import com.mofang.feed.mysql.FeedForumTagDao;
 import com.mofang.feed.mysql.FeedTagDao;
+import com.mofang.feed.mysql.impl.FeedForumTagDaoImpl;
 import com.mofang.feed.mysql.impl.FeedTagDaoImpl;
 import com.mofang.feed.redis.FeedTagRedis;
 import com.mofang.feed.redis.impl.FeedTagRedisImpl;
@@ -19,6 +21,7 @@ public class FeedTagServiceImpl implements FeedTagService {
 	
 	private static final FeedTagServiceImpl SERVICE = new FeedTagServiceImpl();
 	private FeedTagDao tagDao = FeedTagDaoImpl.getInstance();
+	private FeedForumTagDao forumTagDao = FeedForumTagDaoImpl.getInstance();
 	private FeedTagRedis tagRedis =  FeedTagRedisImpl.getInstance();
 	
 	private FeedTagServiceImpl(){}
@@ -41,6 +44,9 @@ public class FeedTagServiceImpl implements FeedTagService {
 	public void delete(List<Integer> tagIdList) throws Exception {
 		try {
 			tagDao.delete(tagIdList);
+			for(Integer tagId : tagIdList){
+				forumTagDao.deleteByTagId(tagId);
+			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedTagServiceImpl.delete throw an error.", e);
 			throw e;

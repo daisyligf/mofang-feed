@@ -526,4 +526,30 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		}
 		return map;
 	}
+
+	@Override
+	public List<Long> getThreadIdListByTagId(long fourmId, int tagId, int start, int end) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select thread_id from feed_thread ");
+		strSql.append("where forum_id = " + fourmId);
+		strSql.append(" and status = 1 and tag_id = " + tagId);
+		strSql.append(" order by last_post_time desc ");
+		strSql.append(" limit " + start + ", " + end);
+		ResultData data = super.executeQuery(strSql.toString());
+		return convertResultDataToList(data);
+	}
+
+	@Override
+	public long getForumThreadCountByTagId(long forumId, int tagId)
+			throws Exception {
+		Operand where = new WhereOperand();
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		Operand statusEqual = new EqualOperand("status", 1);
+		Operand isEliteEqual = new EqualOperand("tag_id", tagId);
+		Operand and = new AndOperand();
+		where.append(forumEqual).append(and).append(statusEqual).append(and)
+				.append(isEliteEqual);
+		return super.getCount(where);
+	}
+	
 }

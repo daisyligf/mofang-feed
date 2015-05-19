@@ -1,5 +1,7 @@
 package com.mofang.feed.controller;
 
+import io.netty.handler.codec.http.HttpMethod;
+
 import java.net.URLDecoder;
 
 import org.apache.commons.codec.binary.Base64;
@@ -40,7 +42,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor
 			atom = context.getParameters("atom");
 			if(StringUtil.isNullOrEmpty(atom))
 			{
-				if(needCheckAtom())
+				if(needCheckAtom(httpContext))
 				{
 					result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 					result.setMessage("缺少原子封装");
@@ -94,9 +96,9 @@ public abstract class AbstractActionExecutor implements ActionExecutor
 		}
 	}
 	
-	protected boolean needCheckAtom()
+	protected boolean needCheckAtom(HttpRequestContext httpContext)
 	{
-		return true;
+		return httpContext.getRequest().getMethod().equals(HttpMethod.POST);
 	}
 	
 	protected abstract ResultValue exec(HttpRequestContext context) throws Exception;

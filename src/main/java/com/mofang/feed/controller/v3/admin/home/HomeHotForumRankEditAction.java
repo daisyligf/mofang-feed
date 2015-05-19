@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 import com.mysql.jdbc.StringUtils;
 
-@Action(url = "backend/home/rank/hotforum/edit")
+@Action(url = "feed/v2/backend/home/rank/hotforum/edit")
 public class HomeHotForumRankEditAction extends AbstractActionExecutor {
 
 	private FeedHomeHotForumRankLogic logic = FeedHomeHotForumRankLogicImpl

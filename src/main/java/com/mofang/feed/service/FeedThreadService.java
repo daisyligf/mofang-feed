@@ -335,4 +335,6 @@ public interface FeedThreadService
 	 * @throws Exception
 	 */
 	public Page<FeedThread> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
+	
+	public Page<FeedThread> getForumThreadListByTagId(long forumId, int tagId, int pageNum, int pageSize) throws Exception;
 }

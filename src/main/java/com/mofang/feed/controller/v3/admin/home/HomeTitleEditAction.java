@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 import com.mysql.jdbc.StringUtils;
 
-@Action(url = "backend/home/subject/edit")
+@Action(url = "feed/v2/backend/home/subject/edit")
 public class HomeTitleEditAction extends AbstractActionExecutor {
 
 	private FeedHomeTitleLogic logic = FeedHomeTitleLogicImpl.getInstance();
