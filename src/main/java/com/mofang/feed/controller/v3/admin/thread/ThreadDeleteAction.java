@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.admin.forum;
+package com.mofang.feed.controller.v3.admin.thread;
 
 import org.json.JSONObject;
 
@@ -6,8 +6,8 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.admin.FeedForumLogic;
-import com.mofang.feed.logic.admin.impl.FeedForumLogicImpl;
+import com.mofang.feed.logic.admin.FeedThreadLogic;
+import com.mofang.feed.logic.admin.impl.FeedThreadLogicImpl;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -17,10 +17,10 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/forum/delete")
-public class ForumDeleteAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/thread/delete")
+public class ThreadDeleteAction extends AbstractActionExecutor
 {
-	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();
+	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
@@ -29,31 +29,33 @@ public class ForumDeleteAction extends AbstractActionExecutor
 		String strOperatorId = context.getParameters("uid");
 		if(!StringUtil.isLong(strOperatorId))
 		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			return result;
 		}
 		
 		String postData = context.getPostData();
 		if(StringUtil.isNullOrEmpty(postData))
 		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			return result;
 		}
 		
 		long operatorId = Long.parseLong(strOperatorId);
 		JSONObject json = new JSONObject(postData);
-		long forumId = json.optLong("fid", 0L);
-		
-		///参数检查
-		if(forumId <= 0)
+		long threadId = json.optLong("tid", 0L);
+		String reason = json.optString("reason", "管理后台操作");
+		if(threadId <= 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
 		
-		return logic.delete(forumId, operatorId);
+		logic.delete(threadId, operatorId, reason);
+		result.setCode(ReturnCode.SUCCESS);
+		result.setMessage(ReturnMessage.SUCCESS);
+		return result;
 	}
 }

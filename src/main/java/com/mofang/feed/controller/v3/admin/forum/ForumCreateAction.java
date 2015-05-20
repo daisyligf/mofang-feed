@@ -32,8 +32,8 @@ public class ForumCreateAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String strUserId = context.getParameters("uid");
-		if(!StringUtil.isLong(strUserId))
+		String strOperatorId = context.getParameters("uid");
+		if(!StringUtil.isLong(strOperatorId))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -48,7 +48,7 @@ public class ForumCreateAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		long operatorId = Long.parseLong(strUserId);
+		long operatorId = Long.parseLong(strOperatorId);
 		JSONObject json = new JSONObject(postData);
 		String name = json.optString("name", "");
 		String color = json.optString("color", "");
