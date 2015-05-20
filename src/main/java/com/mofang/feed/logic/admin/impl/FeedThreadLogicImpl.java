@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import com.mofang.feed.component.SysMessageNotifyComponent;
 import com.mofang.feed.component.TaskComponent;
 import com.mofang.feed.component.UserComponent;
-import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
@@ -19,9 +18,8 @@ import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.OperateBehavior;
 import com.mofang.feed.global.common.OperateSourceType;
-import com.mofang.feed.global.common.ThreadTag;
-import com.mofang.feed.global.common.ThreadType;
 import com.mofang.feed.logic.admin.FeedThreadLogic;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
@@ -580,10 +578,10 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		{
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
+			
 			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
 			Set<Long> uids = new HashSet<Long>();
 			long total = 0;
-			User userInfo = null;
 			JSONArray arrayThreads =new JSONArray();
 			Page<FeedThread> page = threadService.getThreadList(forumId, status, pageNum, pageSize);
 			if(null != page)
@@ -593,60 +591,39 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				if(null != threads)
 				{
 					JSONObject jsonThread = null;
+					JSONObject jsonForum = null;
+					JSONObject jsonUser = null;
+					FeedForum forumInfo = null;
+					User userInfo = null;
 					for(FeedThread threadInfo : threads)
 					{
 						jsonThread = new JSONObject();
-						jsonThread.put("fid", threadInfo.getForumId());        ///所属版块ID
 						jsonThread.put("tid", threadInfo.getThreadId());       ///主题ID
-						jsonThread.put("user_id", threadInfo.getUserId());         ///发布主题的用户ID
 						jsonThread.put("subject", threadInfo.getSubjectFilter());       ///主题标题
 						jsonThread.put("replies", threadInfo.getReplies());         ///主题回复数(楼层+评论)
 						jsonThread.put("pageview", threadInfo.getPageView());        ///主题浏览数
-						jsonThread.put("create_time", threadInfo.getCreateTime() / 1000);        ///主题发布时间
-						jsonThread.put("last_poster_id", threadInfo.getLastPostUid());        ///主题最后回复用户ID
-						jsonThread.put("end_post_time", threadInfo.getLastPostTime() / 1000);        ///主题最后回复时间
-						jsonThread.put("is_closed", threadInfo.isClosed());        ///主题是否关闭(如果关闭, 则不能进行回复和评论)
+						jsonThread.put("create_time", threadInfo.getCreateTime());        ///主题发布时间
+						jsonThread.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
 						jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
-						jsonThread.put("type", threadInfo.getType()); 
-						jsonThread.put("sharetimes", threadInfo.getShareTimes());         ///主题分享数
-						jsonThread.put("top_time", threadInfo.getTopTime());         ///主题置顶时间
 						jsonThread.put("status", threadInfo.getStatus());         ///主题状态
 						
-						///构建linkurl (linkurl是一种link规则，客户端根据link规则来进行跳转)
-						String linkurl = threadInfo.getLinkUrl();
-						if(StringUtil.isNullOrEmpty(linkurl))
-							linkurl = GlobalConfig.FEED_DETAIL_URL + "?tid=" + threadInfo.getThreadId() + "&type=0";
-						jsonThread.put("linkurl", linkurl);     
+						jsonForum = new JSONObject();
+						jsonForum.put("fid", threadInfo.getForumId());
+						forumInfo = forumService.getInfo(threadInfo.getForumId());
+						if(null != forumInfo)
+							jsonForum.put("name", forumInfo.getName());
 						
-						///构建tag信息(老版本中主题的状态是用标签来实现的, 新版中已经改用字段, 但接口需要支持老版本)
-						String tags = "";
-						if(threadInfo.isElite())
-							tags += "," + ThreadTag.ELITE;
-						if(threadInfo.isVideo())
-							tags += "," + ThreadTag.VIDEO;
-						if(threadInfo.isMark())
-							tags += "," + ThreadTag.MARK;
-						if(threadInfo.getType() == ThreadType.QUESTION)
-							tags += "," + ThreadTag.QUESTION;
-						if(tags.length() > 0)
-							tags = tags.substring(1);
-						
-						jsonThread.put("tags", tags);
-						
+						jsonUser = new JSONObject();
+						jsonUser.put("user_id", threadInfo.getUserId());
 						///获取发布主题的用户信息
 						userInfo = UserComponent.getInfoFromCache(threadInfo.getUserId());
 						if(null == userInfo)
 							uids.add(threadInfo.getUserId());
 						else
-							jsonThread.put("nickname", userInfo.getNickName());
+							jsonUser.put("nickname", userInfo.getNickName());
 						
-						///获取最后回复主题的用户信息
-						userInfo = UserComponent.getInfoFromCache(threadInfo.getLastPostUid());
-						if(null == userInfo)
-							uids.add(threadInfo.getLastPostUid());
-						else
-							jsonThread.put("last_poster_name", userInfo.getNickName());
-						
+						jsonThread.put("forum", jsonForum);
+						jsonThread.put("user", jsonUser);
 						arrayThreads.put(jsonThread);
 					}
 					
@@ -659,10 +636,9 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 							for(int i=0; i<arrayThreads.length(); i++)
 							{
 								jsonThread = arrayThreads.getJSONObject(i);
-								String nickName = jsonThread.optString("nickname", "");
-								String lastPosterName = jsonThread.optString("last_poster_name", "");
-								long userId = jsonThread.optLong("uid", 0L);
-								long lastPosterId = jsonThread.optLong("last_poster_id", 0L);
+								jsonUser = jsonThread.optJSONObject("user");
+								String nickName = jsonUser.optString("nickname", "");
+								long userId = jsonUser.optLong("user_id", 0L);
 								
 								///填充发帖用户信息
 								if(StringUtil.isNullOrEmpty(nickName))
@@ -670,14 +646,8 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 									if(userMap.containsKey(userId))
 									{
 										userInfo = userMap.get(userId);
-										jsonThread.put("nickname", userInfo.getNickName());
+										jsonUser.put("nickname", userInfo.getNickName());
 									}
-								}
-								///填充最后回复用户信息
-								if(StringUtil.isNullOrEmpty(lastPosterName))
-								{
-									if(userMap.containsKey(lastPosterId))
-										jsonThread.put("last_poster_name", userInfo.getNickName());
 								}
 							}
 						}
@@ -700,7 +670,97 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	@Override
 	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{
+			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
+			Set<Long> uids = new HashSet<Long>();
+			Page<FeedThread> page = threadService.search(forumId, forumName, author, keyword, status, pageNum, pageSize);
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			long total = 0;
+			JSONArray arrayThreads = new JSONArray();
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedThread> threads = page.getList();
+				if(null != threads)
+				{
+					JSONObject jsonThread = null;
+					JSONObject jsonForum = null;
+					JSONObject jsonUser = null;
+					FeedForum forumInfo = null;
+					User userInfo = null;
+					for(FeedThread threadInfo : threads)
+					{
+						jsonThread = new JSONObject();
+						jsonThread = new JSONObject();
+						jsonThread.put("tid", threadInfo.getThreadId());       ///主题ID
+						jsonThread.put("subject", threadInfo.getSubjectFilter());       ///主题标题
+						jsonThread.put("replies", threadInfo.getReplies());         ///主题回复数(楼层+评论)
+						jsonThread.put("pageview", threadInfo.getPageView());        ///主题浏览数
+						jsonThread.put("create_time", threadInfo.getCreateTime());        ///主题发布时间
+						jsonThread.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
+						jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
+						jsonThread.put("status", threadInfo.getStatus());         ///主题状态
+						
+						jsonForum = new JSONObject();
+						jsonForum.put("fid", threadInfo.getForumId());
+						forumInfo = forumService.getInfo(threadInfo.getForumId());
+						if(null != forumInfo)
+							jsonForum.put("name", forumInfo.getName());
+						
+						jsonUser = new JSONObject();
+						jsonUser.put("user_id", threadInfo.getUserId());
+						///获取发布主题的用户信息
+						userInfo = UserComponent.getInfoFromCache(threadInfo.getUserId());
+						if(null == userInfo)
+							uids.add(threadInfo.getUserId());
+						else
+							jsonUser.put("nickname", userInfo.getNickName());
+						
+						jsonThread.put("forum", jsonForum);
+						jsonThread.put("user", jsonUser);
+						arrayThreads.put(jsonThread);
+					}
+					
+					///填充用户信息
+					if(uids.size() > 0)
+					{
+						Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
+						if(null != userMap)
+						{
+							for(int i=0; i<arrayThreads.length(); i++)
+							{
+								jsonThread = arrayThreads.getJSONObject(i);
+								jsonUser = jsonThread.optJSONObject("user");
+								String nickName = jsonUser.optString("nickname", "");
+								long userId = jsonUser.optLong("user_id", 0L);
+								
+								///填充发帖用户信息
+								if(StringUtil.isNullOrEmpty(nickName))
+								{
+									if(userMap.containsKey(userId))
+									{
+										userInfo = userMap.get(userId);
+										jsonUser.put("nickname", userInfo.getNickName());
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			data.put("total", total);
+			data.put("list", arrayThreads);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.search throw an error.", e);
+		}
 	}
 }
