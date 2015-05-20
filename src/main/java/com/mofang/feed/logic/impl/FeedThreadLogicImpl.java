@@ -1996,5 +1996,16 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			throw new Exception("at FeedThreadLogicImpl.getForumThreadListByTagId throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue getForumEliteThreadList(long forumId, int tagId,
+			int pageNum, int pageSize, long currentUserId) throws Exception {
+		try {
+			Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, tagId, pageNum, pageSize);
+			return formatForumThreads(forumId, page, currentUserId);
+		} catch(Exception e) {
+			throw new Exception("at FeedThreadLogicImpl.getForumEliteThreadList throw an error.", e);
+		}
+	}
 	
 }

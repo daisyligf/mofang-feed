@@ -1007,4 +1007,20 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			throw e;
 		}
 	}
+
+	@Override
+	public Page<FeedThread> getForumEliteThreadList(long forumId, long tagId,
+			int pageNum, int pageSize) throws Exception {
+		try {
+			long total = threadDao.getForumEliteThreadCount(forumId, tagId);
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int end = pageNumber.getEnd();
+			List<Long> idList = threadDao.getForumEliteThreadList(forumId, tagId, start, end);
+			return convertEntityList(total, idList);
+		} catch(Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumEliteThreadList throw an error.", e);
+			throw e;
+		}
+	}
 }

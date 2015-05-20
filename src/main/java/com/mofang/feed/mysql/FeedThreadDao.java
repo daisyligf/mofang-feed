@@ -247,4 +247,8 @@ public interface FeedThreadDao
 	public long getForumThreadCountByTagId(long forumId, int tagId) throws Exception;
 	
 	public List<Long> getThreadIdListByTagId(long foumId, int tagId, int start, int end) throws Exception;
+	
+	public List<Long> getForumEliteThreadList(long forumId, long tagId, int start, int end) throws Exception;
+	
+	public long getForumEliteThreadCount(long forumId, long tagId) throws Exception;
 }

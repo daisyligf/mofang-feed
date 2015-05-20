@@ -23,7 +23,7 @@ public class ForumThreadListAction extends AbstractActionExecutor {
 		String strPageNum = context.getParameters("p");
 		String strPageSize = context.getParameters("pagesize");
 		String strType = context.getParameters("type");
-		String strTagId = context.getParameters("tag_id");
+		String strTagId = context.getParameters("tagId");
 		
 		///参数检查
 		if(!StringUtil.isLong(strForumId)){
@@ -56,7 +56,10 @@ public class ForumThreadListAction extends AbstractActionExecutor {
 			else
 				return logic.getForumThreadList(forumId, pageNum, pageSize, userId);
 		}else{
-			return logic.getForumThreadListByTagId(forumId, tagId, pageNum, pageSize, userId);
+			if(type == 1)
+				return logic.getForumEliteThreadList(forumId, tagId, pageNum, pageSize, userId);
+			else
+				return logic.getForumThreadListByTagId(forumId, tagId, pageNum, pageSize, userId);
 		}
 		
 	}
