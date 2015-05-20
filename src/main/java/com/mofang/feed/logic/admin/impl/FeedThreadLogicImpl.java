@@ -1,0 +1,706 @@
+package com.mofang.feed.logic.admin.impl;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.mofang.feed.component.SysMessageNotifyComponent;
+import com.mofang.feed.component.TaskComponent;
+import com.mofang.feed.component.UserComponent;
+import com.mofang.feed.global.GlobalConfig;
+import com.mofang.feed.global.ResultValue;
+import com.mofang.feed.global.ReturnCode;
+import com.mofang.feed.global.ReturnMessage;
+import com.mofang.feed.global.common.DataSource;
+import com.mofang.feed.global.common.FeedPrivilege;
+import com.mofang.feed.global.common.OperateBehavior;
+import com.mofang.feed.global.common.OperateSourceType;
+import com.mofang.feed.global.common.ThreadTag;
+import com.mofang.feed.global.common.ThreadType;
+import com.mofang.feed.logic.admin.FeedThreadLogic;
+import com.mofang.feed.model.FeedOperateHistory;
+import com.mofang.feed.model.FeedThread;
+import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.User;
+import com.mofang.feed.service.FeedForumService;
+import com.mofang.feed.service.FeedOperateHistoryService;
+import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.impl.FeedForumServiceImpl;
+import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
+import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
+import com.mofang.feed.service.impl.FeedThreadServiceImpl;
+import com.mofang.framework.util.StringUtil;
+
+/**
+ * 
+ * @author zhaodx
+ *
+ */
+public class FeedThreadLogicImpl implements FeedThreadLogic
+{
+	private final static FeedThreadLogicImpl LOGIC = new FeedThreadLogicImpl();
+	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
+	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
+	private FeedOperateHistoryService operateService = FeedOperateHistoryServiceImpl.getInstance();
+	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	
+	private FeedThreadLogicImpl()
+	{}
+	
+	public static FeedThreadLogicImpl getInstance()
+	{
+		return LOGIC;
+	}
+
+	@Override
+	public ResultValue delete(long threadId, long operatorId, String reason) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			///权限检查
+			long forumId = threadInfo.getForumId();
+			long userId = threadInfo.getUserId();
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.DELETE_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///删除主题
+			threadService.delete(threadInfo);
+			
+			/******************************系统通知******************************/
+			///发送删帖通知
+			SysMessageNotifyComponent.deleteThread(userId, threadInfo.getSubject(), reason);
+			
+			/******************************操作记录******************************/
+			FeedOperateHistory operateInfo = new FeedOperateHistory();
+			operateInfo.setUserId(userId);
+			operateInfo.setForumId(forumId);
+			operateInfo.setPrivilegeId(FeedPrivilege.DELETE_THREAD);
+			operateInfo.setSourceType(OperateSourceType.THREAD);
+			operateInfo.setSourceId(threadId);
+			operateInfo.setOperateBehavior(OperateBehavior.DELETE_THREAD);
+			operateInfo.setOperateReason(reason);
+			operateInfo.setOperatorId(operatorId);
+			operateService.add(operateInfo);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.delete throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue restore(long threadId, long operatorId) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.MYSQL);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			///权限检查
+			long forumId = threadInfo.getForumId();
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.RESTORE_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///还原主题
+			threadService.restore(threadInfo);
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.restore throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue remove(long threadId, long operatorId) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.MYSQL);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			///权限检查
+			long forumId = threadInfo.getForumId();
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.REMOVE_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///删除主题(从回收站移除)
+			threadService.remove(threadInfo);
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.remove throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue setTop(long threadId, long operatorId, String reason) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
+			///无效操作检查
+			boolean isTop = threadInfo.isTop();
+			if(isTop)
+			{
+				result.setCode(ReturnCode.INVALID_OPERATION);
+				result.setMessage(ReturnMessage.INVALID_OPERATION);
+				return result;
+			}
+			
+			long forumId = threadInfo.getForumId();
+			long userId = threadInfo.getUserId();
+			String subject = threadInfo.getSubject();
+			
+			///权限检查
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.TOP_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///设置主题置顶
+			threadService.setTop(threadInfo);
+			
+			/******************************系统通知******************************/
+			SysMessageNotifyComponent.setTopThread(operatorId, userId, threadId, subject, reason);
+			
+			/******************************操作记录******************************/
+			FeedOperateHistory operateInfo = new FeedOperateHistory();
+			operateInfo.setUserId(userId);
+			operateInfo.setForumId(forumId);
+			operateInfo.setPrivilegeId(FeedPrivilege.TOP_THREAD);
+			operateInfo.setSourceType(OperateSourceType.THREAD);
+			operateInfo.setSourceId(threadId);
+			operateInfo.setOperateBehavior(OperateBehavior.TOP_THREAD);
+			operateInfo.setOperateReason(reason);
+			operateInfo.setOperatorId(operatorId);
+			operateService.add(operateInfo);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.setTop throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue cancelTop(long threadId, long operatorId, String reason) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
+			///无效操作检查
+			boolean isTop = threadInfo.isTop();
+			if(!isTop)
+			{
+				result.setCode(ReturnCode.INVALID_OPERATION);
+				result.setMessage(ReturnMessage.INVALID_OPERATION);
+				return result;
+			}
+			
+			long forumId = threadInfo.getForumId();
+			long userId = threadInfo.getUserId();
+			String subject = threadInfo.getSubject();
+			
+			///权限检查
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.TOP_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///取消主题置顶
+			threadService.cancelTop(threadInfo);
+			
+			/******************************系统通知******************************/
+			SysMessageNotifyComponent.cancelTopThread(operatorId, userId, subject, reason);
+			
+			/******************************操作记录******************************/
+			FeedOperateHistory operateInfo = new FeedOperateHistory();
+			operateInfo.setUserId(userId);
+			operateInfo.setForumId(forumId);
+			operateInfo.setPrivilegeId(FeedPrivilege.TOP_THREAD);
+			operateInfo.setSourceType(OperateSourceType.THREAD);
+			operateInfo.setSourceId(threadId);
+			operateInfo.setOperateBehavior(OperateBehavior.CANCEL_TOP_THREAD);
+			operateInfo.setOperateReason(reason);
+			operateInfo.setOperatorId(operatorId);
+			operateService.add(operateInfo);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.cancelTop throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue setElite(long threadId, long operatorId, String reason) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
+			///无效操作检查
+			boolean isElite = threadInfo.isElite();
+			if(isElite)
+			{
+				result.setCode(ReturnCode.INVALID_OPERATION);
+				result.setMessage(ReturnMessage.INVALID_OPERATION);
+				return result;
+			}
+			
+			long forumId = threadInfo.getForumId();
+			long userId = threadInfo.getUserId();
+			String subject = threadInfo.getSubject();
+			
+			///权限检查
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.ELITE_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///设置主题精华
+			threadService.setElite(threadId, true);
+			
+			/******************************执行任务******************************/
+			TaskComponent.eliteThread(userId);
+			
+			/******************************系统通知******************************/
+			SysMessageNotifyComponent.setEliteThread(operatorId, userId, subject, reason);
+			
+			/******************************操作记录******************************/
+			FeedOperateHistory operateInfo = new FeedOperateHistory();
+			operateInfo.setUserId(userId);
+			operateInfo.setForumId(forumId);
+			operateInfo.setPrivilegeId(FeedPrivilege.ELITE_THREAD);
+			operateInfo.setSourceType(OperateSourceType.THREAD);
+			operateInfo.setSourceId(threadId);
+			operateInfo.setOperateBehavior(OperateBehavior.ELITE_THREAD);
+			operateInfo.setOperateReason(reason);
+			operateInfo.setOperatorId(operatorId);
+			operateService.add(operateInfo);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.setElite throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue cancelElite(long threadId, long operatorId, String reason) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
+			///无效操作检查
+			boolean isElite = threadInfo.isElite();
+			if(!isElite)
+			{
+				result.setCode(ReturnCode.INVALID_OPERATION);
+				result.setMessage(ReturnMessage.INVALID_OPERATION);
+				return result;
+			}
+			
+			long forumId = threadInfo.getForumId();
+			long userId = threadInfo.getUserId();
+			
+			///权限检查
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.ELITE_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///取消主题精华
+			threadService.setElite(threadId, false);
+			
+			/******************************操作记录******************************/
+			FeedOperateHistory operateInfo = new FeedOperateHistory();
+			operateInfo.setUserId(userId);
+			operateInfo.setForumId(forumId);
+			operateInfo.setPrivilegeId(FeedPrivilege.ELITE_THREAD);
+			operateInfo.setSourceType(OperateSourceType.THREAD);
+			operateInfo.setSourceId(threadId);
+			operateInfo.setOperateBehavior(OperateBehavior.CANCEL_ELITE_THREAD);
+			operateInfo.setOperateReason(reason);
+			operateInfo.setOperatorId(operatorId);
+			operateService.add(operateInfo);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.cancelElite throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue close(long threadId, long operatorId, String reason) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
+			///无效操作检查
+			boolean isClosed = threadInfo.isClosed();
+			if(isClosed)
+			{
+				result.setCode(ReturnCode.INVALID_OPERATION);
+				result.setMessage(ReturnMessage.INVALID_OPERATION);
+				return result;
+			}
+			
+			long forumId = threadInfo.getForumId();
+			long userId = threadInfo.getUserId();
+			
+			///权限检查
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.CLOSE_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///设置主题关闭
+			threadService.setClosed(threadId, true);
+			
+			/******************************操作记录******************************/
+			FeedOperateHistory operateInfo = new FeedOperateHistory();
+			operateInfo.setUserId(userId);
+			operateInfo.setForumId(forumId);
+			operateInfo.setPrivilegeId(FeedPrivilege.CLOSE_THREAD);
+			operateInfo.setSourceType(OperateSourceType.THREAD);
+			operateInfo.setSourceId(threadId);
+			operateInfo.setOperateBehavior(OperateBehavior.CLOSE_THREAD);
+			operateInfo.setOperateReason(reason);
+			operateInfo.setOperatorId(operatorId);
+			operateService.add(operateInfo);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.close throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue open(long threadId, long operatorId, String reason) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///主题有效性检查
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
+			///无效操作检查
+			boolean isClosed = threadInfo.isClosed();
+			if(!isClosed)
+			{
+				result.setCode(ReturnCode.INVALID_OPERATION);
+				result.setMessage(ReturnMessage.INVALID_OPERATION);
+				return result;
+			}
+			
+			long forumId = threadInfo.getForumId();
+			long userId = threadInfo.getUserId();
+			
+			///权限检查
+			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.CLOSE_THREAD);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///设置主题打开
+			threadService.setClosed(threadId, false);
+			
+			/******************************操作记录******************************/
+			FeedOperateHistory operateInfo = new FeedOperateHistory();
+			operateInfo.setUserId(userId);
+			operateInfo.setForumId(forumId);
+			operateInfo.setPrivilegeId(FeedPrivilege.CLOSE_THREAD);
+			operateInfo.setSourceType(OperateSourceType.THREAD);
+			operateInfo.setSourceId(threadId);
+			operateInfo.setOperateBehavior(OperateBehavior.OPEN_THREAD);
+			operateInfo.setOperateReason(reason);
+			operateInfo.setOperatorId(operatorId);
+			operateService.add(operateInfo);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.open throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue getThreadList(long forumId, int status, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
+			Set<Long> uids = new HashSet<Long>();
+			long total = 0;
+			User userInfo = null;
+			JSONArray arrayThreads =new JSONArray();
+			Page<FeedThread> page = threadService.getThreadList(forumId, status, pageNum, pageSize);
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedThread> threads = page.getList();
+				if(null != threads)
+				{
+					JSONObject jsonThread = null;
+					for(FeedThread threadInfo : threads)
+					{
+						jsonThread = new JSONObject();
+						jsonThread.put("fid", threadInfo.getForumId());        ///所属版块ID
+						jsonThread.put("tid", threadInfo.getThreadId());       ///主题ID
+						jsonThread.put("user_id", threadInfo.getUserId());         ///发布主题的用户ID
+						jsonThread.put("subject", threadInfo.getSubjectFilter());       ///主题标题
+						jsonThread.put("replies", threadInfo.getReplies());         ///主题回复数(楼层+评论)
+						jsonThread.put("pageview", threadInfo.getPageView());        ///主题浏览数
+						jsonThread.put("create_time", threadInfo.getCreateTime() / 1000);        ///主题发布时间
+						jsonThread.put("last_poster_id", threadInfo.getLastPostUid());        ///主题最后回复用户ID
+						jsonThread.put("end_post_time", threadInfo.getLastPostTime() / 1000);        ///主题最后回复时间
+						jsonThread.put("is_closed", threadInfo.isClosed());        ///主题是否关闭(如果关闭, 则不能进行回复和评论)
+						jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
+						jsonThread.put("type", threadInfo.getType()); 
+						jsonThread.put("sharetimes", threadInfo.getShareTimes());         ///主题分享数
+						jsonThread.put("top_time", threadInfo.getTopTime());         ///主题置顶时间
+						jsonThread.put("status", threadInfo.getStatus());         ///主题状态
+						
+						///构建linkurl (linkurl是一种link规则，客户端根据link规则来进行跳转)
+						String linkurl = threadInfo.getLinkUrl();
+						if(StringUtil.isNullOrEmpty(linkurl))
+							linkurl = GlobalConfig.FEED_DETAIL_URL + "?tid=" + threadInfo.getThreadId() + "&type=0";
+						jsonThread.put("linkurl", linkurl);     
+						
+						///构建tag信息(老版本中主题的状态是用标签来实现的, 新版中已经改用字段, 但接口需要支持老版本)
+						String tags = "";
+						if(threadInfo.isElite())
+							tags += "," + ThreadTag.ELITE;
+						if(threadInfo.isVideo())
+							tags += "," + ThreadTag.VIDEO;
+						if(threadInfo.isMark())
+							tags += "," + ThreadTag.MARK;
+						if(threadInfo.getType() == ThreadType.QUESTION)
+							tags += "," + ThreadTag.QUESTION;
+						if(tags.length() > 0)
+							tags = tags.substring(1);
+						
+						jsonThread.put("tags", tags);
+						
+						///获取发布主题的用户信息
+						userInfo = UserComponent.getInfoFromCache(threadInfo.getUserId());
+						if(null == userInfo)
+							uids.add(threadInfo.getUserId());
+						else
+							jsonThread.put("nickname", userInfo.getNickName());
+						
+						///获取最后回复主题的用户信息
+						userInfo = UserComponent.getInfoFromCache(threadInfo.getLastPostUid());
+						if(null == userInfo)
+							uids.add(threadInfo.getLastPostUid());
+						else
+							jsonThread.put("last_poster_name", userInfo.getNickName());
+						
+						arrayThreads.put(jsonThread);
+					}
+					
+					///填充用户信息
+					if(uids.size() > 0)
+					{
+						Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
+						if(null != userMap)
+						{
+							for(int i=0; i<arrayThreads.length(); i++)
+							{
+								jsonThread = arrayThreads.getJSONObject(i);
+								String nickName = jsonThread.optString("nickname", "");
+								String lastPosterName = jsonThread.optString("last_poster_name", "");
+								long userId = jsonThread.optLong("uid", 0L);
+								long lastPosterId = jsonThread.optLong("last_poster_id", 0L);
+								
+								///填充发帖用户信息
+								if(StringUtil.isNullOrEmpty(nickName))
+								{
+									if(userMap.containsKey(userId))
+									{
+										userInfo = userMap.get(userId);
+										jsonThread.put("nickname", userInfo.getNickName());
+									}
+								}
+								///填充最后回复用户信息
+								if(StringUtil.isNullOrEmpty(lastPosterName))
+								{
+									if(userMap.containsKey(lastPosterId))
+										jsonThread.put("last_poster_name", userInfo.getNickName());
+								}
+							}
+						}
+					}
+				}
+			}
+			data.put("total", total);
+			data.put("list", arrayThreads);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.getThreadList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
