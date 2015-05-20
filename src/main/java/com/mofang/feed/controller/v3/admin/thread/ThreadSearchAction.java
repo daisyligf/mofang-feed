@@ -1,11 +1,12 @@
-package com.mofang.feed.controller.v3.admin.forum;
+package com.mofang.feed.controller.v3.admin.thread;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.admin.FeedForumLogic;
-import com.mofang.feed.logic.admin.impl.FeedForumLogicImpl;
+import com.mofang.feed.global.common.ThreadStatus;
+import com.mofang.feed.logic.admin.FeedThreadLogic;
+import com.mofang.feed.logic.admin.impl.FeedThreadLogicImpl;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -15,20 +16,22 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/forum/search")
-public class ForumSearchAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/thread/search")
+public class ThreadSearchAction extends AbstractActionExecutor
 {
-	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();
+	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String forumName = context.getParameters("name");
+		String keyword = context.getParameters("keyword");
+		String strForumId = context.getParameters("fid");
+		String strStatus = context.getParameters("status");
 		String strPageNum = context.getParameters("page");
 		String strPageSize = context.getParameters("size");
 		
-		if(StringUtil.isNullOrEmpty(forumName))
+		if(StringUtil.isNullOrEmpty(keyword))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -39,10 +42,18 @@ public class ForumSearchAction extends AbstractActionExecutor
 		if(StringUtil.isInteger(strPageNum))
 			pageNum = Integer.parseInt(strPageNum);
 		
+		long forumId = 0;
+		if(StringUtil.isLong(strForumId))
+			forumId = Long.parseLong(strForumId);
+		
+		int status = ThreadStatus.NORMAL;
+		if(StringUtil.isInteger(strStatus))
+			status = Integer.parseInt(strStatus);
+		
 		int pageSize = 50;
 		if(StringUtil.isInteger(strPageSize))
 			pageSize = Integer.parseInt(strPageSize);
 		
-		return logic.search(forumName, pageNum, pageSize);
+		return logic.search(forumId, null, null, keyword, status, pageNum, pageSize);
 	}
 }

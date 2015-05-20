@@ -22,8 +22,8 @@ public class ForumListAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		String strType = context.getParameters("type");
-		String strPageNum = context.getParameters("startPage");
-		String strPageSize = context.getParameters("pageSize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		int type = 0;
 		if(StringUtil.isInteger(strType))

@@ -601,7 +601,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 						jsonThread.put("tid", threadInfo.getThreadId());       ///主题ID
 						jsonThread.put("subject", threadInfo.getSubjectFilter());       ///主题标题
 						jsonThread.put("replies", threadInfo.getReplies());         ///主题回复数(楼层+评论)
-						jsonThread.put("pageview", threadInfo.getPageView());        ///主题浏览数
+						jsonThread.put("page_view", threadInfo.getPageView());        ///主题浏览数
 						jsonThread.put("create_time", threadInfo.getCreateTime());        ///主题发布时间
 						jsonThread.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
 						jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
