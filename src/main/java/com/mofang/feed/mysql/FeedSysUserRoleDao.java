@@ -29,4 +29,6 @@ public interface FeedSysUserRoleDao
 	public List<FeedSysUserRole> getListByRoleId(int roleId) throws Exception;
 	
 	public long getCountByForumId(long forumId) throws Exception;
+	
+	public List<Integer> getRoleIdListByForumId(long forumId) throws Exception;
 }

@@ -1,5 +1,7 @@
 package com.mofang.feed.service.impl;
 
+import java.util.List;
+
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedSysRole;
@@ -141,4 +143,15 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 			throw e;
 		}
 	}
+
+	@Override
+	public List<Integer> getRoleIdList(long forumId) throws Exception {
+		try {
+			return userRoleDao.getRoleIdListByForumId(forumId);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getRoleIdList throw an error.", e);
+			throw e;
+		}
+	}
+	
 }

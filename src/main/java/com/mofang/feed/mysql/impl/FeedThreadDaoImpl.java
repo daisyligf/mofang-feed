@@ -545,10 +545,38 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		Operand where = new WhereOperand();
 		Operand forumEqual = new EqualOperand("forum_id", forumId);
 		Operand statusEqual = new EqualOperand("status", 1);
-		Operand isEliteEqual = new EqualOperand("tag_id", tagId);
+		Operand tagEqual = new EqualOperand("tag_id", tagId);
 		Operand and = new AndOperand();
 		where.append(forumEqual).append(and).append(statusEqual).append(and)
-				.append(isEliteEqual);
+				.append(tagEqual);
+		return super.getCount(where);
+	}
+
+	@Override
+	public List<Long> getForumEliteThreadList(long forumId, long tagId,
+			int start, int end) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select thread_id from feed_thread ");
+		strSql.append("where forum_id = " + forumId);
+		strSql.append(" and status = 1 and is_elite = 1");
+		strSql.append(" and tag_id = " + tagId);
+		strSql.append(" order by last_post_time desc");
+		strSql.append(" limit " + start + ", " + end);
+		ResultData data = super.executeQuery(strSql.toString());
+		return convertResultDataToList(data);
+	}
+
+	@Override
+	public long getForumEliteThreadCount(long forumId, long tagId)
+			throws Exception {
+		Operand where = new WhereOperand();
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		Operand statusEqual = new EqualOperand("status", 1);
+		Operand isEliteEqual = new EqualOperand("is_elite", 1);
+		Operand tagIdEqual = new EqualOperand("tag_id", tagId);
+		Operand and = new AndOperand();
+		where.append(forumEqual).append(and).append(statusEqual).append(and)
+				.append(isEliteEqual).append(and).append(tagIdEqual);
 		return super.getCount(where);
 	}
 	

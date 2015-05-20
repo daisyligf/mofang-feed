@@ -1,5 +1,7 @@
 package com.mofang.feed.service;
 
+import java.util.List;
+
 import com.mofang.feed.model.FeedSysUserRole;
 
 /**
@@ -20,4 +22,6 @@ public interface FeedSysUserRoleService
 	public int getRoleId(long forumId, long userId) throws Exception;
 	
 	public boolean hasPrivilege(long forumId, long userId, int privilegeId) throws Exception;
+	
+	public List<Integer> getRoleIdList(long forumId) throws Exception;
 }

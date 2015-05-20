@@ -17,4 +17,6 @@ public interface FeedSysUserRoleLogic
 	public ResultValue delete(long forumId, long userId, long operatorId) throws Exception;
 	
 	public ResultValue getInfo(long forumId, long userId) throws Exception;
+	
+	public ResultValue getRoleInfoList(long forumId) throws Exception;
 }

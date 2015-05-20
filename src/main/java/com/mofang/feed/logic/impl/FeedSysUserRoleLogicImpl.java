@@ -1,5 +1,8 @@
 package com.mofang.feed.logic.impl;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mofang.feed.global.ResultValue;
@@ -59,7 +62,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 		}
 		catch(Exception e)
 		{
-			throw new Exception("at FeedSysRoleLogicImpl.add throw an error.", e);
+			throw new Exception("at FeedSysUserRoleLogicImpl.add throw an error.", e);
 		}
 	}
 
@@ -98,7 +101,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 		}
 		catch(Exception e)
 		{
-			throw new Exception("at FeedSysRoleLogicImpl.edit throw an error.", e);
+			throw new Exception("at FeedSysUserRoleLogicImpl.edit throw an error.", e);
 		}
 	}
 
@@ -137,7 +140,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 		}
 		catch(Exception e)
 		{
-			throw new Exception("at FeedSysRoleLogicImpl.delete throw an error.", e);
+			throw new Exception("at FeedSysUserRoleLogicImpl.delete throw an error.", e);
 		}
 	}
 
@@ -182,7 +185,38 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 		}
 		catch(Exception e)
 		{
-			throw new Exception("at FeedSysRoleLogicImpl.getInfo throw an error.", e);
+			throw new Exception("at FeedSysUserRoleLogicImpl.getInfo throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue getRoleInfoList(long forumId) throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			JSONArray data = new JSONArray();
+			List<Integer> list = userRoleService.getRoleIdList(forumId);
+			if(list != null){
+				JSONObject objRoleInfo = null;
+				for(Integer roleId : list){
+					FeedSysRole roleInfo = sysRoleService.getInfo(roleId);
+					if(roleInfo == null)
+						continue;
+					
+					objRoleInfo = new JSONObject();
+					objRoleInfo.put("role_id", roleInfo.getRoleId());
+					objRoleInfo.put("role_name", roleInfo.getRoleName());
+					objRoleInfo.put("icon", roleInfo.getIcon());
+					data.put(data);
+				}
+			}
+			
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedSysUserRoleLogicImpl.getRoleInfoList throw an error.", e);
+		}
+	}
+	
 }

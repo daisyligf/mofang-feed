@@ -76,5 +76,7 @@ public interface FeedThreadLogic
 	
 	public ResultValue getForumThreadListByTagId(long forumId, int tagId, int pageNum, int pageSize, long currentUserId) throws Exception;
 	
+	public ResultValue getForumEliteThreadList(long forumId, int tagId, int pageNum, int pageSize, long currentUserId) throws Exception;
+	
 	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 }
