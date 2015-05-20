@@ -35,16 +35,16 @@ public class ForumEditAction extends AbstractActionExecutor
 		String strOperatorId = context.getParameters("uid");
 		if(!StringUtil.isLong(strOperatorId))
 		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			return result;
 		}
 		
 		String postData = context.getPostData();
 		if(StringUtil.isNullOrEmpty(postData))
 		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			return result;
 		}
 		
