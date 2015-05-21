@@ -1,19 +1,19 @@
-package com.mofang.feed.controller.v3.web.forum;
+package com.mofang.feed.controller.v3.front.web.forum;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.FeedForumLogic;
-import com.mofang.feed.logic.impl.FeedForumLogicImpl;
+import com.mofang.feed.logic.FeedSysUserRoleLogic;
+import com.mofang.feed.logic.impl.FeedSysUserRoleLogicImpl;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url="feed/v2/forum/info")
-public class ForumInfoAction extends AbstractActionExecutor {
+@Action(url="feed/v2/forum/roleInfoList")
+public class ForumRoleInfoListActon extends AbstractActionExecutor {
 
-	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();
+	private FeedSysUserRoleLogic logic = FeedSysUserRoleLogicImpl.getInstance();
 	
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception {
@@ -25,8 +25,7 @@ public class ForumInfoAction extends AbstractActionExecutor {
 			return result;
 		}
 		long forumId = Long.parseLong(strForumId);	
-		
-		return logic.getInfo(forumId);
+		return logic.getRoleInfoList(forumId);
 	}
 
 }
