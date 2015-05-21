@@ -6,6 +6,7 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
+import com.mofang.feed.global.common.LimitConstants;
 import com.mofang.feed.logic.FeedCommentLogic;
 import com.mofang.feed.logic.impl.FeedCommentLogicImpl;
 import com.mofang.feed.model.FeedComment;
@@ -49,7 +50,7 @@ public class CommentAddAction extends AbstractActionExecutor
 		String content = json.optString("content", "");
 		
 		///参数检查
-		if(postId <= 0 || StringUtil.isNullOrEmpty(content) || content.length() > 140)
+		if(postId <= 0 || StringUtil.isNullOrEmpty(content) || content.length() > LimitConstants.COMMENT_CONTENT_LENGTH)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
