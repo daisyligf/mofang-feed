@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.admin.thread;
+package com.mofang.feed.controller.v3.admin.post;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,8 +7,8 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.admin.FeedThreadLogic;
-import com.mofang.feed.logic.admin.impl.FeedThreadLogicImpl;
+import com.mofang.feed.logic.admin.FeedPostLogic;
+import com.mofang.feed.logic.admin.impl.FeedPostLogicImpl;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -18,10 +18,10 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/thread/batchdelete")
-public class ThreadBatchDeleteAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/post/batchdelete")
+public class PostBatchDeleteAction extends AbstractActionExecutor
 {
-	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
+	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
@@ -45,18 +45,18 @@ public class ThreadBatchDeleteAction extends AbstractActionExecutor
 		
 		long operatorId = Long.parseLong(strOperatorId);
 		JSONObject json = new JSONObject(postData);
-		JSONArray arrayThreadIds = json.optJSONArray("tids");
+		JSONArray arrayPostIds = json.optJSONArray("pids");
 		String reason = json.optString("reason", "管理后台操作");
-		if(null == arrayThreadIds || arrayThreadIds.length() == 0)
+		if(null == arrayPostIds || arrayPostIds.length() == 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			return result;
 		}
 		
-		for(int i=0; i<arrayThreadIds.length(); i++)
+		for(int i=0; i<arrayPostIds.length(); i++)
 		{
-			result = logic.delete(arrayThreadIds.getLong(i), operatorId, reason);
+			result = logic.delete(arrayPostIds.getLong(i), operatorId, reason);
 			if(result.getCode() != ReturnCode.SUCCESS)
 				return result;
 		}

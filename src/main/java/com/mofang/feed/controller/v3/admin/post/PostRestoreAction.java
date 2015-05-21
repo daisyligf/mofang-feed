@@ -1,14 +1,13 @@
-package com.mofang.feed.controller.v3.admin.thread;
+package com.mofang.feed.controller.v3.admin.post;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.admin.FeedThreadLogic;
-import com.mofang.feed.logic.admin.impl.FeedThreadLogicImpl;
+import com.mofang.feed.logic.admin.FeedPostLogic;
+import com.mofang.feed.logic.admin.impl.FeedPostLogicImpl;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -18,10 +17,10 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/thread/batchdelete")
-public class ThreadBatchDeleteAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/post/restore")
+public class PostRestoreAction extends AbstractActionExecutor
 {
-	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
+	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
@@ -45,24 +44,13 @@ public class ThreadBatchDeleteAction extends AbstractActionExecutor
 		
 		long operatorId = Long.parseLong(strOperatorId);
 		JSONObject json = new JSONObject(postData);
-		JSONArray arrayThreadIds = json.optJSONArray("tids");
-		String reason = json.optString("reason", "管理后台操作");
-		if(null == arrayThreadIds || arrayThreadIds.length() == 0)
+		long postId = json.optLong("pid", 0L);
+		if(postId <= 0)
 		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-		
-		for(int i=0; i<arrayThreadIds.length(); i++)
-		{
-			result = logic.delete(arrayThreadIds.getLong(i), operatorId, reason);
-			if(result.getCode() != ReturnCode.SUCCESS)
-				return result;
-		}
-		
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.restore(postId, operatorId);
 	}
 }

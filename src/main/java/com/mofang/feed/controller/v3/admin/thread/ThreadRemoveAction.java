@@ -1,6 +1,5 @@
 package com.mofang.feed.controller.v3.admin.thread;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
@@ -18,8 +17,8 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/thread/batchdelete")
-public class ThreadBatchDeleteAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/thread/remove")
+public class ThreadRemoveAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
 
@@ -45,24 +44,13 @@ public class ThreadBatchDeleteAction extends AbstractActionExecutor
 		
 		long operatorId = Long.parseLong(strOperatorId);
 		JSONObject json = new JSONObject(postData);
-		JSONArray arrayThreadIds = json.optJSONArray("tids");
-		String reason = json.optString("reason", "管理后台操作");
-		if(null == arrayThreadIds || arrayThreadIds.length() == 0)
+		long threadId = json.optLong("tid", 0L);
+		if(threadId <= 0)
 		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-		
-		for(int i=0; i<arrayThreadIds.length(); i++)
-		{
-			result = logic.delete(arrayThreadIds.getLong(i), operatorId, reason);
-			if(result.getCode() != ReturnCode.SUCCESS)
-				return result;
-		}
-		
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.remove(threadId, operatorId);
 	}
 }
