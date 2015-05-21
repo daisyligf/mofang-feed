@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.front.comment;
+package com.mofang.feed.controller.v3.front.thread;
 
 import org.json.JSONObject;
 
@@ -6,9 +6,8 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.FeedCommentLogic;
-import com.mofang.feed.logic.impl.FeedCommentLogicImpl;
-import com.mofang.feed.model.FeedComment;
+import com.mofang.feed.logic.FeedThreadLogic;
+import com.mofang.feed.logic.impl.FeedThreadLogicImpl;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -18,16 +17,16 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v2/sendcomment")
-public class CommentAddAction extends AbstractActionExecutor
+@Action(url = "feed/v2/threads/open")
+public class ThreadOpenAction extends AbstractActionExecutor
 {
-	private FeedCommentLogic logic = FeedCommentLogicImpl.getInstance();
+	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String strUserId = context.getParameters("uid");
+		String strUserId = context.getParamMap().get("uid");
 		if(!StringUtil.isLong(strUserId))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -43,25 +42,29 @@ public class CommentAddAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		long userId = Long.parseLong(strUserId);
+		long operatorId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
-		long postId = json.optLong("postid", 0L);
-		String content = json.optString("content", "");
+		String threadIds = json.optString("tids", "");
+		String reason = json.optString("reason", "");
 		
 		///参数检查
-		if(postId <= 0 || StringUtil.isNullOrEmpty(content) || content.length() > 140)
+		if(StringUtil.isNullOrEmpty(threadIds))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
 		
-		///构造Comment实体对象
-		FeedComment commentInfo = new FeedComment();
-		commentInfo.setUserId(userId);
-		commentInfo.setPostId(postId);
-		commentInfo.setContent(content);
+		String[] arrThreadIds = threadIds.split(",");
+		for(String strThreadId : arrThreadIds)
+		{
+			result = logic.open(Long.parseLong(strThreadId), operatorId, reason);
+			if(result.getCode() != ReturnCode.SUCCESS)
+				return result;
+		}
 		
-		return logic.add(commentInfo);
+		result.setCode(ReturnCode.SUCCESS);
+		result.setMessage(ReturnMessage.SUCCESS);
+		return result;
 	}
 }
