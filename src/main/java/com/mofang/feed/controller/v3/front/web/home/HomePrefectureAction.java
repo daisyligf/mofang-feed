@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.web.home;
+package com.mofang.feed.controller.v3.front.web.home;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;

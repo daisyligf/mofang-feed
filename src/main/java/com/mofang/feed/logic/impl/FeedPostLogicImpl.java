@@ -1350,7 +1350,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private JSONArray buildPostCommentList(long postId) throws Exception
 	{
 		JSONArray arrayComments = new JSONArray();
-		Page<FeedComment> pageComments = commentService.getPostCommentList(postId, 1, 2);
+		Page<FeedComment> pageComments = commentService.getPostCommentList(postId, 1, 10);
 		if(null != pageComments)
 		{
 			List<FeedComment> comments = pageComments.getList();
