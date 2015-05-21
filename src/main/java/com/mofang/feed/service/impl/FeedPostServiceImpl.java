@@ -564,6 +564,20 @@ public class FeedPostServiceImpl implements FeedPostService
 	}
 
 	@Override
+	public long getUserReplyCount(long userId) throws Exception
+	{
+		try
+		{	
+			return postDao.getUserReplyCount(userId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedPostServiceImpl.getUserReplyCount throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
 	public Page<FeedPost> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception
 	{
 		try

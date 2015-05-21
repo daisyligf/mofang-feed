@@ -143,6 +143,14 @@ public interface FeedPostService
 	public Page<FeedPostAndComment> getUserReplyList(long userId, int pageNum, int pageSize) throws Exception;
 	
 	/**
+	 * 获取用户回复总数(楼层 + 评论)
+	 * @param userId 用户ID
+	 * @return
+	 * @throws Exception
+	 */
+	public long getUserReplyCount(long userId) throws Exception;
+	
+	/**
 	 * 搜索楼层
 	 * @param forumId 版块ID
 	 * @param forumName 版块名称

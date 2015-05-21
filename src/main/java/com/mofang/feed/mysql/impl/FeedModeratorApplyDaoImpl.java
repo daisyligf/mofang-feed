@@ -48,6 +48,12 @@ public class FeedModeratorApplyDaoImpl extends AbstractMysqlSupport<FeedModerato
 	}
 
 	@Override
+	public FeedModeratorApply getInfo(int applyId) throws Exception
+	{
+		return super.getByPrimaryKey(applyId);
+	}
+
+	@Override
 	public List<FeedModeratorApply> getApplyList(int start, int end) throws Exception
 	{
 		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());

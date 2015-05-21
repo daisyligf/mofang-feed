@@ -15,6 +15,8 @@ public interface FeedModeratorApplyDao
 	
 	public void updateStatus(int applyId, int status) throws Exception;
 	
+	public FeedModeratorApply getInfo(int applyId) throws Exception;
+	
 	public List<FeedModeratorApply> getApplyList(int start, int end) throws Exception;
 	
 	public long getApplyCount() throws Exception;

@@ -83,6 +83,20 @@ public class FeedModeratorApplyServiceImpl implements FeedModeratorApplyService
 	}
 
 	@Override
+	public FeedModeratorApply getInfo(int applyId) throws Exception
+	{
+		try
+		{
+			return applyDao.getInfo(applyId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedModeratorApplyServiceImpl.getInfo throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
 	public Page<FeedModeratorApply> getList(int pageNum, int pageSize) throws Exception
 	{
 		try

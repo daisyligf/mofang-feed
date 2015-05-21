@@ -183,4 +183,9 @@ public class FeedPrivilege
 	 * 删除用户角色
 	 */
 	public final static int DELETE_SYS_USER_ROLE = 224;
+	
+	/**
+	 * 审核版主申请
+	 */
+	public final static int AUDIT_MODERATOR_APPLY = 225;
 }
