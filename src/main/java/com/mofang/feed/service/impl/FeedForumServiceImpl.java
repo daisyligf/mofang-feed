@@ -2,6 +2,7 @@ package com.mofang.feed.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
@@ -22,8 +23,10 @@ import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.FeedThreadRedis;
+import com.mofang.feed.redis.ForumUrlRedis;
 import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
+import com.mofang.feed.redis.impl.ForumUrlRedisImpl;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.solr.FeedCommentSolr;
 import com.mofang.feed.solr.FeedForumSolr;
@@ -55,6 +58,7 @@ public class FeedForumServiceImpl implements FeedForumService
 	private FeedPostSolr postSolr = FeedPostSolrImpl.getInstance();
 	private FeedCommentSolr commentSolr = FeedCommentSolrImpl.getInstance();
 	private FeedForumTagDao forumTagDao = FeedForumTagDaoImpl.getInstance();
+	private ForumUrlRedis forumUrlRedis = ForumUrlRedisImpl.getInstance();
 	
 	private FeedForumServiceImpl()
 	{}
@@ -249,4 +253,15 @@ public class FeedForumServiceImpl implements FeedForumService
 			throw e;
 		}
 	}
+
+	@Override
+	public Map<String, String> getUrlMap(long forumId) throws Exception {
+		try {
+			return forumUrlRedis.getUrl(forumId);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getUrlMap throw an error.", e);
+			throw e;
+		}
+	}
+	
 }

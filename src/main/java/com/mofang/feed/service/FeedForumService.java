@@ -1,6 +1,7 @@
 package com.mofang.feed.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.model.FeedForum;
@@ -32,4 +33,6 @@ public interface FeedForumService
 	public List<FeedForum> getForumList(Set<Long> forumIds) throws Exception;
 	
 	public Page<FeedForum> search(String forumName, int pageNum, int pageSize) throws Exception;
+	
+	public Map<String, String> getUrlMap(long forumId) throws Exception;
 }

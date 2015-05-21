@@ -11,7 +11,9 @@ import com.mofang.feed.model.FeedHomeRecommendGame;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedHomeRecommendGameDao;
 import com.mofang.feed.mysql.impl.FeedHomeRecommendGameDaoImpl;
+import com.mofang.feed.redis.ForumUrlRedis;
 import com.mofang.feed.redis.RecommendGameListRedis;
+import com.mofang.feed.redis.impl.ForumUrlRedisImpl;
 import com.mofang.feed.redis.impl.RecommendGameListRedisImpl;
 import com.mofang.feed.service.FeedHomeRecommendGameService;
 import com.mofang.feed.util.RedisPageNumber;
@@ -27,6 +29,7 @@ public class FeedHomeRecommendGameServiceImpl implements
 	private static final FeedHomeRecommendGameServiceImpl SERVICE = new FeedHomeRecommendGameServiceImpl();
 	private FeedHomeRecommendGameDao recommendGameDao = FeedHomeRecommendGameDaoImpl.getInstance();
 	private RecommendGameListRedis recommendGameRedis = RecommendGameListRedisImpl.getInstance();
+	private ForumUrlRedis forumUrlRedis = ForumUrlRedisImpl.getInstance();
 	
 	public static FeedHomeRecommendGameServiceImpl getInstance(){
 		return SERVICE;
@@ -71,7 +74,7 @@ public class FeedHomeRecommendGameServiceImpl implements
 				FeedHomeRecommendGame model = new FeedHomeRecommendGame();
 				long forumId = Long.parseLong(idStr);
 				model.setForumId(forumId);
-				Map<String, String> urlMap = recommendGameRedis.getUrl(forumId);
+				Map<String, String> urlMap = forumUrlRedis.getUrl(forumId);
 				if(urlMap != null){
 					model.setDownloadUrl(urlMap.get(ForumURLKey.DOWNLOAD_URL_KEY));
 					model.setGiftUrl(urlMap.get(ForumURLKey.GIFT_URL_KEY));

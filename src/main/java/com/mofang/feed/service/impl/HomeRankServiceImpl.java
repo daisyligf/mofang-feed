@@ -12,6 +12,7 @@ import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.ForumType;
+import com.mofang.feed.global.common.ForumURLKey;
 import com.mofang.feed.global.common.UpDownStatus;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeHotForumRank;
@@ -28,8 +29,10 @@ import com.mofang.feed.mysql.impl.FeedForumFollowDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.mysql.impl.StatForumViewHistoryDaoImpl;
+import com.mofang.feed.redis.ForumUrlRedis;
 import com.mofang.feed.redis.HotForumListRedis;
 import com.mofang.feed.redis.RecommendGameListRedis;
+import com.mofang.feed.redis.impl.ForumUrlRedisImpl;
 import com.mofang.feed.redis.impl.HotForumListRedisImpl;
 import com.mofang.feed.redis.impl.RecommendGameListRedisImpl;
 import com.mofang.feed.service.FeedForumService;
@@ -56,6 +59,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	private HotForumListRedis hotForumListRedis = HotForumListRedisImpl.getInstance();
 	private RecommendGameListRedis recommendGameListRedis = RecommendGameListRedisImpl.getInstance();
+	private ForumUrlRedis forumUrlRedis = ForumUrlRedisImpl.getInstance();
 	
 	private HomeRankServiceImpl(){}
 	
@@ -257,7 +261,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 				if(key==null)
 					continue;
 				hotForumListRedis.addHotForumList(key, forumId, model.getCreateTime());
-				hotForumListRedis.setUrl(forumId, buildUrlMap(forum));
+				forumUrlRedis.setUrl(forumId, buildUrlMap(forum));
 			}
 		}
 	}
@@ -278,21 +282,21 @@ public class HomeRankServiceImpl implements HomeRankService {
 				if(key==null)
 					continue;
 				recommendGameListRedis.addRecommendGameList(key, forumId, model.getCreateTime());
-				recommendGameListRedis.setUrl(forumId, buildUrlMap(forum));
+				forumUrlRedis.setUrl(forumId, buildUrlMap(forum));
 			}
 		}
 	}
 	
 	private Map<String, String> buildUrlMap(FeedForum forum){
 		Map<String,String> map = new HashMap<String, String>(3);
-		map.put("download_url", GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
+		map.put(ForumURLKey.DOWNLOAD_URL_KEY, GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
 		boolean flag = HttpComponent.checkGift(forum.getGameId());
 		if(flag){
-			map.put("gift_url", GlobalConfig.GIFT_INFO_URL + forum.getName());
+			map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + forum.getName());
 		}else{
-			map.put("gift_url", "");
+			map.put(ForumURLKey.GIFT_URL_KEY, "");
 		}
-		map.put("prefecture_url", HttpComponent.getPrefectureUrl(forum.getForumId()));
+		map.put(ForumURLKey.PREFECTURE_URL_KEY, HttpComponent.getPrefectureUrl(forum.getForumId()));
 		return map;
 	}
 	
