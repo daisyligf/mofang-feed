@@ -14,5 +14,7 @@ public interface FeedModeratorApplyService
 	
 	public void audit(int applyId, int status) throws Exception;
 	
+	public FeedModeratorApply getInfo(int applyId) throws Exception;
+	
 	public Page<FeedModeratorApply> getList(int pageNum, int pageSize) throws Exception;
 }

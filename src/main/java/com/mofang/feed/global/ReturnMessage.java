@@ -106,4 +106,9 @@ public class ReturnMessage
 	 * 用户未关注指定版块
 	 */
 	public static String USER_UNFOLLOW_FORUM;
+	
+	/**
+	 * 版主申请记录不存在
+	 */
+	public static String MODERATOR_APPLY_NOT_EXISTS;
 }

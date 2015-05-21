@@ -106,4 +106,9 @@ public class ReturnCode
 	 * 用户未关注指定版块
 	 */
 	public final static int USER_UNFOLLOW_FORUM = 710;
+	
+	/**
+	 * 版主申请记录不存在
+	 */
+	public final static int MODERATOR_APPLY_NOT_EXISTS = 711;
 }
