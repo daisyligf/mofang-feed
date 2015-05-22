@@ -455,13 +455,13 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 						{
 							jsonComment.put("nickname", userInfo.getNickName());
 							jsonComment.put("avatar", userInfo.getAvatar());
-							jsonComment.put("level", userInfo.getLevel());
-							jsonComment.put("coin", userInfo.getCoin());
-							jsonComment.put("diamond", userInfo.getDiamond());
-							jsonComment.put("exp", userInfo.getExp());
-							jsonComment.put("upgrade_exp", userInfo.getUpgradeExp());
-							jsonComment.put("gained_exp", userInfo.getGainedExp());
-							jsonComment.put("badge", userInfo.getBadges());
+//							jsonComment.put("level", userInfo.getLevel());
+//							jsonComment.put("coin", userInfo.getCoin());
+//							jsonComment.put("diamond", userInfo.getDiamond());
+//							jsonComment.put("exp", userInfo.getExp());
+//							jsonComment.put("upgrade_exp", userInfo.getUpgradeExp());
+//							jsonComment.put("gained_exp", userInfo.getGainedExp());
+//							jsonComment.put("badge", userInfo.getBadges());
 						}
 						arrayComments.put(jsonComment);
 					}
@@ -486,13 +486,13 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 										userInfo = userMap.get(userId);
 										jsonComment.put("nickname", userInfo.getNickName());
 										jsonComment.put("avatar", userInfo.getAvatar());
-										jsonComment.put("level", userInfo.getLevel());
-										jsonComment.put("exp", userInfo.getExp());
-										jsonComment.put("coin", userInfo.getCoin());
-										jsonComment.put("diamond", userInfo.getDiamond());
-										jsonComment.put("upgrade_exp", userInfo.getUpgradeExp());
-										jsonComment.put("gained_exp", userInfo.getGainedExp());
-										jsonComment.put("badge", userInfo.getBadges());
+//										jsonComment.put("level", userInfo.getLevel());
+//										jsonComment.put("exp", userInfo.getExp());
+//										jsonComment.put("coin", userInfo.getCoin());
+//										jsonComment.put("diamond", userInfo.getDiamond());
+//										jsonComment.put("upgrade_exp", userInfo.getUpgradeExp());
+//										jsonComment.put("gained_exp", userInfo.getGainedExp());
+//										jsonComment.put("badge", userInfo.getBadges());
 									}
 								}
 							}

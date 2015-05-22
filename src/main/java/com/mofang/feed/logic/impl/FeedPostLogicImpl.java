@@ -199,8 +199,8 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			data.put("replycnt", model.getComments());
 			
 			///老版本一些属性
-			data.put("voice", "");
-			data.put("duration", "");
+//			data.put("voice", "");
+//			data.put("duration", "");
 			data.put("userId", 0);
 			
 			///获取用户信息
@@ -209,24 +209,24 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			{
 				data.put("nickname", userInfo.getNickName());
 				data.put("avatar", userInfo.getAvatar());
-				data.put("level", userInfo.getLevel());
-				data.put("coin", userInfo.getCoin());
-				data.put("diamond", userInfo.getDiamond());
-				data.put("exp", userInfo.getExp());
-				data.put("upgrade_exp", userInfo.getUpgradeExp());
-				data.put("gained_exp", userInfo.getGainedExp());
-				data.put("badge", userInfo.getBadges());
+//				data.put("level", userInfo.getLevel());
+//				data.put("coin", userInfo.getCoin());
+//				data.put("diamond", userInfo.getDiamond());
+//				data.put("exp", userInfo.getExp());
+//				data.put("upgrade_exp", userInfo.getUpgradeExp());
+//				data.put("gained_exp", userInfo.getGainedExp());
+//				data.put("badge", userInfo.getBadges());
 				
 				JSONObject jsonUser = new JSONObject();
 				jsonUser.put("nickname", userInfo.getNickName());
 				jsonUser.put("avatar", userInfo.getAvatar());
-				jsonUser.put("level", userInfo.getLevel());
-				jsonUser.put("coin", userInfo.getCoin());
-				jsonUser.put("diamond", userInfo.getDiamond());
-				jsonUser.put("exp", userInfo.getExp());
-				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-				jsonUser.put("gained_exp", userInfo.getGainedExp());
-				jsonUser.put("badge", userInfo.getBadges());
+//				jsonUser.put("level", userInfo.getLevel());
+//				jsonUser.put("coin", userInfo.getCoin());
+//				jsonUser.put("diamond", userInfo.getDiamond());
+//				jsonUser.put("exp", userInfo.getExp());
+//				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+//				jsonUser.put("gained_exp", userInfo.getGainedExp());
+//				jsonUser.put("badge", userInfo.getBadges());
 				data.put("user", jsonUser);
 			}
 			
