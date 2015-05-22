@@ -96,4 +96,20 @@ public class FeedForumFollowDaoImpl extends AbstractMysqlSupport<FeedForumFollow
 		}
 		return map;
 	}
+
+	@Override
+	public long getFollowTime(long forumId, long userId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand followEqual = new EqualOperand("is_follow", 1);
+		Operand and = new AndOperand();
+		where.append(forumEqual).append(and).append(userEqual).append(and).append(followEqual);
+		List<FeedForumFollow> list = super.getList(where);
+		if(null == list || list.size() == 0)
+			return 0L;
+		
+		return list.get(0).getCreateTime();
+	}
 }

@@ -16,5 +16,7 @@ public interface FeedForumFollowDao {
 	
 	public void edit(FeedForumFollow model) throws Exception;
 	
+	public long getFollowTime(long forumId, long userId) throws Exception;
+	
 	public Map<Long, ForumCount> getFollowCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 }

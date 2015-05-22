@@ -20,4 +20,6 @@ public interface FeedModeratorApplyDao
 	public List<FeedModeratorApply> getApplyList(int start, int end) throws Exception;
 	
 	public long getApplyCount() throws Exception;
+	
+	public FeedModeratorApply getLastApply(long userId, long forumId) throws Exception;
 }
