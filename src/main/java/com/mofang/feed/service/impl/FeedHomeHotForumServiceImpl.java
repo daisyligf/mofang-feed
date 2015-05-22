@@ -11,7 +11,9 @@ import com.mofang.feed.model.FeedHomeHotForum;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedHomeHotForumDao;
 import com.mofang.feed.mysql.impl.FeedHomeHotForumDaoImpl;
+import com.mofang.feed.redis.ForumUrlRedis;
 import com.mofang.feed.redis.HotForumListRedis;
+import com.mofang.feed.redis.impl.ForumUrlRedisImpl;
 import com.mofang.feed.redis.impl.HotForumListRedisImpl;
 import com.mofang.feed.service.FeedHomeHotForumService;
 import com.mofang.feed.util.RedisPageNumber;
@@ -26,6 +28,7 @@ public class FeedHomeHotForumServiceImpl implements FeedHomeHotForumService {
 	private static final FeedHomeHotForumServiceImpl SERVICE = new  FeedHomeHotForumServiceImpl();
 	private FeedHomeHotForumDao hotForumDao = FeedHomeHotForumDaoImpl.getInstance();
 	private HotForumListRedis hotForumRedis = HotForumListRedisImpl.getInstance();
+	private ForumUrlRedis forumUrlRedis = ForumUrlRedisImpl.getInstance();
 	
 	private FeedHomeHotForumServiceImpl(){}
 	
@@ -70,7 +73,7 @@ public class FeedHomeHotForumServiceImpl implements FeedHomeHotForumService {
 				FeedHomeHotForum model = new FeedHomeHotForum();
 				long forumId = Long.parseLong(idStr);
 				model.setForumId(forumId);
-				Map<String, String> urlMap = hotForumRedis.getUrl(forumId);
+				Map<String, String> urlMap = forumUrlRedis.getUrl(forumId);
 				if(urlMap != null){
 					model.setGiftUrl(urlMap.get(ForumURLKey.GIFT_URL_KEY));
 					model.setPrefectureUrl(ForumURLKey.PREFECTURE_URL_KEY);

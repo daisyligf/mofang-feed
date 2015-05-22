@@ -1,6 +1,7 @@
 package com.mofang.feed.logic.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -12,6 +13,7 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.ForumType;
+import com.mofang.feed.global.common.ForumURLKey;
 import com.mofang.feed.logic.FeedForumLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedThread;
@@ -367,16 +369,25 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					for(FeedForum forumInfo : list)
 					{
 						jsonForum = new JSONObject();
-						jsonForum.put("fid", forumInfo.getForumId());
+						long forumId = forumInfo.getForumId();
+						jsonForum.put("fid", forumId);
 						jsonForum.put("name", forumInfo.getName());
 						jsonForum.put("name_spell", forumInfo.getNameSpell());
 						jsonForum.put("icon", forumInfo.getIcon());
 						jsonForum.put("type", forumInfo.getType());
 						jsonForum.put("threads", forumInfo.getThreads());
+						jsonForum.put("today_threads", forumInfo.getTodayThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 						jsonForum.put("follows", forumInfo.getFollows());
 						jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
 						jsonForum.put("create_time", forumInfo.getCreateTime());
+						
+						Map<String, String> urlMap = forumService.getUrlMap(forumId);
+						if(urlMap != null){
+							jsonForum.put(ForumURLKey.PREFECTURE_URL_KEY, urlMap.get(ForumURLKey.PREFECTURE_URL_KEY));
+							jsonForum.put(ForumURLKey.GIFT_URL_KEY, urlMap.get(ForumURLKey.GIFT_URL_KEY));
+						}
+						
 						arrayForums.put(jsonForum);
 					}
 				}
