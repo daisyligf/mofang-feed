@@ -111,4 +111,14 @@ public class ReturnMessage
 	 * 版主申请记录不存在
 	 */
 	public static String MODERATOR_APPLY_NOT_EXISTS;
+	
+	/**
+	 * 版块版主已经满额
+	 */
+	public static String FORUM_MODERATOR_IS_FULL;
+	
+	/**
+	 * 版主申请条件不足
+	 */
+	public static String MODERATOR_APPLY_CONDITION_INSUFFICIENT;
 }

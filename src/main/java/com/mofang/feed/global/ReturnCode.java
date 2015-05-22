@@ -111,4 +111,14 @@ public class ReturnCode
 	 * 版主申请记录不存在
 	 */
 	public final static int MODERATOR_APPLY_NOT_EXISTS = 711;
+	
+	/**
+	 * 版块版主已经满额
+	 */
+	public final static int FORUM_MODERATOR_IS_FULL = 712;
+	
+	/**
+	 * 版主申请条件不足
+	 */
+	public final static int MODERATOR_APPLY_CONDITION_INSUFFICIENT = 713;
 }

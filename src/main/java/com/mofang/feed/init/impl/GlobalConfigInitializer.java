@@ -71,6 +71,12 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.USER_EXPIRE_SECONDS = config.getInt("param", "user_expire_seconds");
 		GlobalConfig.FORUM_TOP_THREADS_COUNT = config.getInt("param", "forum_top_threads_count");
 		GlobalConfig.FORUM_MODERATOR_COUNT = config.getInt("param", "forum_moderator_count");
+		
+		GlobalConfig.MODERATOR_APPLY_FOLLOWFORUMDAYS = config.getInt("param", "moderator_apply_followforumdays");
+		GlobalConfig.MODERATOR_APPLY_TOPELITECOUNT = config.getInt("param", "moderator_apply_topelitecount");
+		GlobalConfig.MODERATOR_APPLY_NEWTHREADS = config.getInt("param", "moderator_apply_newthreads");
+		GlobalConfig.MODERATOR_APPLY_TIMEINTERVAL = config.getInt("param", "moderator_apply_timeinterval");
+		
 		GlobalConfig.COLLECT_RECOMMEND_COUNT = config.getInt("param", "collect_recommend_count");
 		GlobalConfig.SQUARE_BUTTONS_OLD = config.get("param", "square_buttons_old");
 		GlobalConfig.SQUARE_BUTTONS_NEW = config.get("param", "square_buttons_new");

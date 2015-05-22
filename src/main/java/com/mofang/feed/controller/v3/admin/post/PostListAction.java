@@ -23,8 +23,8 @@ public class PostListAction extends AbstractActionExecutor
 	{
 		String strThreadId = context.getParameters("tid");
 		String strStatus = context.getParameters("status");
-		String strPageNum = context.getParameters("startPage");
-		String strPageSize = context.getParameters("pageSize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		long threadId = 0L;
 		if(StringUtil.isLong(strThreadId))

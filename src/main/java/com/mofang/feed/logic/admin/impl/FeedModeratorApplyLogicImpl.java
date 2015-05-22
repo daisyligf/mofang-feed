@@ -13,6 +13,7 @@ import com.mofang.feed.global.common.ModeratorApplyStatus;
 import com.mofang.feed.logic.admin.FeedModeratorApplyLogic;
 import com.mofang.feed.model.FeedModeratorApply;
 import com.mofang.feed.model.FeedSysUserRole;
+import com.mofang.feed.model.ModeratorApplyCondition;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.service.FeedModeratorApplyService;
 import com.mofang.feed.service.FeedPostService;
@@ -56,6 +57,25 @@ public class FeedModeratorApplyLogicImpl implements FeedModeratorApplyLogic
 			{
 				result.setCode(ReturnCode.MODERATOR_APPLY_NOT_EXISTS);
 				result.setMessage(ReturnMessage.MODERATOR_APPLY_NOT_EXISTS);
+				return result;
+			}
+			
+			///判断是否满足申请条件
+			ModeratorApplyCondition condition = applyService.checkCondition(applyInfo.getUserId(), applyInfo.getForumId(), true);
+			boolean isPass = condition.isFollowForumIsOK() && condition.isThreadsIsOK() && condition.isTopEliteCountIsOK() && condition.isTimeIntervalIsOK();
+			if(!isPass)
+			{
+				result.setCode(ReturnCode.MODERATOR_APPLY_CONDITION_INSUFFICIENT);
+				result.setMessage(ReturnMessage.MODERATOR_APPLY_CONDITION_INSUFFICIENT);
+				return result;
+			}
+			
+			///判断版主是否满额
+			boolean isFull = userRoleService.isFull(applyInfo.getForumId());
+			if(isFull)
+			{
+				result.setCode(ReturnCode.FORUM_MODERATOR_IS_FULL);
+				result.setMessage(ReturnMessage.FORUM_MODERATOR_IS_FULL);
 				return result;
 			}
 			

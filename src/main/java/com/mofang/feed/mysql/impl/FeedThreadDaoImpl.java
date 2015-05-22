@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.global.common.ThreadType;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.external.ForumCount;
@@ -15,7 +16,9 @@ import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.GreaterThanOrEqualOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.InOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.LessThanOrEqualOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.LimitOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
@@ -400,6 +403,18 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 	}
 
 	@Override
+	public long getUserThreadCount(long userId, long startTime, long endTime) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand timeGreat = new GreaterThanOrEqualOperand("create_time", startTime);
+		Operand timeLess = new LessThanOrEqualOperand("create_time", endTime);
+		Operand and = new AndOperand();
+		where.append(userEqual).append(and).append(timeGreat).append(and).append(timeLess);
+		return super.getCount(where);
+	}
+	
+	@Override
 	public List<Long> getUserEliteThreadList(long userId, int start, int end)
 			throws Exception {
 		StringBuilder strSql = new StringBuilder();
@@ -579,5 +594,19 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 				.append(isEliteEqual).append(and).append(tagIdEqual);
 		return super.getCount(where);
 	}
-	
+
+	@Override
+	public long getUserTopOrEliteThreadCount(long userId) throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select count(1) from feed_thread ");
+		strSql.append("where user_id =" + userId + " and (is_top =1 or is_elite=1) ");
+		strSql.append("and status = " + ThreadStatus.NORMAL);
+		ResultData data = super.executeQuery(strSql.toString());
+		if(null == data || null == data.getQueryResult() || data.getQueryResult().size() == 0)
+			return 0L;
+		
+		List<RowData> rows = data.getQueryResult();
+		return rows.get(0).getLong(0);
+	}
 }

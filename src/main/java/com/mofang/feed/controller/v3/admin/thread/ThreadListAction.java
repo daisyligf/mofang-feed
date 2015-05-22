@@ -23,8 +23,8 @@ public class ThreadListAction extends AbstractActionExecutor
 	{
 		String strForumId = context.getParameters("fid");
 		String strStatus = context.getParameters("status");
-		String strPageNum = context.getParameters("startPage");
-		String strPageSize = context.getParameters("pageSize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		long forumId = 0L;
 		if(StringUtil.isLong(strForumId))

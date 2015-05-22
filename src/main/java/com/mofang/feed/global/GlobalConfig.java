@@ -91,6 +91,14 @@ public class GlobalConfig
 	
 	public static int FORUM_MODERATOR_COUNT = 9;
 	
+	public static int MODERATOR_APPLY_FOLLOWFORUMDAYS = 15;
+	
+	public static int MODERATOR_APPLY_TOPELITECOUNT = 3;
+	
+	public static int MODERATOR_APPLY_NEWTHREADS = 10;
+	
+	public static int MODERATOR_APPLY_TIMEINTERVAL = 10;
+	
 	public static int COLLECT_RECOMMEND_COUNT = 11;
 	
 	public static String SQUARE_BUTTONS_OLD;

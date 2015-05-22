@@ -3,13 +3,19 @@ package com.mofang.feed.service.impl;
 import java.util.List;
 
 import com.mofang.feed.component.UserComponent;
+import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedModeratorApply;
+import com.mofang.feed.model.ModeratorApplyCondition;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.mysql.FeedForumFollowDao;
 import com.mofang.feed.mysql.FeedModeratorApplyDao;
+import com.mofang.feed.mysql.FeedThreadDao;
+import com.mofang.feed.mysql.impl.FeedForumFollowDaoImpl;
 import com.mofang.feed.mysql.impl.FeedModeratorApplyDaoImpl;
+import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.service.FeedModeratorApplyService;
@@ -25,6 +31,8 @@ public class FeedModeratorApplyServiceImpl implements FeedModeratorApplyService
 	private final static FeedModeratorApplyServiceImpl SERVICE = new FeedModeratorApplyServiceImpl();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 	private FeedModeratorApplyDao applyDao = FeedModeratorApplyDaoImpl.getInstance();
+	private FeedForumFollowDao forumFollowDao = FeedForumFollowDaoImpl.getInstance();
+	private FeedThreadDao threadDao = FeedThreadDaoImpl.getInstance();
 	
 	private FeedModeratorApplyServiceImpl()
 	{}
@@ -32,6 +40,61 @@ public class FeedModeratorApplyServiceImpl implements FeedModeratorApplyService
 	public static FeedModeratorApplyServiceImpl getInstance()
 	{
 		return SERVICE;
+	}
+
+	@Override
+	public ModeratorApplyCondition checkCondition(long userId, long forumId, boolean isAudit) throws Exception
+	{
+		ModeratorApplyCondition condition = new ModeratorApplyCondition();
+		try
+		{
+			///关注本版块不得少于15天
+			long followTime = forumFollowDao.getFollowTime(forumId, userId);
+			boolean followForumIsOK = false;
+			if(followTime > 0)
+			{
+				long followMillSeconds = System.currentTimeMillis() - followTime;
+				long followCondition = GlobalConfig.MODERATOR_APPLY_FOLLOWFORUMDAYS * 24 * 3600 * 1000L;
+				followForumIsOK = followMillSeconds >= followCondition;
+			}
+			
+			///一个月内在本版块累计发帖不少于10贴
+			long startTime = System.currentTimeMillis() -  (30L * 86400L * 1000L);
+			long endTime = System.currentTimeMillis();
+			long threads = threadDao.getUserThreadCount(userId, startTime, endTime);
+			boolean threadsIsOK = threads >= GlobalConfig.MODERATOR_APPLY_NEWTHREADS;
+			
+			///至少有3个贴子被置顶或者加精
+			long topEliteThreads = threadDao.getUserTopOrEliteThreadCount(userId);
+			boolean topEliteCountIsOK = topEliteThreads >= GlobalConfig.MODERATOR_APPLY_TOPELITECOUNT;
+			
+			///两次申请间隔不少于10个自然日
+			long lastApplyDate = 0L;
+			
+			///构建申请条件
+			boolean timeIntervalIsOK = true;
+			if(!isAudit)
+			{
+				FeedModeratorApply moderatorApplyInfo = applyDao.getLastApply(userId, forumId);
+				if(null != moderatorApplyInfo)
+				{
+					lastApplyDate = moderatorApplyInfo.getCreateTime();
+					long interval = System.currentTimeMillis() - lastApplyDate;
+					timeIntervalIsOK = interval >= GlobalConfig.MODERATOR_APPLY_TIMEINTERVAL * 86400 * 1000;
+				}
+			}
+			
+			condition.setFollowForumIsOK(followForumIsOK);
+			condition.setThreadsIsOK(threadsIsOK);
+			condition.setTopEliteCountIsOK(topEliteCountIsOK);
+			condition.setTimeIntervalIsOK(timeIntervalIsOK);
+			return condition;
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedModeratorApplyServiceImpl.checkCondition throw an error.", e);
+			throw e;
+		}
 	}
 
 	@Override

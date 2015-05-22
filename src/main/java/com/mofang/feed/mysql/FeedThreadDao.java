@@ -189,6 +189,16 @@ public interface FeedThreadDao
 	public long getUserThreadCount(long userId) throws Exception; 
 	
 	/**
+	 * 获取用户主题总数
+	 * @param userId 用户ID
+	 * @param startTime 起始时间
+	 * @param endTime 截止时间
+	 * @return
+	 * @throws Exception
+	 */
+	public long getUserThreadCount(long userId, long startTime, long endTime) throws Exception;
+	
+	/**
 	 * 获取用户精华主题ID列表
 	 * @param userId 用户ID
 	 * @param start 起始记录
@@ -251,4 +261,6 @@ public interface FeedThreadDao
 	public List<Long> getForumEliteThreadList(long forumId, long tagId, int start, int end) throws Exception;
 	
 	public long getForumEliteThreadCount(long forumId, long tagId) throws Exception;
+	
+	public long getUserTopOrEliteThreadCount(long userId) throws Exception;
 }

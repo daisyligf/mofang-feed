@@ -6,8 +6,14 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedModeratorApply;
 import com.mofang.feed.mysql.FeedModeratorApplyDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
+import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.LimitOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
+import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
+import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
+import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 
 /**
  * 
@@ -64,5 +70,22 @@ public class FeedModeratorApplyDaoImpl extends AbstractMysqlSupport<FeedModerato
 	public long getApplyCount() throws Exception
 	{
 		return super.getCount(null);
+	}
+
+	@Override
+	public FeedModeratorApply getLastApply(long userId, long forumId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		Operand and = new AndOperand();
+		OrderByEntry entry = new OrderByEntry("create_time", SortType.Desc);
+		Operand orderby = new OrderByOperand(entry);
+		Operand limit = new LimitOperand(0L, 1L);
+		where.append(userEqual).append(and).append(forumEqual).append(orderby).append(limit);
+		List<FeedModeratorApply> list = super.getList(where);
+		if(null == list || list.size() == 0)
+			return null;
+		return list.get(0);
 	}
 }
