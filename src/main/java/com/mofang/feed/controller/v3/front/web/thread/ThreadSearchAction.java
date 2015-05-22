@@ -20,8 +20,8 @@ public class ThreadSearchAction extends AbstractActionExecutor {
 		String author = context.getParameters("author");
 		String keyword = context.getParameters("keyword");
 		String strStatus = context.getParameters("status");
-		String strPageNum = context.getParameters("startPage");
-		String strPageSize = context.getParameters("pageSize");
+		String strPageNum = context.getParameters("p");
+		String strPageSize = context.getParameters("pagesize");
 		
 		long forumId = 0L;
 		String forumName = "";

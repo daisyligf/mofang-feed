@@ -46,8 +46,9 @@ public class ThreadEditAction extends AbstractActionExecutor {
 		String pics = json.optString("pic", "");
 		long videoId = json.optLong("video_id", 0);
 		String tags = json.optString("tags", "");
-		long moduleId = json.optLong("vid", 0);
+		//long moduleId = json.optLong("vid", 0);
 		int gameId = json.optInt("game_id", 0);
+		int tagId = json.optInt("tag_id", 0);
 
 		// /参数检查
 		if (threadId <= 0 || StringUtil.isNullOrEmpty(subject)
@@ -73,6 +74,7 @@ public class ThreadEditAction extends AbstractActionExecutor {
 		threadInfo.setVideo(isVideo);
 		threadInfo.setMark(isMark);
 		threadInfo.setGameId(gameId);
+		threadInfo.setTagId(tagId);
 
 		// /构建楼层实体
 		FeedPost postInfo = new FeedPost();
@@ -81,7 +83,7 @@ public class ThreadEditAction extends AbstractActionExecutor {
 		postInfo.setPictures(pics);
 		postInfo.setVideoId(videoId);
 		threadInfo.setPost(postInfo);
-		return logic.edit(threadInfo, moduleId, operatorId);
+		return logic.edit(threadInfo, 0, operatorId);
 	}
 
 }

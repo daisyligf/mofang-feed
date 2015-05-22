@@ -1679,13 +1679,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 							jsonThread.put("nickname", userInfo.getNickName());
 							jsonThread.put("avatar", userInfo.getAvatar());
 							JSONObject jsonUser = new JSONObject();
-							jsonUser.put("level", userInfo.getLevel());
-							jsonUser.put("exp", userInfo.getExp());
-							jsonUser.put("coin", userInfo.getCoin());
-							jsonUser.put("diamond", userInfo.getDiamond());
-							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-							jsonUser.put("gained_exp", userInfo.getGainedExp());
-							jsonUser.put("badge", userInfo.getBadges());
+//							jsonUser.put("level", userInfo.getLevel());
+//							jsonUser.put("exp", userInfo.getExp());
+//							jsonUser.put("coin", userInfo.getCoin());
+//							jsonUser.put("diamond", userInfo.getDiamond());
+//							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+//							jsonUser.put("gained_exp", userInfo.getGainedExp());
+//							jsonUser.put("badge", userInfo.getBadges());
 							jsonThread.put("user", jsonUser);
 						}
 						
@@ -1726,13 +1726,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 								jsonThread.put("nickname", userInfo.getNickName());
 								jsonThread.put("avatar", userInfo.getAvatar());
 								JSONObject jsonUser = new JSONObject();
-								jsonUser.put("level", userInfo.getLevel());
-								jsonUser.put("exp", userInfo.getExp());
-								jsonUser.put("coin", userInfo.getCoin());
-								jsonUser.put("diamond", userInfo.getDiamond());
-								jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-								jsonUser.put("gained_exp", userInfo.getGainedExp());
-								jsonUser.put("badge", userInfo.getBadges());
+//								jsonUser.put("level", userInfo.getLevel());
+//								jsonUser.put("exp", userInfo.getExp());
+//								jsonUser.put("coin", userInfo.getCoin());
+//								jsonUser.put("diamond", userInfo.getDiamond());
+//								jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+//								jsonUser.put("gained_exp", userInfo.getGainedExp());
+//								jsonUser.put("badge", userInfo.getBadges());
 								jsonThread.put("user", jsonUser);
 							}
 						}
@@ -1846,7 +1846,8 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			jsonThread.put("utime", threadInfo.getCreateTime() / 1000);        ///主题发布时间
 			jsonThread.put("last_poster_id", threadInfo.getLastPostUid());        ///主题最后回复用户ID
 			jsonThread.put("last_post_time", threadInfo.getLastPostTime() / 1000);        ///主题最后回复时间
-			jsonThread.put("is_closed", threadInfo.isClosed());        ///主题是否关闭(如果关闭, 则不能进行回复和评论)
+			//jsonThread.put("is_closed", threadInfo.isClosed());        ///主题是否关闭(如果关闭, 则不能进行回复和评论)
+			jsonThread.put("state", threadInfo.isClosed());        ///主题是否关闭(如果关闭, 则不能进行回复和评论)
 			jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
 			jsonThread.put("category", threadInfo.isTop() ? 1 : 0);        ///是否为置顶帖
 			
@@ -1911,13 +1912,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				jsonThread.put("nickname", userInfo.getNickName());
 				jsonThread.put("avatar", userInfo.getAvatar());
 				JSONObject jsonUser = new JSONObject();
-				jsonUser.put("level", userInfo.getLevel());
-				jsonUser.put("exp", userInfo.getExp());
-				jsonUser.put("coin", userInfo.getCoin());
-				jsonUser.put("diamond", userInfo.getDiamond());
-				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-				jsonUser.put("gained_exp", userInfo.getGainedExp());
-				jsonUser.put("badge", userInfo.getBadges());
+//				jsonUser.put("level", userInfo.getLevel());
+//				jsonUser.put("exp", userInfo.getExp());
+//				jsonUser.put("coin", userInfo.getCoin());
+//				jsonUser.put("diamond", userInfo.getDiamond());
+//				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+//				jsonUser.put("gained_exp", userInfo.getGainedExp());
+//				jsonUser.put("badge", userInfo.getBadges());
 				jsonThread.put("user", jsonUser);
 			}
 			
@@ -1962,13 +1963,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 							jsonThread.put("nickname", userInfo.getNickName());
 							jsonThread.put("avatar", userInfo.getAvatar());
 							JSONObject jsonUser = new JSONObject();
-							jsonUser.put("level", userInfo.getLevel());
-							jsonUser.put("exp", userInfo.getExp());
-							jsonUser.put("coin", userInfo.getCoin());
-							jsonUser.put("diamond", userInfo.getDiamond());
-							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-							jsonUser.put("gained_exp", userInfo.getGainedExp());
-							jsonUser.put("badge", userInfo.getBadges());
+//							jsonUser.put("level", userInfo.getLevel());
+//							jsonUser.put("exp", userInfo.getExp());
+//							jsonUser.put("coin", userInfo.getCoin());
+//							jsonUser.put("diamond", userInfo.getDiamond());
+//							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+//							jsonUser.put("gained_exp", userInfo.getGainedExp());
+//							jsonUser.put("badge", userInfo.getBadges());
 							jsonThread.put("user", jsonUser);
 						}
 					}
