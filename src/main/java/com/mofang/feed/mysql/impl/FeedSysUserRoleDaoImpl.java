@@ -9,9 +9,13 @@ import com.mofang.feed.mysql.FeedSysUserRoleDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.GreaterThanOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.LimitOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
+import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
+import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
+import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 import com.mofang.framework.data.mysql.core.meta.ResultData;
 import com.mofang.framework.data.mysql.core.meta.RowData;
 
@@ -134,5 +138,26 @@ public class FeedSysUserRoleDaoImpl extends AbstractMysqlSupport<FeedSysUserRole
 			list.add(row.getInteger(0));
 		}
 		return list;
+	}
+
+	@Override
+	public List<FeedSysUserRole> getUserList(int start, int end) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand forumGreat = new GreaterThanOperand("forum_id", 0L);
+		OrderByEntry entry = new OrderByEntry("create_time", SortType.Desc);
+		Operand orderby = new OrderByOperand(entry);
+		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+		where.append(forumGreat).append(orderby).append(limit);
+		return super.getList(where);
+	}
+
+	@Override
+	public long getUserCount() throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand forumGreat = new GreaterThanOperand("forum_id", 0L);
+		where.append(forumGreat);
+		return super.getCount(where);
 	}
 }

@@ -98,6 +98,11 @@ public class ReturnMessage
 	public static String USER_ROLE_NOT_EXISTS;
 	
 	/**
+	 * 用户角色已存在
+	 */
+	public static String USER_ROLE_EXISTS;
+	
+	/**
 	 * 用户已关注指定版块
 	 */
 	public static String USER_FOLLOWED_FORUM;
@@ -121,4 +126,14 @@ public class ReturnMessage
 	 * 版主申请条件不足
 	 */
 	public static String MODERATOR_APPLY_CONDITION_INSUFFICIENT;
+	
+	/**
+	 * 管理员已存在
+	 */
+	public static String ADMIN_USER_EXISTS;
+	
+	/**
+	 * 管理员不存在
+	 */
+	public static String ADMIN_USER_NOT_EXISTS;
 }

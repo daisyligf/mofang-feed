@@ -3,6 +3,7 @@ package com.mofang.feed.service;
 import java.util.List;
 
 import com.mofang.feed.model.FeedSysUserRole;
+import com.mofang.feed.model.Page;
 
 /**
  * 
@@ -24,4 +25,6 @@ public interface FeedSysUserRoleService
 	public boolean hasPrivilege(long forumId, long userId, int privilegeId) throws Exception;
 	
 	public List<Integer> getRoleIdList(long forumId) throws Exception;
+	
+	public Page<FeedSysUserRole> getUserList(int pageNum, int pageSize) throws Exception;
 }

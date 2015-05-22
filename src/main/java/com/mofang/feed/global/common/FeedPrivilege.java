@@ -188,4 +188,9 @@ public class FeedPrivilege
 	 * 审核版主申请
 	 */
 	public final static int AUDIT_MODERATOR_APPLY = 225;
+	
+	/**
+	 * 添加管理员
+	 */
+	public final static int ADD_ADMIN_USER = 226;
 }

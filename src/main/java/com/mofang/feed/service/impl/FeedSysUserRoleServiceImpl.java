@@ -6,6 +6,7 @@ import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedSysUserRole;
+import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedSysUserRoleDao;
 import com.mofang.feed.mysql.impl.FeedSysUserRoleDaoImpl;
 import com.mofang.feed.redis.FeedSysRoleRedis;
@@ -13,6 +14,7 @@ import com.mofang.feed.redis.FeedSysUserRoleRedis;
 import com.mofang.feed.redis.impl.FeedSysRoleRedisImpl;
 import com.mofang.feed.redis.impl.FeedSysUserRoleRedisImpl;
 import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.util.MysqlPageNumber;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -153,5 +155,23 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 			throw e;
 		}
 	}
-	
+
+	@Override
+	public Page<FeedSysUserRole> getUserList(int pageNum, int pageSize) throws Exception
+	{
+		try 
+		{
+			long total = userRoleDao.getUserCount();
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int size = pageNumber.getEnd();
+			List<FeedSysUserRole> list = userRoleDao.getUserList(start, size);
+			return new Page<FeedSysUserRole>(total, list); 
+		} 
+		catch (Exception e) 
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getUserList throw an error.", e);
+			throw e;
+		}
+	}
 }
