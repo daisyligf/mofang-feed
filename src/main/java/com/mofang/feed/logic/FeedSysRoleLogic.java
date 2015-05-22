@@ -19,5 +19,4 @@ public interface FeedSysRoleLogic
 	public ResultValue getInfo(int roleId) throws Exception;
 	
 	public ResultValue getList() throws Exception;
-	
 }

@@ -98,27 +98,42 @@ public class ReturnCode
 	public final static int USER_ROLE_NOT_EXISTS = 708;
 	
 	/**
+	 * 用户角色已存在
+	 */
+	public final static int USER_ROLE_EXISTS = 709;
+	
+	/**
 	 * 用户已关注指定版块
 	 */
-	public final static int USER_FOLLOWED_FORUM = 709;
+	public final static int USER_FOLLOWED_FORUM = 710;
 	
 	/**
 	 * 用户未关注指定版块
 	 */
-	public final static int USER_UNFOLLOW_FORUM = 710;
+	public final static int USER_UNFOLLOW_FORUM = 711;
 	
 	/**
 	 * 版主申请记录不存在
 	 */
-	public final static int MODERATOR_APPLY_NOT_EXISTS = 711;
+	public final static int MODERATOR_APPLY_NOT_EXISTS = 712;
 	
 	/**
 	 * 版块版主已经满额
 	 */
-	public final static int FORUM_MODERATOR_IS_FULL = 712;
+	public final static int FORUM_MODERATOR_IS_FULL = 713;
 	
 	/**
 	 * 版主申请条件不足
 	 */
-	public final static int MODERATOR_APPLY_CONDITION_INSUFFICIENT = 713;
+	public final static int MODERATOR_APPLY_CONDITION_INSUFFICIENT = 714;
+	
+	/**
+	 * 管理员已存在
+	 */
+	public final static int ADMIN_USER_EXISTS = 715;
+	
+	/**
+	 * 管理员不存在
+	 */
+	public final static int ADMIN_USER_NOT_EXISTS = 716;
 }
