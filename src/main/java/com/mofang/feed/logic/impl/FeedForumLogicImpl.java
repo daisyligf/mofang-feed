@@ -211,7 +211,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			data.put("threads", forumInfo.getThreads());
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
 			data.put("follows", forumInfo.getFollows());
-			data.put("yestoday_follows", forumInfo.getYestodayFollows());
+			data.put("yesterday_follows", forumInfo.getYestodayFollows());
 			data.put("create_time", forumInfo.getCreateTime());
 			
 			List<Integer> tagList = forumInfo.getTags();

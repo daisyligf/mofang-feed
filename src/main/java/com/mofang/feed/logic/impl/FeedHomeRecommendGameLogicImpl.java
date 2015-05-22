@@ -124,7 +124,7 @@ public class FeedHomeRecommendGameLogicImpl implements
 				objRecommendGame.put("total_threads", feedForum.getThreads());
 				objRecommendGame.put("download_url", model.getDownloadUrl());
 				objRecommendGame.put("gift_url", model.getGiftUrl());
-				
+				objRecommendGame.put("prefecture_url", "");
 				jsonArray.put(objRecommendGame);
 			}
 			data.put("list", jsonArray);

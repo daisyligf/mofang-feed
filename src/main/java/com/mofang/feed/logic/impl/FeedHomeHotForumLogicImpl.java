@@ -130,7 +130,7 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 				objHotForum.put("total_threads", feedForum.getThreads());
 				objHotForum.put("prefecture_url", model.getPrefectureUrl());
 				objHotForum.put("gift_url", model.getGiftUrl());
-				
+				objHotForum.put("download_url", "");
 				jsonArray.put(objHotForum);
 			}
 			data.put("list", jsonArray);

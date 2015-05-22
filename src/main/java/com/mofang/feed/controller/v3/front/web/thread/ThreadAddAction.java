@@ -50,9 +50,9 @@ public class ThreadAddAction extends AbstractActionExecutor {
 		long videoId = json.optLong("video_id", 0L);
 		int type = json.optInt("type", 0);
 		String tags = json.optString("tags", "");
-		long moduleId = json.optLong("vid", 0L);
+		//long moduleId = json.optLong("vid", 0L);
 		int gameId = json.optInt("game_id", 0);
-		int tagId = json.optInt("tagId", 0);
+		int tagId = json.optInt("tag_id", 0);
 
 		// /参数检查
 		if (forumId <= 0 || StringUtil.isNullOrEmpty(subject)
@@ -100,7 +100,7 @@ public class ThreadAddAction extends AbstractActionExecutor {
 		postInfo.setVideoId(videoId);
 		threadInfo.setPost(postInfo);
 
-		return logic.add(threadInfo, moduleId);
+		return logic.add(threadInfo, 0);
 	}
 
 }
