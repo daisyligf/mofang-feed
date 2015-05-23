@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.admin.moderator;
+package com.mofang.feed.controller.v3.admin.admin;
 
 import org.json.JSONObject;
 
@@ -6,8 +6,9 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.admin.FeedSysUserRoleLogic;
-import com.mofang.feed.logic.admin.impl.FeedSysUserRoleLogicImpl;
+import com.mofang.feed.logic.admin.FeedAdminUserLogic;
+import com.mofang.feed.logic.admin.impl.FeedAdminUserLogicImpl;
+import com.mofang.feed.model.FeedAdminUser;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -17,10 +18,10 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/moderator/addtoadmin")
-public class ModeratorAddToAdminAction extends AbstractActionExecutor
+@Action(url = "feed/v2/backend/admin/add")
+public class AdminAddAction extends AbstractActionExecutor
 {
-	private FeedSysUserRoleLogic logic = FeedSysUserRoleLogicImpl.getInstance();
+	private FeedAdminUserLogic logic = FeedAdminUserLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
@@ -51,6 +52,9 @@ public class ModeratorAddToAdminAction extends AbstractActionExecutor
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-		return logic.addToAdmin(userId, operatorId);
+		
+		FeedAdminUser adminInfo = new FeedAdminUser();
+		adminInfo.setUserId(userId);
+		return logic.add(adminInfo, operatorId);
 	}
 }
