@@ -10,13 +10,16 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.FeedHomeTickerLogic;
 import com.mofang.feed.model.FeedHomeTicker;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedHomeTickerService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedHomeTickerServiceImpl;
 
 public class FeedHomeTickerLogicImpl implements FeedHomeTickerLogic {
 
 	private static final FeedHomeTickerLogicImpl LOGIC = new FeedHomeTickerLogicImpl();
 	private FeedHomeTickerService newsPaperService = FeedHomeTickerServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	
 	public static FeedHomeTickerLogicImpl getInstance(){
 		return LOGIC;
@@ -26,9 +29,15 @@ public class FeedHomeTickerLogicImpl implements FeedHomeTickerLogic {
 	
 
 	@Override
-	public ResultValue edit(List<FeedHomeTicker> modelList) throws Exception {
+	public ResultValue edit(List<FeedHomeTicker> modelList, long userId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
+			boolean hasPrivilege = adminService.exists(userId);
+			if(!hasPrivilege) {
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
 			newsPaperService.edit(modelList);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);

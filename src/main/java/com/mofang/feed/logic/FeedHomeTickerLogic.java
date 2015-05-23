@@ -7,7 +7,7 @@ import com.mofang.feed.model.FeedHomeTicker;
 
 public interface FeedHomeTickerLogic {
 
-	public ResultValue edit(List<FeedHomeTicker> modelList) throws Exception;
+	public ResultValue edit(List<FeedHomeTicker> modelList, long userId) throws Exception;
 	
 	public ResultValue getList() throws Exception;
 }

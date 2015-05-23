@@ -13,9 +13,11 @@ import com.mofang.feed.logic.FeedHomeTitleLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeTitle;
 import com.mofang.feed.model.FeedThread;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeTitleService;
 import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedHomeTitleServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
@@ -26,6 +28,7 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 	private FeedHomeTitleService homeTitleService = FeedHomeTitleServiceImpl.getInstance();
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	
 	private FeedHomeTitleLogicImpl(){}
 	
@@ -34,9 +37,15 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 	}
 	
 	@Override
-	public ResultValue edit(List<FeedHomeTitle> modelList) throws Exception {
+	public ResultValue edit(List<FeedHomeTitle> modelList, long userId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
+			boolean hasPrivilege = adminService.exists(userId);
+			if(!hasPrivilege) {
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
 			for(FeedHomeTitle model : modelList){
 				FeedThread threadInfo = threadService.getInfo(model.getThreadId(), DataSource.REDIS);
 				if(threadInfo == null){

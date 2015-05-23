@@ -12,13 +12,16 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.FeedTagLogic;
 import com.mofang.feed.model.FeedTag;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedTagService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedTagServiceImpl;
 
 public class FeedTagLogicImpl implements FeedTagLogic {
 
 	private static final FeedTagLogicImpl LOGIC = new FeedTagLogicImpl();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 
 	private FeedTagLogicImpl() {
 	}
@@ -37,7 +40,6 @@ public class FeedTagLogicImpl implements FeedTagLogic {
 				JSONObject objTag = null;
 				for (FeedTag model : list) {
 					objTag = new JSONObject();
-
 					objTag.put("tag_id", model.getTagId());
 					objTag.put("tag_name", model.getTagName());
 					data.put(objTag);
@@ -54,9 +56,15 @@ public class FeedTagLogicImpl implements FeedTagLogic {
 	}
 
 	@Override
-	public ResultValue delete(List<Integer> tagIdList) throws Exception {
+	public ResultValue delete(List<Integer> tagIdList, long userId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
+			boolean hasPrivilege = adminService.exists(userId);
+			if(!hasPrivilege) {
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
 			tagService.delete(tagIdList);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
@@ -67,13 +75,17 @@ public class FeedTagLogicImpl implements FeedTagLogic {
 	}
 
 	@Override
-	public ResultValue add(FeedTag model) throws Exception {
+	public ResultValue add(FeedTag model, long userId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
-
+			boolean hasPrivilege = adminService.exists(userId);
+			if(!hasPrivilege) {
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
 			int tagId = (int)RedisFaster.makeUniqueId(RedisKey.TAG_INCREMENT_ID_KEY);
 			model.setTagId(tagId);
-			
 			tagService.add(model);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);

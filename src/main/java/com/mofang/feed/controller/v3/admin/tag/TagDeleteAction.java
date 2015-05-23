@@ -24,13 +24,19 @@ public class TagDeleteAction extends AbstractActionExecutor {
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception {
 		ResultValue result = new ResultValue();
+		String strOperatorId = context.getParameters("uid");
+		if(!StringUtil.isLong(strOperatorId)) {
+			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			return result;
+		}
 		String postData = context.getPostData();
 		if (StringUtil.isNullOrEmpty(postData)) {
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-		
+		long operatorId = Long.parseLong(strOperatorId);
 		JSONObject json = new JSONObject(postData);
 		JSONArray jsonArr = json.optJSONArray("tag_ids");
 		if (StringUtil.isNullOrEmpty(jsonArr.toString())) {
@@ -46,7 +52,7 @@ public class TagDeleteAction extends AbstractActionExecutor {
 			list.add(tagId);
 		}
 		
-		return logic.delete(list);
+		return logic.delete(list, operatorId);
 	}
 
 }
