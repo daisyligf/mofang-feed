@@ -61,7 +61,8 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			ResultValue result = new ResultValue();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_FORUM);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_FORUM);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -114,7 +115,8 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(model.getForumId(), operatorId, FeedPrivilege.EDIT_FORUM);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(model.getForumId(), operatorId, FeedPrivilege.EDIT_FORUM);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -165,7 +167,8 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			ResultValue result = new ResultValue();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.DELETE_FORUM);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.DELETE_FORUM);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

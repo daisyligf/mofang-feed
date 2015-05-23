@@ -130,6 +130,7 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			{
 				data.put("user_id", userId);
 				data.put("nickname", userInfo.getNickName());
+				data.put("register_time", userInfo.getRegisterTime());
 				///获取用户发帖总数
 				long threads = threadService.getUserThreadCount(userId);
 				///获取用户回帖总数

@@ -43,7 +43,8 @@ public class FeedModuleLogicImpl implements FeedModuleLogic
 			ResultValue result = new ResultValue();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_MODULE);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_MODULE);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -82,7 +83,8 @@ public class FeedModuleLogicImpl implements FeedModuleLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.EDIT_MODULE);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.EDIT_MODULE);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -114,7 +116,8 @@ public class FeedModuleLogicImpl implements FeedModuleLogic
 			ResultValue result = new ResultValue();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.DELETE_MODULE);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.DELETE_MODULE);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

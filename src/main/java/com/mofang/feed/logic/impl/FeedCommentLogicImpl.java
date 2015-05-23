@@ -274,7 +274,8 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			}
 			///权限检查
 			long forumId = commentInfo.getForumId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.RESTORE_COMMENT);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.RESTORE_COMMENT);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -311,7 +312,8 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			}
 			///权限检查
 			long forumId = commentInfo.getForumId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.REMOVE_COMMENT);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.REMOVE_COMMENT);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

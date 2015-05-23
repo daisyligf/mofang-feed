@@ -44,7 +44,8 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			ResultValue result = new ResultValue();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_SYS_USER_ROLE);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_SYS_USER_ROLE);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -83,7 +84,8 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.EDIT_SYS_USER_ROLE);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.EDIT_SYS_USER_ROLE);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -122,7 +124,8 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.DELETE_SYS_USER_ROLE);
+			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.DELETE_SYS_USER_ROLE);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
