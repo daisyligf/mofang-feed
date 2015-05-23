@@ -198,10 +198,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(type == ForumType.HOT_FORUM){
 				doRefreshHotForumRank(forumOrderList);
 				addHotForumListRedis(forumOrderList);
+				GlobalObject.INFO_LOG.info("HomeRankServiceImpl.refresh 刷新了热游排行榜数据");
 			}
 			else if(type == ForumType.RECOMMEND_GAME){
 				doRefreshRecommendGameRank(forumOrderList);
 				addRecommendGameListRedis(forumOrderList);
+				GlobalObject.INFO_LOG.info("HomeRankServiceImpl.refresh 刷新了新游排行榜数据");
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at HomeRankServiceImpl.refresh throw an error.", e);

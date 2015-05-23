@@ -77,6 +77,8 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 					String linkUrl = thread.getLinkUrl();
 					
 					FeedForum forum = forumService.getInfo(thread.getForumId());
+					if(forum==null)
+						continue;
 					String forumName = forum.getName();
 					
 					objTitle.put("forum_name", forumName);
