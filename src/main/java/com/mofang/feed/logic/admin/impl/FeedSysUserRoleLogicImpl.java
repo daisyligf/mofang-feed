@@ -128,7 +128,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 	}
 
 	@Override
-	public ResultValue addToAdmin(long forumId, long userId, long operatorId) throws Exception
+	public ResultValue addToAdmin(long userId, long operatorId) throws Exception
 	{
 		try
 		{
@@ -206,6 +206,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 						long replies = postService.getUserReplyCount(moderatorInfo.getUserId());
 						jsonModerator.put("threads", threads);
 						jsonModerator.put("replies", replies);
+						jsonModerator.put("create_time", moderatorInfo.getCreateTime());
 						
 						///获取版块信息
 						jsonForum = new JSONObject();

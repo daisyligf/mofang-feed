@@ -14,7 +14,7 @@ public interface FeedSysUserRoleLogic
 	
 	public ResultValue delete(long forumId, long userId, long operatorId) throws Exception;
 	
-	public ResultValue addToAdmin(long forumId, long userId, long operatorId) throws Exception;
+	public ResultValue addToAdmin(long userId, long operatorId) throws Exception;
 	
 	public ResultValue getModeratorList(int pageNum, int pageSize) throws Exception;
 }
