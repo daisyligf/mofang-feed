@@ -38,13 +38,13 @@ public class FeedHomeKeyWordServiceImpl implements FeedHomeKeyWordService {
 	@Override
 	public String getKeyWord() throws Exception {
 		try {
+			return keyWordReids.getKeyWord();
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error(
 					"at FeedHomeKeyWordServiceImpl.getKeyWord throw an error.",
 					e);
 			throw e;
 		}
-		return null;
 	}
 
 }
