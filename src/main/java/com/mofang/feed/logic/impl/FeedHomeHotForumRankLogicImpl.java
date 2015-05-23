@@ -32,10 +32,10 @@ public class FeedHomeHotForumRankLogicImpl implements FeedHomeHotForumRankLogic 
 	}
 	
 	@Override
-	public ResultValue edit(List<FeedHomeHotForumRank> modelList, long userId) throws Exception {
+	public ResultValue edit(List<FeedHomeHotForumRank> modelList, long operatorId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
-			boolean hasPrivilege = adminService.exists(userId);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege) {
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
 				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);

@@ -10,25 +10,25 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.FeedHomeRecommendGameRankLogic;
-import com.mofang.feed.logic.impl.FeedHomeRecommendGameRankLogicImpl;
-import com.mofang.feed.model.FeedHomeRecommendGameRank;
+import com.mofang.feed.logic.FeedHomeHotForumLogic;
+import com.mofang.feed.logic.impl.FeedHomeHotForumLogicImpl;
+import com.mofang.feed.model.FeedHomeHotForum;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 import com.mysql.jdbc.StringUtils;
 
-@Action(url = "feed/v2/backend/home/rank/recommendgame/edit")
-public class HomeRecommendGameRankEditAction extends AbstractActionExecutor {
+@Action(url = "feed/v2/backend/home/list/hotforum/edit ")
+public class HomeHotForumListEditAction extends AbstractActionExecutor {
 
-	private FeedHomeRecommendGameRankLogic logic = FeedHomeRecommendGameRankLogicImpl
+	private FeedHomeHotForumLogic logic = FeedHomeHotForumLogicImpl
 			.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception {
 		ResultValue result = new ResultValue();
 		String strOperatorId = context.getParameters("uid");
-		if(!StringUtil.isLong(strOperatorId)) {
+		if (!StringUtil.isLong(strOperatorId)) {
 			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			return result;
@@ -48,12 +48,12 @@ public class HomeRecommendGameRankEditAction extends AbstractActionExecutor {
 			return result;
 		}
 		int length = jsonArr.length();
-		List<FeedHomeRecommendGameRank> modelList = new ArrayList<FeedHomeRecommendGameRank>(
+		List<FeedHomeHotForum> modelList = new ArrayList<FeedHomeHotForum>(
 				length);
 		for (int idx = 0; idx < length; idx++) {
 			int displayOrder = idx + 1;
 			long forumId = jsonArr.optLong(idx);
-			FeedHomeRecommendGameRank model = new FeedHomeRecommendGameRank();
+			FeedHomeHotForum model = new FeedHomeHotForum();
 			model.setForumId(forumId);
 			model.setDisplayOrder(displayOrder);
 			modelList.add(model);

@@ -51,14 +51,11 @@ public class HomeHotForumRankEditAction extends AbstractActionExecutor {
 		List<FeedHomeHotForumRank> modelList = new ArrayList<FeedHomeHotForumRank>(
 				length);
 		for (int idx = 0; idx < length; idx++) {
-			JSONObject jsonObj = jsonArr.getJSONObject(idx);
-
 			int displayOrder = idx + 1;
-			long forumId = jsonObj.optLong("forum_id", 0l);
+			long forumId = jsonArr.optLong(idx);
 			FeedHomeHotForumRank model = new FeedHomeHotForumRank();
 			model.setForumId(forumId);
 			model.setDisplayOrder(displayOrder);
-
 			modelList.add(model);
 		}
 		return logic.edit(modelList, operatorId);

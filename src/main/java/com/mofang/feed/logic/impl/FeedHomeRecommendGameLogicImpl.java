@@ -14,8 +14,10 @@ import com.mofang.feed.logic.FeedHomeRecommendGameLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeRecommendGame;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeRecommendGameService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedHomeRecommendGameServiceImpl;
 
@@ -25,6 +27,7 @@ public class FeedHomeRecommendGameLogicImpl implements
 	private static final FeedHomeRecommendGameLogicImpl LOGIC = new FeedHomeRecommendGameLogicImpl();
 	private FeedHomeRecommendGameService recommendGameService = FeedHomeRecommendGameServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	
 	private FeedHomeRecommendGameLogicImpl(){}
 	
@@ -33,12 +36,17 @@ public class FeedHomeRecommendGameLogicImpl implements
 	}
 	
 	@Override
-	public ResultValue edit(List<FeedHomeRecommendGame> modelList) throws Exception {
+	public ResultValue edit(List<FeedHomeRecommendGame> modelList, long operatorId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
+			boolean hasPrivilege = adminService.exists(operatorId);
+			if(!hasPrivilege) {
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
 			for(FeedHomeRecommendGame model : modelList){
 				long forumId = model.getForumId();
-				
 				FeedForum forum = forumService.getInfo(forumId);
 				if(forum == null){
 					result.setCode(ReturnCode.FORUM_NOT_EXISTS);
@@ -47,7 +55,6 @@ public class FeedHomeRecommendGameLogicImpl implements
 				}
 				//设置下载地址
 				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
-				
 				//设置礼包地址
 				boolean flag = HttpComponent.checkGift(forum.getGameId());
 				if(flag){

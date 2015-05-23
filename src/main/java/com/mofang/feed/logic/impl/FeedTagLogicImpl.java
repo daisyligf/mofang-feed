@@ -56,10 +56,10 @@ public class FeedTagLogicImpl implements FeedTagLogic {
 	}
 
 	@Override
-	public ResultValue delete(List<Integer> tagIdList, long userId) throws Exception {
+	public ResultValue delete(List<Integer> tagIdList, long operatorId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
-			boolean hasPrivilege = adminService.exists(userId);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege) {
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
 				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
@@ -75,10 +75,10 @@ public class FeedTagLogicImpl implements FeedTagLogic {
 	}
 
 	@Override
-	public ResultValue add(FeedTag model, long userId) throws Exception {
+	public ResultValue add(FeedTag model, long operatorId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
-			boolean hasPrivilege = adminService.exists(userId);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege) {
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
 				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
