@@ -572,6 +572,47 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	}
 
 	@Override
+	public ResultValue getInfo(long threadId) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			JSONObject jsonForum = null;
+			JSONObject jsonUser = null;
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null != threadInfo)
+			{
+				data.put("tid", threadInfo.getThreadId());       ///主题ID
+				data.put("subject", threadInfo.getSubjectFilter());       ///主题标题
+				data.put("replies", threadInfo.getReplies());         ///主题回复数(楼层+评论)
+				data.put("page_view", threadInfo.getPageView());        ///主题浏览数
+				data.put("create_time", threadInfo.getCreateTime());        ///主题发布时间
+				data.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
+				data.put("recommends", threadInfo.getRecommends());        ///主题点赞数
+				data.put("status", threadInfo.getStatus());         ///主题状态
+				
+				jsonForum = new JSONObject();
+				jsonForum.put("fid", threadInfo.getForumId());
+				
+				jsonUser = new JSONObject();
+				jsonUser.put("user_id", threadInfo.getUserId());
+				data.put("forum", jsonForum);
+				data.put("user", jsonUser);
+			}
+			
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.getInfo throw an error.", e);
+		}
+	}
+
+	@Override
 	public ResultValue getThreadList(long forumId, int status, int pageNum, int pageSize) throws Exception
 	{
 		try

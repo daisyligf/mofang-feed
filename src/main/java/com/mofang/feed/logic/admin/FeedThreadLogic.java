@@ -27,6 +27,8 @@ public interface FeedThreadLogic
 	
 	public ResultValue open(long threadId, long operatorId, String reason) throws Exception;
 	
+	public ResultValue getInfo(long threadId) throws Exception;
+	
 	public ResultValue getThreadList(long forumId, int status, int pageNum, int pageSize) throws Exception;
 	
 	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
