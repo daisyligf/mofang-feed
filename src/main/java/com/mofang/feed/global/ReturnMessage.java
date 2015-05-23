@@ -136,4 +136,9 @@ public class ReturnMessage
 	 * 管理员不存在
 	 */
 	public static String ADMIN_USER_NOT_EXISTS;
+	
+	/**
+	 * 用户已被禁言
+	 */
+	public static String USER_HAS_PROHIBITED;
 }

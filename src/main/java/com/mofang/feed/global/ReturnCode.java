@@ -136,4 +136,9 @@ public class ReturnCode
 	 * 管理员不存在
 	 */
 	public final static int ADMIN_USER_NOT_EXISTS = 716;
+	
+	/**
+	 * 用户已被禁言
+	 */
+	public final static int USER_HAS_PROHIBITED = 717;
 }
