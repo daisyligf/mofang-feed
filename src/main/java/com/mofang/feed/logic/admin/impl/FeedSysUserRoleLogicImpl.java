@@ -12,7 +12,6 @@ import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.logic.admin.FeedSysUserRoleLogic;
 import com.mofang.feed.model.FeedAdminUser;
 import com.mofang.feed.model.FeedForum;
@@ -78,7 +77,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0, operatorId, FeedPrivilege.ADD_SYS_USER_ROLE);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -106,7 +105,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 		{
 			ResultValue result = new ResultValue();
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0, operatorId, FeedPrivilege.DELETE_SYS_USER_ROLE);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -134,7 +133,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 		{
 			ResultValue result = new ResultValue();
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0, operatorId, FeedPrivilege.ADD_ADMIN_USER);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

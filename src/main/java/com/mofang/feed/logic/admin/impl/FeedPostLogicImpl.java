@@ -23,13 +23,13 @@ import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
-import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
-import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.framework.util.StringUtil;
 
@@ -43,7 +43,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private final static FeedPostLogicImpl LOGIC = new FeedPostLogicImpl();
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedPostService postService = FeedPostServiceImpl.getInstance();
-	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedOperateHistoryService operateService = FeedOperateHistoryServiceImpl.getInstance();
 	
 	private FeedPostLogicImpl()
@@ -72,7 +72,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			long forumId = postInfo.getForumId();
 			long userId = postInfo.getUserId();
 			long threadId = postInfo.getThreadId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.DELETE_POST);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -136,8 +136,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				return result;
 			}
 			///权限检查
-			long forumId = postInfo.getForumId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.RESTORE_POST);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -173,8 +172,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				return result;
 			}
 			///权限检查
-			long forumId = postInfo.getForumId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.REMOVE_POST);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

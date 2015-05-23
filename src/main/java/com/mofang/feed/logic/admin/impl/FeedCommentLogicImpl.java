@@ -21,12 +21,12 @@ import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedCommentService;
 import com.mofang.feed.service.FeedOperateHistoryService;
-import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
-import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -37,7 +37,7 @@ import com.mofang.framework.util.StringUtil;
 public class FeedCommentLogicImpl implements FeedCommentLogic
 {
 	private final static FeedCommentLogicImpl LOGIC = new FeedCommentLogicImpl();
-	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedOperateHistoryService operateService = FeedOperateHistoryServiceImpl.getInstance();
 	private FeedCommentService commentService = FeedCommentServiceImpl.getInstance();
 	
@@ -66,7 +66,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			///权限检查
 			long forumId = commentInfo.getForumId();
 			long userId = commentInfo.getUserId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.DELETE_COMMENT);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -115,8 +115,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 				return result;
 			}
 			///权限检查
-			long forumId = commentInfo.getForumId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.RESTORE_COMMENT);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -152,8 +151,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 				return result;
 			}
 			///权限检查
-			long forumId = commentInfo.getForumId();
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.REMOVE_COMMENT);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

@@ -10,21 +10,20 @@ import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.logic.admin.FeedForumLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.Game;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedForumTagService;
-import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedTagService;
 import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedForumTagServiceImpl;
-import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedTagServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.framework.util.StringUtil;
@@ -39,7 +38,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 	private final static FeedForumLogicImpl LOGIC = new FeedForumLogicImpl();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
-	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
 	
@@ -59,7 +58,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			ResultValue result = new ResultValue();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_FORUM);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -112,7 +111,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(model.getForumId(), operatorId, FeedPrivilege.EDIT_FORUM);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -163,7 +162,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			ResultValue result = new ResultValue();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.DELETE_FORUM);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

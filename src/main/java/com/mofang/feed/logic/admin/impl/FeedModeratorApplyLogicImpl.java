@@ -8,17 +8,18 @@ import org.json.JSONObject;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.ModeratorApplyStatus;
 import com.mofang.feed.logic.admin.FeedModeratorApplyLogic;
 import com.mofang.feed.model.FeedModeratorApply;
 import com.mofang.feed.model.FeedSysUserRole;
 import com.mofang.feed.model.ModeratorApplyCondition;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedModeratorApplyService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedModeratorApplyServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
@@ -32,6 +33,7 @@ import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 public class FeedModeratorApplyLogicImpl implements FeedModeratorApplyLogic
 {
 	private final static FeedModeratorApplyLogicImpl LOGIC = new FeedModeratorApplyLogicImpl();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
 	private FeedModeratorApplyService applyService = FeedModeratorApplyServiceImpl.getInstance();
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
@@ -80,7 +82,7 @@ public class FeedModeratorApplyLogicImpl implements FeedModeratorApplyLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(0, operatorId, FeedPrivilege.AUDIT_MODERATOR_APPLY);
+			boolean hasPrivilege = adminService.exists(operatorId);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
