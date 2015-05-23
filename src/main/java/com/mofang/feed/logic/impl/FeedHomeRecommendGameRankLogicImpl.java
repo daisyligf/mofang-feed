@@ -13,8 +13,10 @@ import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.FeedHomeRecommendGameRankLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeRecommendGameRank;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeRecommendGameRankService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedHomeRecommendGameRankServiceImpl;
 
@@ -24,6 +26,7 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 	private static final FeedHomeRecommendGameRankLogicImpl LOGIC = new FeedHomeRecommendGameRankLogicImpl();
 	private FeedHomeRecommendGameRankService recommendGameRankService = FeedHomeRecommendGameRankServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	
 	private FeedHomeRecommendGameRankLogicImpl(){}
 	
@@ -32,23 +35,26 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 	}
 	
 	@Override
-	public ResultValue edit(List<FeedHomeRecommendGameRank> modelList)
+	public ResultValue edit(List<FeedHomeRecommendGameRank> modelList, long userId)
 			throws Exception {
 		try {
 			ResultValue result = new ResultValue();
+			boolean hasPrivilege = adminService.exists(userId);
+			if(!hasPrivilege) {
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
 			for(FeedHomeRecommendGameRank model : modelList){
 				long forumId = model.getForumId();
-				
 				FeedForum forum = forumService.getInfo(forumId);
 				if(forum == null){
 					result.setCode(ReturnCode.FORUM_NOT_EXISTS);
 					result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
 					return result;
 				}
-				
 				//设置下载地址
 				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
-				
 				//设置礼包地址
 				boolean flag = HttpComponent.checkGift(forum.getGameId());
 				if(flag){
@@ -74,9 +80,7 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 				JSONObject objRecommendGameRank = null;
 				for(FeedHomeRecommendGameRank model : list){
 					objRecommendGameRank = new JSONObject();
-					
 					long forumId = model.getForumId();
-					
 					FeedForum forum = forumService.getInfo(forumId);
 					if(forum == null)
 						continue;
@@ -86,12 +90,9 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 					//objRecommendGameRank.put("link_url", GlobalConfig.FORUM_DETAIL_URL + "?fid=" + forumId);
 					objRecommendGameRank.put("download_url", model.getDownloadUrl());
 					objRecommendGameRank.put("gift_url", model.getGiftUrl());
-					
 					data.put(objRecommendGameRank);
 				}
-				
 			}
-			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);

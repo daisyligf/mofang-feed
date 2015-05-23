@@ -21,20 +21,26 @@ public class TagAddAction extends AbstractActionExecutor {
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception {
 		ResultValue result = new ResultValue();
+		String strOperatorId = context.getParameters("uid");
+		if(!StringUtil.isLong(strOperatorId)) {
+			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
+			return result;
+		}
 		String postData = context.getPostData();
 		if (StringUtil.isNullOrEmpty(postData)) {
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-
+		long operatorId = Long.parseLong(strOperatorId);
 		JSONObject json = new JSONObject(postData);
 		String tagName = json.optString("tag_name", "");
 
 		FeedTag model = new FeedTag();
 		model.setTagName(tagName);
 		model.setCreateTime(System.currentTimeMillis());
-		return logic.add(model);
+		return logic.add(model, operatorId);
 	}
 
 }

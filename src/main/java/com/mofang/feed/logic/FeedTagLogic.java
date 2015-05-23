@@ -9,8 +9,8 @@ public interface FeedTagLogic {
 
 	public ResultValue getList() throws Exception;
 	
-	public ResultValue delete(List<Integer> tagIdList) throws Exception;
+	public ResultValue delete(List<Integer> tagIdList, long userId) throws Exception;
 	
-	public ResultValue add(FeedTag model) throws Exception;
+	public ResultValue add(FeedTag model, long userId) throws Exception;
 	
 }

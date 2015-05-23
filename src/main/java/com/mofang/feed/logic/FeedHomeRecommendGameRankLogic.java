@@ -7,7 +7,7 @@ import com.mofang.feed.model.FeedHomeRecommendGameRank;
 
 public interface FeedHomeRecommendGameRankLogic {
 
-	public ResultValue edit(List<FeedHomeRecommendGameRank> modelList) throws Exception;
+	public ResultValue edit(List<FeedHomeRecommendGameRank> modelList ,long userId) throws Exception;
 	
 	public ResultValue getList() throws Exception;
 }
