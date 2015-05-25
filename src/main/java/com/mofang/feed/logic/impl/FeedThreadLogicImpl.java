@@ -2101,17 +2101,11 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	}
 
 	@Override
-	public ResultValue getThreadTagList(long threadId) throws Exception {
+	public ResultValue getThreadTagList(long forumId) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
 			JSONArray data = new JSONArray();
-			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
-			if(threadInfo == null){
-				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
-				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
-				return result;	
-			}
-			List<Integer> list = forumTagService.getTagIdListByForumId(threadInfo.getForumId());
+			List<Integer> list = forumTagService.getTagIdListByForumId(forumId);
 			if(list != null){
 				JSONObject tagObj = null;
 				for(Integer tagId : list){

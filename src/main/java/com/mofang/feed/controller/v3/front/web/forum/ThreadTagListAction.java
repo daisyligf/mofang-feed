@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.front.web.thread;
+package com.mofang.feed.controller.v3.front.web.forum;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
@@ -15,13 +15,13 @@ public class ThreadTagListAction extends AbstractActionExecutor {
 	
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception {
-		String strThreadId = context.getParameters("tid");
+		String strForumId = context.getParameters("fid");
 		
-		long threadId = 0;
-		if(StringUtil.isLong(strThreadId))
-			threadId = Integer.parseInt(strThreadId);
+		long forumId = 0;
+		if(StringUtil.isLong(strForumId))
+			forumId = Integer.parseInt(strForumId);
 		
-		return logic.getThreadTagList(threadId);
+		return logic.getThreadTagList(forumId);
 	}
 
 }
