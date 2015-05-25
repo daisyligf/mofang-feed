@@ -199,6 +199,10 @@ public class HomeRankServiceImpl implements HomeRankService {
 						recommendMap.put(entry.getKey(), entry.getValue());
 					}
 				}
+			}else if(postRecommendMap == null && threadRecommendMap != null){
+				recommendMap = threadRecommendMap;
+			}else if(threadRecommendMap == null && postRecommendMap != null){
+				recommendMap = postRecommendMap;
 			}
 			
 			for(FeedForumOrder forumOrder : forumOrderList){
