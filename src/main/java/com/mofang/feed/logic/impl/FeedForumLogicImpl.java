@@ -14,6 +14,7 @@ import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.global.common.ForumURLKey;
+import com.mofang.feed.global.common.QueryTimeType;
 import com.mofang.feed.logic.FeedForumLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedThread;
@@ -325,7 +326,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				jsonForum.put("create_time", forumInfo.getCreateTime());
 				
 				///获取版块精华帖
-				Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, 1, 10);
+				Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, 1, 10, QueryTimeType.LAST_POST_TIME);
 				arrayThreads = new JSONArray();
 				if(null != page)
 				{

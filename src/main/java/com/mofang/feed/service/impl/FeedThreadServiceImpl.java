@@ -724,7 +724,7 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	}
 
 	@Override
-	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize) throws Exception
+	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize, int timeType) throws Exception
 	{
 		try
 		{
@@ -732,7 +732,7 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumEliteThreadList(forumId, start, end);
+			List<Long> idList = threadDao.getForumEliteThreadList(forumId, timeType, start, end);
 			return convertEntityList(total, idList);
 		}
 		catch(Exception e)
@@ -998,14 +998,14 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	}
 
 	@Override
-	public Page<FeedThread> getForumThreadListByTagId(long forumId, int tagId, int pageNum,
+	public Page<FeedThread> getForumThreadListByTagId(long forumId, int tagId, int timeType, int pageNum,
 			int pageSize) throws Exception {
 		try {
 			long total = threadDao.getForumThreadCountByTagId(forumId, tagId);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getThreadIdListByTagId(forumId, tagId, start, end);
+			List<Long> idList = threadDao.getThreadIdListByTagId(forumId, tagId, timeType, start, end);
 			return convertEntityList(total, idList);
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumThreadListByTagId throw an error.", e);
@@ -1014,18 +1014,35 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	}
 
 	@Override
-	public Page<FeedThread> getForumEliteThreadList(long forumId, long tagId,
+	public Page<FeedThread> getForumEliteThreadList(long forumId, long tagId, int timeType,
 			int pageNum, int pageSize) throws Exception {
 		try {
 			long total = threadDao.getForumEliteThreadCount(forumId, tagId);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumEliteThreadList(forumId, tagId, start, end);
+			List<Long> idList = threadDao.getForumEliteThreadList(forumId, tagId, timeType, start, end);
 			return convertEntityList(total, idList);
 		} catch(Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumEliteThreadList throw an error.", e);
 			throw e;
 		}
 	}
+
+	@Override
+	public Page<FeedThread> getForumThreadListByCreateTime(long forumId,
+			int pageNum, int pageSize) throws Exception {
+		try {
+			long total = threadDao.getThreadCount(forumId, 1);
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int end = pageNumber.getEnd();
+			List<Long> idList = threadDao.getForumThreadListByCreateTime(forumId, start, end);
+			return convertEntityList(total, idList);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumThreadListByCreateTime throw an error.", e);
+			throw e;
+		}
+	}
+	
 }

@@ -45,4 +45,17 @@ public class FeedTagRedisImpl implements FeedTagRedis {
 		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
 	}
 
+	@Override
+	public void delete(final int tagId) throws Exception {
+		RedisWorker<Boolean> worker = new RedisWorker<Boolean>() {
+			@Override
+			public Boolean execute(Jedis jedis) throws Exception {
+				String key = RedisKey.buildRedisKey(RedisKey.TAG_NAME_KEY_PREFIX, tagId);
+				jedis.del(key);
+				return true;
+			}
+		};
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+
 }
