@@ -165,6 +165,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 	@Override
 	public void refresh(int type) throws Exception {
 		try {
+			long startTime = System.currentTimeMillis();
 			List<FeedForumOrder> forumOrderList = forumDao.getForumOrderList(type);
 			if(forumOrderList == null){
 				return;
@@ -181,7 +182,24 @@ public class HomeRankServiceImpl implements HomeRankService {
 			Map<Long, ForumCount> threadMap = threadDao.getThreadCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> replyMap = postDao.getReplyCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
-			Map<Long, ForumCount> recommendMap = forumDao.getRecommendCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCount> postRecommendMap = forumDao.getPostRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCount> threadRecommendMap = forumDao.getThreadRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCount> recommendMap = null;
+			if(postRecommendMap != null && threadRecommendMap != null ){
+				int postRecommendSize = postRecommendMap.size();
+				int threadRecommendSize = threadRecommendMap.size();
+				if(postRecommendSize >= threadRecommendSize){
+					recommendMap = new HashMap<Long, ForumCount>(postRecommendSize);
+					for(Map.Entry<Long, ForumCount> entry : postRecommendMap.entrySet()){
+						recommendMap.put(entry.getKey(), entry.getValue());
+					}
+				}else{
+					recommendMap = new HashMap<Long, ForumCount>(threadRecommendSize);
+					for(Map.Entry<Long, ForumCount> entry : threadRecommendMap.entrySet()){
+						recommendMap.put(entry.getKey(), entry.getValue());
+					}
+				}
+			}
 			
 			for(FeedForumOrder forumOrder : forumOrderList){
 				long forumId = forumOrder.getForumId();
@@ -198,13 +216,16 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(type == ForumType.HOT_FORUM){
 				doRefreshHotForumRank(forumOrderList);
 				addHotForumListRedis(forumOrderList);
-				GlobalObject.INFO_LOG.info("HomeRankServiceImpl.refresh 刷新了热游排行榜数据");
 			}
 			else if(type == ForumType.RECOMMEND_GAME){
 				doRefreshRecommendGameRank(forumOrderList);
 				addRecommendGameListRedis(forumOrderList);
-				GlobalObject.INFO_LOG.info("HomeRankServiceImpl.refresh 刷新了新游排行榜数据");
 			}
+			long endTime = System.currentTimeMillis();
+			if(type == ForumType.HOT_FORUM)
+				GlobalObject.INFO_LOG.info("at HomeRankServiceImpl.refresh,刷新热游排行榜，耗时:" + (endTime - startTime) + "毫秒");
+			else if(type == ForumType.RECOMMEND_GAME)
+				GlobalObject.INFO_LOG.info("at HomeRankServiceImpl.refresh,刷新新游排行榜，耗时:" + (endTime - startTime) + "毫秒");
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at HomeRankServiceImpl.refresh throw an error.", e);
 			throw e;

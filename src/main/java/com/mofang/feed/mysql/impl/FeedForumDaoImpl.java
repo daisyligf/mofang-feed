@@ -162,19 +162,16 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	}
 
 	@Override
-	public Map<Long,ForumCount> getRecommendCount(Set<Long> forumIds,
+	public Map<Long,ForumCount> getPostRecommendCount(int type,
 			long startTime, long endTime) throws Exception {
-		String strForumIds = "";
-		for (long strForumId : forumIds)
-			strForumIds += strForumId + ",";
-		if (strForumIds.length() > 0)
-			strForumIds = strForumIds.substring(0, strForumIds.length() - 1);
-		
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select sum(a.forum_count),forum_id from (select count(1) as forum_count,forum_id ");
-		strSql.append("from feed_thread_recommend where forum_id in (" + strForumIds +") group by forum_id ");
-		strSql.append("union all select count(1) as forum_count,forum_id from feed_post_recommend ");
-		strSql.append("where forum_id in (" + strForumIds + ") group by forum_id) a group by a.forum_id");
+		strSql.append("select count(1) as recommend_count, b.forum_id from ");
+		strSql.append("(select post_id,a.forum_id from feed_post right join ");
+		strSql.append("(select forum_id from feed_forum where type = " + type);
+		strSql.append(" ) a on a.forum_id = feed_post.forum_id) b left join ");
+		strSql.append("(select post_id from feed_post_recommend where ");
+		strSql.append("create_time > " + startTime + " and create_time < " + endTime +") c ");
+		strSql.append("on b.post_id = c.post_id group by b.forum_id");
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
 			return null;
@@ -191,6 +188,34 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		return map;
 	}
 
+
+	@Override
+	public Map<Long, ForumCount> getThreadRecommendCount(int type,
+			long startTime, long endTime) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select count(1) as recommend_count, b.forum_id from ");
+		strSql.append("(select thread_id,a.forum_id from feed_thread right join ");
+		strSql.append("(select forum_id from feed_forum where type = " + type);
+		strSql.append(" ) a on a.forum_id = feed_thread.forum_id) b left join ");
+		strSql.append("(select thread_id from feed_thread_recommend where ");
+		strSql.append("create_time > " + startTime + " and create_time < " + endTime +") c ");
+		strSql.append("on b.thread_id = c.thread_id group by b.forum_id");
+		ResultData data = super.executeQuery(strSql.toString());
+		if (data == null)
+			return null;
+		List<RowData> rows = data.getQueryResult();
+		if (rows == null || rows.size() == 0)
+			return null;
+		Map<Long, ForumCount> map = new HashMap<Long, ForumCount>(rows.size());
+		for (RowData row : rows){
+			ForumCount count = new ForumCount();
+			count.count  = row.getLong(0);
+			count.forumId = row.getLong(1);
+			map.put(count.forumId, count);
+		}
+		return map;
+	}
+	
 	@Override
 	public List<Long> getForumIdList() throws Exception {
 		StringBuilder strSql = new StringBuilder();
