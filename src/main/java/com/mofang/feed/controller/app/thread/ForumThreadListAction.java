@@ -4,6 +4,7 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
+import com.mofang.feed.global.common.QueryTimeType;
 import com.mofang.feed.logic.FeedThreadLogic;
 import com.mofang.feed.logic.impl.FeedThreadLogicImpl;
 import com.mofang.framework.util.StringUtil;
@@ -54,7 +55,7 @@ public class ForumThreadListAction extends AbstractActionExecutor
 			type = Integer.parseInt(strType);
 		
 		if(1 == type)
-			return logic.getForumEliteThreadList(forumId, pageNum, pageSize, userId);
+			return logic.getForumEliteThreadList(forumId, pageNum, pageSize, userId, QueryTimeType.LAST_POST_TIME);
 		else if(2 == type)
 			return logic.getForumQuestionThreadList(forumId, pageNum, pageSize, userId);
 		else if(3 == type)

@@ -205,7 +205,7 @@ public interface FeedThreadService
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize) throws Exception;
+	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize, int timeType) throws Exception;
 	
 	/**
 	 * 获取版块视频主题列表
@@ -336,8 +336,10 @@ public interface FeedThreadService
 	 */
 	public Page<FeedThread> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 	
-	public Page<FeedThread> getForumThreadListByTagId(long forumId, int tagId, int pageNum, int pageSize) throws Exception;
+	public Page<FeedThread> getForumThreadListByTagId(long forumId, int tagId, int timeType, int pageNum, int pageSize) throws Exception;
 	
-	public Page<FeedThread> getForumEliteThreadList(long forumId, long tagId, int pageNum, int pageSize) throws Exception;
+	public Page<FeedThread> getForumEliteThreadList(long forumId, long tagId, int timeType, int pageNum, int pageSize) throws Exception;
+	
+	public Page<FeedThread> getForumThreadListByCreateTime(long forumId, int pageNum, int pageSize) throws Exception;
 
 }

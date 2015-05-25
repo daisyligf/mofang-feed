@@ -1421,11 +1421,11 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	}
 
 	@Override
-	public ResultValue getForumEliteThreadList(long forumId, int pageNum, int pageSize, long currentUserId) throws Exception
+	public ResultValue getForumEliteThreadList(long forumId, int pageNum, int pageSize, long currentUserId, int timeType) throws Exception
 	{
 		try
 		{
-			Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, pageNum, pageSize);
+			Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, pageNum, pageSize, timeType);
 			return formatForumThreads(forumId, page, currentUserId);
 		}
 		catch(Exception e)
@@ -2041,9 +2041,9 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 
 	@Override
 	public ResultValue getForumThreadListByTagId(long forumId, int tagId,
-			int pageNum, int pageSize, long currentUserId) throws Exception {
+			int pageNum, int pageSize, long currentUserId, int timeType) throws Exception {
 		try{
-			Page<FeedThread> page = threadService.getForumThreadListByTagId(forumId, tagId, pageNum, pageSize);
+			Page<FeedThread> page = threadService.getForumThreadListByTagId(forumId, tagId, timeType, pageNum, pageSize);
 			return formatForumThreads(forumId, page, currentUserId);
 		}catch(Exception e){
 			throw new Exception("at FeedThreadLogicImpl.getForumThreadListByTagId throw an error.", e);
@@ -2052,9 +2052,9 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 
 	@Override
 	public ResultValue getForumEliteThreadList(long forumId, int tagId,
-			int pageNum, int pageSize, long currentUserId) throws Exception {
+			int pageNum, int pageSize, long currentUserId, int timeType) throws Exception {
 		try {
-			Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, tagId, pageNum, pageSize);
+			Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, tagId, timeType, pageNum, pageSize);
 			return formatForumThreads(forumId, page, currentUserId);
 		} catch(Exception e) {
 			throw new Exception("at FeedThreadLogicImpl.getForumEliteThreadList throw an error.", e);
@@ -2082,7 +2082,6 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			data.put("subject", threadInfo.getSubject());     //主题标题
 			FeedPost postInfo = threadInfo.getPost();
 			if(postInfo != null) {
-				data.put("content", postInfo.getContentFilter());
 				data.put("html_content", postInfo.getHtmlContentFilter());
 				String pics = postInfo.getPictures();
 				JSONArray jsonArrayPics = MiniTools.StringToJSONArray(pics);
@@ -2122,6 +2121,17 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			return result;
 		} catch(Exception e) {
 			throw new Exception("at FeedThreadLogicImpl.getThreadTagList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue getForumThreadListByCreateTime(long forumId,
+			int pageNum, int pageSize, long currentUserId) throws Exception {
+		try {
+			Page<FeedThread> page = threadService.getForumThreadListByCreateTime(forumId, pageNum, pageSize);
+			return formatForumThreads(forumId, page, currentUserId);
+		} catch(Exception e) {
+			throw new Exception("at FeedThreadLogicImpl.getForumThreadList throw an error.", e);
 		}
 	}
 	

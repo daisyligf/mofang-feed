@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.QueryTimeType;
 import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.global.common.ThreadType;
 import com.mofang.feed.model.FeedThread;
@@ -255,13 +256,18 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 	}
 
 	@Override
-	public List<Long> getForumEliteThreadList(long forumId, int start, int end)
+	public List<Long> getForumEliteThreadList(long forumId, int timeType, int start, int end)
 			throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");
 		strSql.append("where forum_id = " + forumId + " ");
 		strSql.append("and status = 1 and is_elite = 1 ");
-		strSql.append("order by last_post_time desc ");
+		
+		if(timeType == QueryTimeType.LAST_POST_TIME)
+			strSql.append(" order by last_post_time desc ");
+		else if(timeType == QueryTimeType.CREATE_TIME)
+			strSql.append(" order by create_time desc ");
+		
 		strSql.append("limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);
@@ -543,12 +549,17 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 	}
 
 	@Override
-	public List<Long> getThreadIdListByTagId(long fourmId, int tagId, int start, int end) throws Exception {
+	public List<Long> getThreadIdListByTagId(long fourmId, int tagId, int timeType, int start, int end) throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");
 		strSql.append("where forum_id = " + fourmId);
 		strSql.append(" and status = 1 and tag_id = " + tagId);
-		strSql.append(" order by last_post_time desc ");
+		
+		if(timeType == QueryTimeType.LAST_POST_TIME)
+			strSql.append(" order by last_post_time desc ");
+		else if(timeType == QueryTimeType.CREATE_TIME)
+			strSql.append(" order by create_time desc ");
+		
 		strSql.append(" limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);
@@ -568,14 +579,19 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 	}
 
 	@Override
-	public List<Long> getForumEliteThreadList(long forumId, long tagId,
+	public List<Long> getForumEliteThreadList(long forumId, long tagId, int timeType, 
 			int start, int end) throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");
 		strSql.append("where forum_id = " + forumId);
 		strSql.append(" and status = 1 and is_elite = 1");
 		strSql.append(" and tag_id = " + tagId);
-		strSql.append(" order by last_post_time desc");
+		
+		if(timeType == QueryTimeType.LAST_POST_TIME)
+			strSql.append(" order by last_post_time desc ");
+		else if(timeType == QueryTimeType.CREATE_TIME)
+			strSql.append(" order by create_time desc ");
+		
 		strSql.append(" limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);
@@ -629,6 +645,17 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		strSql.append("select thread_id from feed_thread ");	
 		strSql.append("where is_elite=1");
 		strSql.append(" order by last_post_time desc");
+		strSql.append(" limit " + start + ", " + end);
+		ResultData data = super.executeQuery(strSql.toString());
+		return convertResultDataToList(data);
+	}
+
+	@Override
+	public List<Long> getForumThreadListByCreateTime(long forumId, int start, int end) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select thread_id from feed_thread ");	
+		strSql.append("where status = 1 and forum_id = " + forumId);
+		strSql.append(" order by create_time desc");
 		strSql.append(" limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);

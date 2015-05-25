@@ -88,7 +88,7 @@ public interface FeedThreadDao
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Long> getForumEliteThreadList(long forumId, int start, int end) throws Exception;
+	public List<Long> getForumEliteThreadList(long forumId, int timeType, int start, int end) throws Exception;
 	
 	/**
 	 * 获取版块精华主题总数
@@ -260,11 +260,13 @@ public interface FeedThreadDao
 	
 	public long getForumThreadCountByTagId(long forumId, int tagId) throws Exception;
 	
-	public List<Long> getThreadIdListByTagId(long foumId, int tagId, int start, int end) throws Exception;
+	public List<Long> getThreadIdListByTagId(long foumId, int tagId, int timeType, int start, int end) throws Exception;
 	
-	public List<Long> getForumEliteThreadList(long forumId, long tagId, int start, int end) throws Exception;
+	public List<Long> getForumEliteThreadList(long forumId, long tagId, int timeType, int start, int end) throws Exception;
 	
 	public long getForumEliteThreadCount(long forumId, long tagId) throws Exception;
 	
 	public long getUserTopOrEliteThreadCount(long userId) throws Exception;
+	
+	public List<Long> getForumThreadListByCreateTime(long forumId, int start, int end) throws Exception;
 }
