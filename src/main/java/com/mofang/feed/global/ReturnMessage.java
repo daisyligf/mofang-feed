@@ -141,4 +141,9 @@ public class ReturnMessage
 	 * 用户已被禁言
 	 */
 	public static String USER_HAS_PROHIBITED;
+	
+	/**
+	 * 用户不存在
+	 */
+	public static String USER_NOT_EXISTS;
 }

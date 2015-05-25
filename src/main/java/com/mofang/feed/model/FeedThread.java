@@ -108,6 +108,7 @@ public class FeedThread
 			this.topTime = decorator.optLong("top_time", System.currentTimeMillis()); 
 			this.updownTime = decorator.optLong("updown_time", System.currentTimeMillis());
 			this.gameId = decorator.optInt("game_id", 0);
+			this.tagId = decorator.optInt("tag_id", 0);
 			this.createTime = decorator.optLong("create_time", System.currentTimeMillis());
 			this.updateTime = decorator.optLong("update_time", System.currentTimeMillis());
 		}
@@ -373,6 +374,7 @@ public class FeedThread
 			decorator.put("top_time", topTime);
 			decorator.put("updown_time", updownTime);
 			decorator.put("game_id", gameId);
+			decorator.put("tag_id", tagId);
 			decorator.put("create_time", createTime);
 			decorator.put("update_time", updateTime);
 			return decorator.toMap();

@@ -25,7 +25,7 @@ public class FeedBlackListLoad implements FeedLoad
 		List<FeedBlackList> list = getData();
 		if(null == list || list.size() == 0)
 		{
-			GlobalObject.ERROR_LOG.error("forum data is null or empty.");
+			GlobalObject.ERROR_LOG.error("black list data is null or empty.");
 			return;
 		}
 		

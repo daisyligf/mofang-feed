@@ -141,4 +141,9 @@ public class ReturnCode
 	 * 用户已被禁言
 	 */
 	public final static int USER_HAS_PROHIBITED = 717;
+	
+	/**
+	 * 用户不存在
+	 */
+	public final static int USER_NOT_EXISTS = 718;
 }
