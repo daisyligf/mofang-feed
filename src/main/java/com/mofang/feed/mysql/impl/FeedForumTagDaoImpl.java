@@ -75,6 +75,15 @@ public class FeedForumTagDaoImpl extends AbstractMysqlSupport<FeedForumTag> impl
 	}
 
 	@Override
+	public void deleteByForumId(long forumId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand tagEqual = new EqualOperand("forum_id", forumId);
+		where.append(tagEqual);
+		super.deleteByWhere(where);
+	}
+
+	@Override
 	public List<Integer> getTagIdListByForumId(long forumId) throws Exception
 	{
 		Operand where = new WhereOperand();

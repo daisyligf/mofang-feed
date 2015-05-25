@@ -129,15 +129,15 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					{
 						String icon = gameInfo.getIcon();
 						forumInfo.setIcon(icon);
-						forumInfo.setGameId(model.getGameId());
 					}
 				}
 			}
 			
 			///保存版块信息
 			forumInfo.setName(model.getName());
-			forumInfo.setIcon(model.getIcon());
 			forumInfo.setColor(model.getColor());
+			forumInfo.setType(model.getType());
+			forumInfo.setGameId(model.getGameId());
 			forumService.edit(forumInfo);
 			
 			///保存版块标签

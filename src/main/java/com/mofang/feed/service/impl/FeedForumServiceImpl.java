@@ -88,7 +88,7 @@ public class FeedForumServiceImpl implements FeedForumService
 			
 			/******************************Solr操作******************************/
 			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
-			if(model.getParentId() > 0 && !model.isHidden())
+			if(!model.isHidden())
 				forumSolr.add(model);
 			
 			return forumId;
@@ -118,7 +118,7 @@ public class FeedForumServiceImpl implements FeedForumService
 			
 			/******************************Solr操作******************************/
 			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
-			if(model.getParentId() > 0 && !model.isHidden())
+			if(!model.isHidden())
 				forumSolr.add(model);
 		}
 		catch(Exception e)
@@ -152,6 +152,8 @@ public class FeedForumServiceImpl implements FeedForumService
 			/******************************数据库操作******************************/
 			///删除版块信息
 			forumDao.delete(forumId);
+			///删除版块和标签的对应关系
+			forumTagDao.deleteByForumId(forumId);
 			///将所属该版块的主题的状态值设为0(已删除)
 			threadDao.updateStatusByForumId(forumId, ThreadStatus.DELETED);
 			///将所属该版块的楼层的状态值设为0(已删除)
