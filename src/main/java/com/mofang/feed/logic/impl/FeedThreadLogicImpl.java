@@ -35,6 +35,7 @@ import com.mofang.feed.model.external.User;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
+import com.mofang.feed.service.FeedForumFollowService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedForumTagService;
 import com.mofang.feed.service.FeedOperateHistoryService;
@@ -43,6 +44,7 @@ import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedTagService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
+import com.mofang.feed.service.impl.FeedForumFollowServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedForumTagServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
@@ -71,6 +73,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
+	private FeedForumFollowService followService = FeedForumFollowServiceImpl.getInstance();
 	
 	private FeedThreadLogicImpl()
 	{}
@@ -1581,8 +1584,47 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	@Override
 	public ResultValue getGlobalEliteThreadList(int pageNum, int pageSize) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			Page<FeedThread> page = threadService.getGlobalEliteThreadList(pageNum, pageSize);
+			long total = 0;
+			JSONArray arrayThreads = new JSONArray();
+			JSONObject jsonThread = null;
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedThread> threads = page.getList();
+				if(null != threads)
+				{
+					for(FeedThread threadInfo : threads)
+					{
+						jsonThread = new JSONObject();
+						jsonThread.put("tid", threadInfo.getThreadId());
+						jsonThread.put("subject", threadInfo.getSubjectFilter());
+						JSONObject jsonForum = new JSONObject();
+						jsonForum.put("fid", threadInfo.getForumId());
+						FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+						if(null != forumInfo)
+							jsonForum.put("name", forumInfo.getName());
+						jsonThread.put("forum", jsonForum);
+						jsonThread.put("create_time", threadInfo.getCreateTime());
+						jsonThread.put("reply_cnt", threadInfo.getReplies());
+						jsonThread.put("page_view", threadInfo.getPageView());
+						arrayThreads.put(jsonThread);
+					}
+				}
+			}
+			
+			data.put("total", total);
+			data.put("list", arrayThreads);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedThreadLogicImpl.getGlobalEliteThreadList throw an error.", e);
+		}
 	}
 
 	@Override
@@ -1590,7 +1632,8 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	{
 		try
 		{
-			Set<Long> forumIds = HttpComponent.getFllowForums(userId);
+			//Set<Long> forumIds = HttpComponent.getFllowForums(userId);
+			Set<Long> forumIds = followService.getForumIdList(userId);
 			Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();

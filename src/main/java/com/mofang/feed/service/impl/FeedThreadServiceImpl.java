@@ -927,7 +927,12 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	{
 		try
 		{
-			return null;
+			long total = threadDao.getGlobalEliteThreadCount();
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int end = pageNumber.getEnd();
+			List<Long> idList = threadDao.getGlobalEliteThreadList(start, end);
+			return convertEntityList(total, idList);
 		}
 		catch(Exception e)
 		{

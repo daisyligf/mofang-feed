@@ -1,5 +1,7 @@
 package com.mofang.feed.service.impl;
 
+import java.util.Set;
+
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedForumFollow;
 import com.mofang.feed.mysql.FeedForumDao;
@@ -101,4 +103,15 @@ public class FeedForumFollowServiceImpl implements FeedForumFollowService
 			throw e;
 		}
 	}
+
+	@Override
+	public Set<Long> getForumIdList(long userId) throws Exception {
+		try {
+			return followDao.getForumIds(userId);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedForumFollowServiceImpl.getForumIdList throw an error.", e);
+			throw e;
+		}
+	}
+	
 }

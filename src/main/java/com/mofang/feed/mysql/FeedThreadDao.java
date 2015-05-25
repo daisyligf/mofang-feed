@@ -252,6 +252,10 @@ public interface FeedThreadDao
 	 */
 	public long getForumEliteThreadCount(Set<Long> forumIds) throws Exception;
 	
+	public long getGlobalEliteThreadCount() throws Exception;
+	
+	public List<Long> getGlobalEliteThreadList(int start, int end) throws Exception;
+	
 	public Map<Long,ForumCount> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 	
 	public long getForumThreadCountByTagId(long forumId, int tagId) throws Exception;
