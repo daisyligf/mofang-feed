@@ -126,18 +126,23 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
 			User userInfo = UserComponent.getInfo(userId);
-			if(null != userInfo)
+			if(null == userInfo)
 			{
-				data.put("user_id", userId);
-				data.put("nickname", userInfo.getNickName());
-				data.put("register_time", userInfo.getRegisterTime());
-				///获取用户发帖总数
-				long threads = threadService.getUserThreadCount(userId);
-				///获取用户回帖总数
-				long replies = postService.getUserReplyCount(userId);
-				data.put("threads", threads);
-				data.put("replies", replies);
+				result.setCode(ReturnCode.USER_NOT_EXISTS);
+				result.setMessage(ReturnMessage.USER_NOT_EXISTS);
+				return result;
 			}
+			
+			data.put("user_id", userId);
+			data.put("nickname", userInfo.getNickName());
+			data.put("register_time", userInfo.getRegisterTime());
+			///获取用户发帖总数
+			long threads = threadService.getUserThreadCount(userId);
+			///获取用户回帖总数
+			long replies = postService.getUserReplyCount(userId);
+			data.put("threads", threads);
+			data.put("replies", replies);
+			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);
