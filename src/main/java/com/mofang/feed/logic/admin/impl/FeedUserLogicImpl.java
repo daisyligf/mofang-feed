@@ -130,13 +130,18 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			{
 				data.put("user_id", userId);
 				data.put("nickname", userInfo.getNickName());
+				data.put("avatar", userInfo.getAvatar());
+				data.put("coin", userInfo.getCoin());
 				data.put("register_time", userInfo.getRegisterTime());
 				///获取用户发帖总数
 				long threads = threadService.getUserThreadCount(userId);
+				//精华帖子数
+				long eliteThreadCount = threadService.getUserEliteThreadCount(userId);
 				///获取用户回帖总数
 				long replies = postService.getUserReplyCount(userId);
 				data.put("threads", threads);
 				data.put("replies", replies);
+				data.put("elite_threads", eliteThreadCount);
 			}
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);

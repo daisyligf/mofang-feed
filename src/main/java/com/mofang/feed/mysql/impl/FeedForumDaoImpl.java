@@ -156,6 +156,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 			FeedForumOrder forumOrder = new FeedForumOrder();
 			forumOrder.setForumId(row.getLong(0));
 			forumOrder.setCreateTime(row.getLong(1));
+			list.add(forumOrder);
 		}
 		return list;
 	}
@@ -170,7 +171,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 			strForumIds = strForumIds.substring(0, strForumIds.length() - 1);
 		
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select sum(a.forum_count),forum_id from (select count(1) as forum_count,fourm_id ");
+		strSql.append("select sum(a.forum_count),forum_id from (select count(1) as forum_count,forum_id ");
 		strSql.append("from feed_thread_recommend where forum_id in (" + strForumIds +") group by forum_id ");
 		strSql.append("union all select count(1) as forum_count,forum_id from feed_post_recommend ");
 		strSql.append("where forum_id in (" + strForumIds + ") group by forum_id) a group by a.forum_id");

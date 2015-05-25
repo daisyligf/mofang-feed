@@ -209,24 +209,24 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			{
 				data.put("nickname", userInfo.getNickName());
 				data.put("avatar", userInfo.getAvatar());
-//				data.put("level", userInfo.getLevel());
-//				data.put("coin", userInfo.getCoin());
-//				data.put("diamond", userInfo.getDiamond());
-//				data.put("exp", userInfo.getExp());
-//				data.put("upgrade_exp", userInfo.getUpgradeExp());
-//				data.put("gained_exp", userInfo.getGainedExp());
-//				data.put("badge", userInfo.getBadges());
+				data.put("level", userInfo.getLevel());
+				data.put("coin", userInfo.getCoin());
+				data.put("diamond", userInfo.getDiamond());
+				data.put("exp", userInfo.getExp());
+				data.put("upgrade_exp", userInfo.getUpgradeExp());
+				data.put("gained_exp", userInfo.getGainedExp());
+				data.put("badge", userInfo.getBadges());
 				
 				JSONObject jsonUser = new JSONObject();
 				jsonUser.put("nickname", userInfo.getNickName());
 				jsonUser.put("avatar", userInfo.getAvatar());
-//				jsonUser.put("level", userInfo.getLevel());
-//				jsonUser.put("coin", userInfo.getCoin());
-//				jsonUser.put("diamond", userInfo.getDiamond());
-//				jsonUser.put("exp", userInfo.getExp());
-//				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-//				jsonUser.put("gained_exp", userInfo.getGainedExp());
-//				jsonUser.put("badge", userInfo.getBadges());
+				jsonUser.put("level", userInfo.getLevel());
+				jsonUser.put("coin", userInfo.getCoin());
+				jsonUser.put("diamond", userInfo.getDiamond());
+				jsonUser.put("exp", userInfo.getExp());
+				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+				jsonUser.put("gained_exp", userInfo.getGainedExp());
+				jsonUser.put("badge", userInfo.getBadges());
 				data.put("user", jsonUser);
 			}
 			
@@ -1086,13 +1086,13 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						{
 							jsonPost.put("nickname", userInfo.getNickName());
 							jsonPost.put("avatar", userInfo.getAvatar());
-							//jsonPost.put("level", userInfo.getLevel());
-							//jsonPost.put("coin", userInfo.getCoin());
-							//jsonPost.put("diamond", userInfo.getDiamond());
-							//jsonPost.put("exp", userInfo.getExp());
-							//jsonPost.put("upgrade_exp", userInfo.getUpgradeExp());
-							//jsonPost.put("gained_exp", userInfo.getGainedExp());
-							//jsonPost.put("badge", userInfo.getBadges());
+							jsonPost.put("level", userInfo.getLevel());
+							jsonPost.put("coin", userInfo.getCoin());
+							jsonPost.put("diamond", userInfo.getDiamond());
+							jsonPost.put("exp", userInfo.getExp());
+							jsonPost.put("upgrade_exp", userInfo.getUpgradeExp());
+							jsonPost.put("gained_exp", userInfo.getGainedExp());
+							jsonPost.put("badge", userInfo.getBadges());
 							
 							JSONObject jsonUser = buildUserJSONObject(userInfo);
 							long threadCount = threadService.getUserThreadCount(userId);
@@ -1202,13 +1202,13 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						{
 							jsonPost.put("nickname", userInfo.getNickName());
 							jsonPost.put("avatar", userInfo.getAvatar());
-							//jsonPost.put("level", userInfo.getLevel());
-							//jsonPost.put("coin", userInfo.getCoin());
-							//jsonPost.put("diamond", userInfo.getDiamond());
-							//jsonPost.put("exp", userInfo.getExp());
-							//jsonPost.put("upgrade_exp", userInfo.getUpgradeExp());
-							//jsonPost.put("gained_exp", userInfo.getGainedExp());
-							//jsonPost.put("badge", userInfo.getBadges());
+							jsonPost.put("level", userInfo.getLevel());
+							jsonPost.put("coin", userInfo.getCoin());
+							jsonPost.put("diamond", userInfo.getDiamond());
+							jsonPost.put("exp", userInfo.getExp());
+							jsonPost.put("upgrade_exp", userInfo.getUpgradeExp());
+							jsonPost.put("gained_exp", userInfo.getGainedExp());
+							jsonPost.put("badge", userInfo.getBadges());
 							
 							JSONObject jsonUser = buildUserJSONObject(userInfo);
 							long threadCount = threadService.getUserThreadCount(userId);
@@ -1374,13 +1374,13 @@ public class FeedPostLogicImpl implements FeedPostLogic
 					{
 						jsonComment.put("nickname", userInfo.getNickName());
 						jsonComment.put("avatar", userInfo.getAvatar());
-//						jsonComment.put("level", userInfo.getLevel());
-//						jsonComment.put("coin", userInfo.getCoin());
-//						jsonComment.put("diamond", userInfo.getDiamond());
-//						jsonComment.put("exp", userInfo.getExp());
-//						jsonComment.put("upgrade_exp", userInfo.getUpgradeExp());
-//						jsonComment.put("gained_exp", userInfo.getGainedExp());
-//						jsonComment.put("badge", userInfo.getBadges());
+						jsonComment.put("level", userInfo.getLevel());
+						jsonComment.put("coin", userInfo.getCoin());
+						jsonComment.put("diamond", userInfo.getDiamond());
+						jsonComment.put("exp", userInfo.getExp());
+						jsonComment.put("upgrade_exp", userInfo.getUpgradeExp());
+						jsonComment.put("gained_exp", userInfo.getGainedExp());
+						jsonComment.put("badge", userInfo.getBadges());
 					}
 					arrayComments.put(jsonComment);
 				}
@@ -1411,13 +1411,13 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		jsonUser.put("id", userInfo.getUserId());
 		jsonUser.put("nickname", userInfo.getNickName());
 		jsonUser.put("avatar", userInfo.getAvatar());
-		//jsonUser.put("level", userInfo.getLevel());
-		//jsonUser.put("coin", userInfo.getCoin());
-		//jsonUser.put("diamond", userInfo.getDiamond());
-		//jsonUser.put("exp", userInfo.getExp());
-		//jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-		//jsonUser.put("gained_exp", userInfo.getGainedExp());
-		//jsonUser.put("badge", userInfo.getBadges());
+		jsonUser.put("level", userInfo.getLevel());
+		jsonUser.put("coin", userInfo.getCoin());
+		jsonUser.put("diamond", userInfo.getDiamond());
+		jsonUser.put("exp", userInfo.getExp());
+		jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+		jsonUser.put("gained_exp", userInfo.getGainedExp());
+		jsonUser.put("badge", userInfo.getBadges());
 		return jsonUser;
 	}
 	
