@@ -53,9 +53,6 @@ public class ThreadOpenAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		logic.open(threadId, operatorId, reason);
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.open(threadId, operatorId, reason);
 	}
 }

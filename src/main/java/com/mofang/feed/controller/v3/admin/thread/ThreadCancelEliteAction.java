@@ -53,9 +53,6 @@ public class ThreadCancelEliteAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		logic.cancelElite(threadId, operatorId, reason);
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.cancelElite(threadId, operatorId, reason);
 	}
 }

@@ -53,9 +53,6 @@ public class ThreadCloseAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		logic.close(threadId, operatorId, reason);
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.close(threadId, operatorId, reason);
 	}
 }

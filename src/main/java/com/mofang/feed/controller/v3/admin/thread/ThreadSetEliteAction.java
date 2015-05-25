@@ -53,9 +53,6 @@ public class ThreadSetEliteAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		logic.setElite(threadId, operatorId, reason);
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.setElite(threadId, operatorId, reason);
 	}
 }
