@@ -190,4 +190,22 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		}
 		return map;
 	}
+
+	@Override
+	public List<Long> getForumIdList() throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select forum_id from feed_forum ");
+		ResultData data = super.executeQuery(strSql.toString());
+		if (data == null)
+			return null;
+		List<RowData> rows = data.getQueryResult();
+		if (rows == null || rows.size() == 0)
+			return null;
+		List<Long> list = new ArrayList<Long>(rows.size());
+		for(RowData row : rows){
+			list.add(row.getLong(0));
+		}
+		return list;
+	}
+	
 }

@@ -255,6 +255,13 @@ public class RedisKey
 	 */
 	public final static String HOME_DEFAULT_KEY_WORD_KEY = "home_key_word";
 	
+	/***
+	 * 板块下回复最高 7条帖子
+	 * 结构: Set
+	 * 示例: sadd thread_reply_highest_list_${forum_id}  ${thread_id}
+	 */
+	public final static String REPLYHIGHEST_THREAD_KEY_PREFIX = "forum_replyhighest_thread_list_";
+	
 	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀

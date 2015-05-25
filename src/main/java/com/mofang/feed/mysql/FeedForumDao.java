@@ -43,4 +43,6 @@ public interface FeedForumDao
 	public List<FeedForumOrder> getForumOrderList(long type) throws Exception;
 	
 	public Map<Long,ForumCount> getRecommendCount(Set<Long> forumids, long startTime, long endTime) throws Exception;
+	
+	public List<Long> getForumIdList() throws Exception;
 }

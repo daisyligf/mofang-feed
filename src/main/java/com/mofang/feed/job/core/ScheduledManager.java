@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import com.mofang.feed.job.core.TaskEntity;
 import com.mofang.feed.job.core.task.TaskRefreshHotForumRankEntity;
 import com.mofang.feed.job.core.task.TaskRefreshRecommendGameRankEntity;
+import com.mofang.feed.job.core.task.TaskThreadReplyHighestListEntity;
 
 /**
  * 计划任务管理器
@@ -38,6 +39,7 @@ public class ScheduledManager {
 	private void registerTask() {
 		add(new TaskRefreshHotForumRankEntity());
 		add(new TaskRefreshRecommendGameRankEntity());
+		add(new TaskThreadReplyHighestListEntity());
 	}
 
 	public void execute() {

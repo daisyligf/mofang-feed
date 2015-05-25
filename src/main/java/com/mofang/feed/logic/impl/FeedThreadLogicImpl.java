@@ -43,6 +43,7 @@ import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedTagService;
 import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.ThreadReplyHighestListService;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedForumFollowServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
@@ -52,6 +53,7 @@ import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedTagServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
+import com.mofang.feed.service.impl.ThreadReplyHighestListServiceImpl;
 import com.mofang.feed.util.HtmlTagFilter;
 import com.mofang.feed.util.MiniTools;
 import com.mofang.framework.util.StringUtil;
@@ -74,6 +76,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
 	private FeedForumFollowService followService = FeedForumFollowServiceImpl.getInstance();
+	private ThreadReplyHighestListService replyHighestThreadListService = ThreadReplyHighestListServiceImpl.getInstance();
 	
 	private FeedThreadLogicImpl()
 	{}
@@ -2132,6 +2135,35 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			return formatForumThreads(forumId, page, currentUserId);
 		} catch(Exception e) {
 			throw new Exception("at FeedThreadLogicImpl.getForumThreadList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue getReplyHighestThreadList(long forumId) throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			JSONArray data = new JSONArray();
+			Set<String> strThreadIdList = replyHighestThreadListService.getThreadIds(forumId);
+			if(strThreadIdList != null){
+				JSONObject objThread = null;
+				for(String strThreadId : strThreadIdList) {
+					long threadId = Long.valueOf(strThreadId);
+					objThread = new JSONObject();
+					FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+					if(threadInfo == null)
+						continue;
+					objThread.put("tid", threadId);
+					objThread.put("subject", threadInfo.getSubjectFilter());
+					
+					data.put(objThread);
+				}
+			}
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedThreadLogicImpl.getReplyHighestThreadList throw an error.", e);
 		}
 	}
 	
