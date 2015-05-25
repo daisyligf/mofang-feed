@@ -14,8 +14,10 @@ import com.mofang.feed.logic.FeedHomeHotForumLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeHotForum;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeHotForumService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedHomeHotForumServiceImpl;
 
@@ -23,6 +25,7 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 
 	private static final FeedHomeHotForumLogicImpl LOGIC = new FeedHomeHotForumLogicImpl();
 	private FeedHomeHotForumService hotForumService = FeedHomeHotForumServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	
 	private FeedHomeHotForumLogicImpl(){}
@@ -32,17 +35,21 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 	}
 	
 	@Override
-	public ResultValue edit(List<FeedHomeHotForum> modelList)
+	public ResultValue edit(List<FeedHomeHotForum> modelList, long operatorId)
 			throws Exception {
 		try {
 			ResultValue result = new ResultValue();
+			boolean hasPrivilege = adminService.exists(operatorId);
+			if(!hasPrivilege) {
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
 			for(FeedHomeHotForum model : modelList){
 				long forumId = model.getForumId();
-				
 				//设置专区地址
 				String prefectureUrl = HttpComponent.getPrefectureUrl(forumId);
 				model.setPrefectureUrl(prefectureUrl);
-				
 				/*
 				 * 设置礼包地址
 				 * 1、通过该game_id判断是否有礼包

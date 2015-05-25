@@ -7,7 +7,7 @@ import com.mofang.feed.model.FeedHomeHotForum;
 
 public interface FeedHomeHotForumLogic {
 
-	public ResultValue edit(List<FeedHomeHotForum> modelList) throws Exception;
+	public ResultValue edit(List<FeedHomeHotForum> modelList, long operatorId) throws Exception;
 	
 	public ResultValue getList() throws Exception;
 	
