@@ -40,6 +40,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.HTTP_CLIENT_VIDEOSERVICE_CONFIG_PATH = config.get("conf", "http_client_videoservice_config_path");
 		GlobalConfig.HTTP_CLIENT_GAMESERVICE_CONFIG_PATH = config.get("conf", "http_client_gameservice_config_path");
 		GlobalConfig.HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH = config.get("conf", "http_client_fahaoservice_config_path");
+		GlobalConfig.RETURN_MESSAGE_CONFIG_PATH = config.get("conf", "return_messsage_config_path");
 		
 		GlobalConfig.CHAT_SERVICE_URL = config.get("api", "chat_service_url");
 		GlobalConfig.TASK_EXEC_URL = config.get("api", "task_exec_url");

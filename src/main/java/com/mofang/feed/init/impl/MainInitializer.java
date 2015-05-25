@@ -26,6 +26,9 @@ public class MainInitializer extends AbstractInitializer
 		Initializer globalConf = new GlobalConfigInitializer(configPath);
 		globalConf.init();
 		
+		Initializer returnMsg = new ReturnMessageInitializer();
+		returnMsg.init();
+		
 		PropertyConfigurator.configure(GlobalConfig.LOG4J_CONFIG_PATH);
 		
 		Initializer globalObject = new GlobalObjectInitializer();
