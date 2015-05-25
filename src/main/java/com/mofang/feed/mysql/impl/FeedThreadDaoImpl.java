@@ -609,4 +609,28 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		List<RowData> rows = data.getQueryResult();
 		return rows.get(0).getLong(0);
 	}
+
+	@Override
+	public long getGlobalEliteThreadCount() throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select count(1) from feed_thread ");	
+		strSql.append("where is_elite=1");
+		ResultData data = super.executeQuery(strSql.toString());
+		if(null == data || null == data.getQueryResult() || data.getQueryResult().size() == 0)
+			return 0L;
+		
+		List<RowData> rows = data.getQueryResult();
+		return rows.get(0).getLong(0);
+	}
+
+	@Override
+	public List<Long> getGlobalEliteThreadList(int start, int end) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select thread_id from feed_thread ");	
+		strSql.append("where is_elite=1");
+		strSql.append(" order by last_post_time desc");
+		strSql.append(" limit " + start + ", " + end);
+		ResultData data = super.executeQuery(strSql.toString());
+		return convertResultDataToList(data);
+	}
 }

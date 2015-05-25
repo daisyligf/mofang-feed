@@ -1,6 +1,7 @@
 package com.mofang.feed.mysql.impl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -111,5 +112,22 @@ public class FeedForumFollowDaoImpl extends AbstractMysqlSupport<FeedForumFollow
 			return 0L;
 		
 		return list.get(0).getCreateTime();
+	}
+
+	@Override
+	public Set<Long> getForumIds(long userId) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select forum_id from feed_forum_follow where is_follow=1 and user_id = " + userId);
+		ResultData data = super.executeQuery(strSql.toString());
+		if (data == null)
+			return null;
+		List<RowData> rows = data.getQueryResult();
+		if (rows == null || rows.size() == 0)
+			return null;
+		Set<Long> set = new HashSet<Long>(rows.size());
+		for(RowData row : rows){
+			set.add(row.getLong(0));
+		}
+		return set;
 	}
 }

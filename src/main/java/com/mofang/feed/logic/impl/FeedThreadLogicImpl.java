@@ -35,16 +35,22 @@ import com.mofang.feed.model.external.User;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
+import com.mofang.feed.service.FeedForumFollowService;
 import com.mofang.feed.service.FeedForumService;
+import com.mofang.feed.service.FeedForumTagService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.service.FeedTagService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
+import com.mofang.feed.service.impl.FeedForumFollowServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
+import com.mofang.feed.service.impl.FeedForumTagServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
+import com.mofang.feed.service.impl.FeedTagServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.feed.util.HtmlTagFilter;
 import com.mofang.feed.util.MiniTools;
@@ -65,6 +71,9 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	private FeedPostService postService = FeedPostServiceImpl.getInstance();
 	private FeedOperateHistoryService operateService = FeedOperateHistoryServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
+	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
+	private FeedForumFollowService followService = FeedForumFollowServiceImpl.getInstance();
 	
 	private FeedThreadLogicImpl()
 	{}
@@ -1575,8 +1584,47 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	@Override
 	public ResultValue getGlobalEliteThreadList(int pageNum, int pageSize) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			Page<FeedThread> page = threadService.getGlobalEliteThreadList(pageNum, pageSize);
+			long total = 0;
+			JSONArray arrayThreads = new JSONArray();
+			JSONObject jsonThread = null;
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedThread> threads = page.getList();
+				if(null != threads)
+				{
+					for(FeedThread threadInfo : threads)
+					{
+						jsonThread = new JSONObject();
+						jsonThread.put("tid", threadInfo.getThreadId());
+						jsonThread.put("subject", threadInfo.getSubjectFilter());
+						JSONObject jsonForum = new JSONObject();
+						jsonForum.put("fid", threadInfo.getForumId());
+						FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+						if(null != forumInfo)
+							jsonForum.put("name", forumInfo.getName());
+						jsonThread.put("forum", jsonForum);
+						jsonThread.put("create_time", threadInfo.getCreateTime());
+						jsonThread.put("reply_cnt", threadInfo.getReplies());
+						jsonThread.put("page_view", threadInfo.getPageView());
+						arrayThreads.put(jsonThread);
+					}
+				}
+			}
+			
+			data.put("total", total);
+			data.put("list", arrayThreads);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedThreadLogicImpl.getGlobalEliteThreadList throw an error.", e);
+		}
 	}
 
 	@Override
@@ -1584,7 +1632,8 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	{
 		try
 		{
-			Set<Long> forumIds = HttpComponent.getFllowForums(userId);
+			//Set<Long> forumIds = HttpComponent.getFllowForums(userId);
+			Set<Long> forumIds = followService.getForumIdList(userId);
 			Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
@@ -1682,13 +1731,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 							jsonThread.put("nickname", userInfo.getNickName());
 							jsonThread.put("avatar", userInfo.getAvatar());
 							JSONObject jsonUser = new JSONObject();
-//							jsonUser.put("level", userInfo.getLevel());
-//							jsonUser.put("exp", userInfo.getExp());
-//							jsonUser.put("coin", userInfo.getCoin());
-//							jsonUser.put("diamond", userInfo.getDiamond());
-//							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-//							jsonUser.put("gained_exp", userInfo.getGainedExp());
-//							jsonUser.put("badge", userInfo.getBadges());
+							jsonUser.put("level", userInfo.getLevel());
+							jsonUser.put("exp", userInfo.getExp());
+							jsonUser.put("coin", userInfo.getCoin());
+							jsonUser.put("diamond", userInfo.getDiamond());
+							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+							jsonUser.put("gained_exp", userInfo.getGainedExp());
+							jsonUser.put("badge", userInfo.getBadges());
 							jsonThread.put("user", jsonUser);
 						}
 						
@@ -1729,13 +1778,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 								jsonThread.put("nickname", userInfo.getNickName());
 								jsonThread.put("avatar", userInfo.getAvatar());
 								JSONObject jsonUser = new JSONObject();
-//								jsonUser.put("level", userInfo.getLevel());
-//								jsonUser.put("exp", userInfo.getExp());
-//								jsonUser.put("coin", userInfo.getCoin());
-//								jsonUser.put("diamond", userInfo.getDiamond());
-//								jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-//								jsonUser.put("gained_exp", userInfo.getGainedExp());
-//								jsonUser.put("badge", userInfo.getBadges());
+								jsonUser.put("level", userInfo.getLevel());
+								jsonUser.put("exp", userInfo.getExp());
+								jsonUser.put("coin", userInfo.getCoin());
+								jsonUser.put("diamond", userInfo.getDiamond());
+								jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+								jsonUser.put("gained_exp", userInfo.getGainedExp());
+								jsonUser.put("badge", userInfo.getBadges());
 								jsonThread.put("user", jsonUser);
 							}
 						}
@@ -1915,13 +1964,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				jsonThread.put("nickname", userInfo.getNickName());
 				jsonThread.put("avatar", userInfo.getAvatar());
 				JSONObject jsonUser = new JSONObject();
-//				jsonUser.put("level", userInfo.getLevel());
-//				jsonUser.put("exp", userInfo.getExp());
-//				jsonUser.put("coin", userInfo.getCoin());
-//				jsonUser.put("diamond", userInfo.getDiamond());
-//				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-//				jsonUser.put("gained_exp", userInfo.getGainedExp());
-//				jsonUser.put("badge", userInfo.getBadges());
+				jsonUser.put("level", userInfo.getLevel());
+				jsonUser.put("exp", userInfo.getExp());
+				jsonUser.put("coin", userInfo.getCoin());
+				jsonUser.put("diamond", userInfo.getDiamond());
+				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+				jsonUser.put("gained_exp", userInfo.getGainedExp());
+				jsonUser.put("badge", userInfo.getBadges());
 				jsonThread.put("user", jsonUser);
 			}
 			
@@ -1966,13 +2015,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 							jsonThread.put("nickname", userInfo.getNickName());
 							jsonThread.put("avatar", userInfo.getAvatar());
 							JSONObject jsonUser = new JSONObject();
-//							jsonUser.put("level", userInfo.getLevel());
-//							jsonUser.put("exp", userInfo.getExp());
-//							jsonUser.put("coin", userInfo.getCoin());
-//							jsonUser.put("diamond", userInfo.getDiamond());
-//							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-//							jsonUser.put("gained_exp", userInfo.getGainedExp());
-//							jsonUser.put("badge", userInfo.getBadges());
+							jsonUser.put("level", userInfo.getLevel());
+							jsonUser.put("exp", userInfo.getExp());
+							jsonUser.put("coin", userInfo.getCoin());
+							jsonUser.put("diamond", userInfo.getDiamond());
+							jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
+							jsonUser.put("gained_exp", userInfo.getGainedExp());
+							jsonUser.put("badge", userInfo.getBadges());
 							jsonThread.put("user", jsonUser);
 						}
 					}
@@ -2009,6 +2058,70 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			return formatForumThreads(forumId, page, currentUserId);
 		} catch(Exception e) {
 			throw new Exception("at FeedThreadLogicImpl.getForumEliteThreadList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue getThreadEditInfo(long threadId)
+			throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			FeedThread threadInfo = threadService.getFullInfo(threadId);
+			if(threadInfo == null) {
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			long forumId = threadInfo.getForumId();
+			
+			JSONObject data = new JSONObject();
+			data.put("fid", forumId);        ///所属版块ID
+			FeedForum forum = forumService.getInfo(forumId);
+			data.put("forum_name", forum==null?"":forum.getName());
+			data.put("tid", threadInfo.getThreadId());         //主题ID
+			data.put("subject", threadInfo.getSubject());     //主题标题
+			FeedPost postInfo = threadInfo.getPost();
+			if(postInfo != null) {
+				data.put("content", postInfo.getContentFilter());
+				data.put("html_content", postInfo.getHtmlContentFilter());
+				String pics = postInfo.getPictures();
+				JSONArray jsonArrayPics = MiniTools.StringToJSONArray(pics);
+				data.put("pic", jsonArrayPics);
+			}
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e) {
+			throw new Exception("at FeedThreadLogicImpl.getThreadEditInfo throw an error.", e);
+		}
+
+	}
+
+	@Override
+	public ResultValue getThreadTagList(long forumId) throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			JSONArray data = new JSONArray();
+			List<Integer> list = forumTagService.getTagIdListByForumId(forumId);
+			if(list != null){
+				JSONObject tagObj = null;
+				for(Integer tagId : list){
+					tagObj = new JSONObject();
+					tagObj.put("tag_id", tagId);
+					tagObj.put("tag_name", tagService.getTagName(tagId));
+					data.put(tagObj);
+				}
+			}
+			
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch(Exception e) {
+			throw new Exception("at FeedThreadLogicImpl.getThreadTagList throw an error.", e);
 		}
 	}
 	
