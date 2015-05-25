@@ -47,6 +47,11 @@ public class FeedTagServiceImpl implements FeedTagService {
 			for(Integer tagId : tagIdList){
 				forumTagDao.deleteByTagId(tagId);
 			}
+			
+			/*****************redis*****************/
+			for(Integer tagId : tagIdList){
+				tagRedis.delete(tagId);
+			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedTagServiceImpl.delete throw an error.", e);
 			throw e;
