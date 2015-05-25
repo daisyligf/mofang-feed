@@ -92,6 +92,7 @@ public class ForumEditAction extends AbstractActionExecutor
 		forumInfo.setName(name);
 		forumInfo.setIcon(icon);
 		forumInfo.setColor(color);
+		forumInfo.setType(type);
 		
 		List<Integer> tagList = new ArrayList<Integer>();
 		for(int i=0; i<arrTags.length(); i++)

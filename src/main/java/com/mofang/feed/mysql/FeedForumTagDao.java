@@ -14,5 +14,7 @@ public interface FeedForumTagDao
 	
 	public void deleteByTagId(int tagId) throws Exception;
 	
+	public void deleteByForumId(long forumId) throws Exception;
+	
 	public List<Integer> getTagIdListByForumId(long forumId) throws Exception;
 }

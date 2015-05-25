@@ -53,9 +53,6 @@ public class ThreadSetTopAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		logic.setTop(threadId, operatorId, reason);
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.setTop(threadId, operatorId, reason);
 	}
 }

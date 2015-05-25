@@ -53,9 +53,6 @@ public class ThreadCancelTopAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		logic.cancelTop(threadId, operatorId, reason);
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.cancelTop(threadId, operatorId, reason);
 	}
 }

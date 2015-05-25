@@ -31,8 +31,7 @@ public class FeedForumTagServiceImpl implements FeedForumTagService
 	{
 		try
 		{
-			if(!forumTagDao.exists(model.getForumId(), model.getTagId()))
-				forumTagDao.add(model);
+			forumTagDao.add(model);
 		}
 		catch(Exception e)
 		{
@@ -46,6 +45,7 @@ public class FeedForumTagServiceImpl implements FeedForumTagService
 	{
 		try
 		{
+			deleteByForumId(forumId);
 			FeedForumTag model = null;
 			for(Integer tagId : tagList)
 			{
@@ -86,6 +86,20 @@ public class FeedForumTagServiceImpl implements FeedForumTagService
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedForumTagServiceImpl.deleteByTagId throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public void deleteByForumId(long forumId) throws Exception
+	{
+		try
+		{
+			forumTagDao.deleteByForumId(forumId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedForumTagServiceImpl.deleteByForumId throw an error.", e);
 			throw e;
 		}
 	}
