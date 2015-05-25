@@ -37,6 +37,8 @@ public class GlobalConfig
 	
 	public static String HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH;
 	
+	public static String RETURN_MESSAGE_CONFIG_PATH;
+	
 	public static String CHAT_SERVICE_URL;
 	
 	public static String TASK_EXEC_URL;
