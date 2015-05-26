@@ -2,6 +2,7 @@ package com.mofang.feed.service.impl;
 
 import java.util.List;
 
+import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
@@ -10,10 +11,8 @@ import com.mofang.feed.model.FeedModeratorApply;
 import com.mofang.feed.model.ModeratorApplyCondition;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
-import com.mofang.feed.mysql.FeedForumFollowDao;
 import com.mofang.feed.mysql.FeedModeratorApplyDao;
 import com.mofang.feed.mysql.FeedThreadDao;
-import com.mofang.feed.mysql.impl.FeedForumFollowDaoImpl;
 import com.mofang.feed.mysql.impl.FeedModeratorApplyDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
@@ -31,7 +30,6 @@ public class FeedModeratorApplyServiceImpl implements FeedModeratorApplyService
 	private final static FeedModeratorApplyServiceImpl SERVICE = new FeedModeratorApplyServiceImpl();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 	private FeedModeratorApplyDao applyDao = FeedModeratorApplyDaoImpl.getInstance();
-	private FeedForumFollowDao forumFollowDao = FeedForumFollowDaoImpl.getInstance();
 	private FeedThreadDao threadDao = FeedThreadDaoImpl.getInstance();
 	
 	private FeedModeratorApplyServiceImpl()
@@ -49,14 +47,8 @@ public class FeedModeratorApplyServiceImpl implements FeedModeratorApplyService
 		try
 		{
 			///关注本版块不得少于15天
-			long followTime = forumFollowDao.getFollowTime(forumId, userId);
-			boolean followForumIsOK = false;
-			if(followTime > 0)
-			{
-				long followMillSeconds = System.currentTimeMillis() - followTime;
-				long followCondition = GlobalConfig.MODERATOR_APPLY_FOLLOWFORUMDAYS * 24 * 3600 * 1000L;
-				followForumIsOK = followMillSeconds >= followCondition;
-			}
+			int followDays = HttpComponent.getFollowForumDays(userId, forumId);
+			boolean followForumIsOK = followDays >= GlobalConfig.MODERATOR_APPLY_FOLLOWFORUMDAYS;
 			
 			///一个月内在本版块累计发帖不少于10贴
 			long startTime = System.currentTimeMillis() -  (30L * 86400L * 1000L);

@@ -333,9 +333,41 @@ public class HttpComponent
 		}
 	}
 	
+	/**
+	 * 获取用户关注版块天数(用于检测申请版主的条件)
+	 * @param userId 用户ID
+	 * @param forumId 版块ID
+	 * @return
+	 */
+	public static int getFollowForumDays(long userId, long forumId)
+	{
+		String requestUrl = GlobalConfig.USER_FOLLOW_FORUM_DAYS_URL + "?area_id=" + forumId + "&uid=" + userId;
+		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return 0;
+		
+		try
+		{
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+			{
+				GlobalObject.ERROR_LOG.error("request url:" + requestUrl + " return error code. response:" + result);
+				return 0;
+			}
+			
+			return json.optInt("data", 0);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getFollowForumDays throw an error.", e);
+			return 0;
+		}
+	}
+	
 	public static Set<Long> getFllowForums(long userId)
 	{
-		String requestUrl = GlobalConfig.USER_FLLOW_FORUM_URL + "?uid=" + userId + "&pagesize=20";
+		String requestUrl = GlobalConfig.USER_FOLLOW_FORUM_URL + "?uid=" + userId + "&pagesize=20";
 		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
 			return null;
