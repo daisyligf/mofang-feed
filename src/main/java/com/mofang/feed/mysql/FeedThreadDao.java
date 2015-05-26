@@ -269,4 +269,6 @@ public interface FeedThreadDao
 	public long getUserTopOrEliteThreadCount(long userId) throws Exception;
 	
 	public List<Long> getForumThreadListByCreateTime(long forumId, int start, int end) throws Exception;
+	
+	public List<Long> getThreadIdList(long forumId, long startTime, long endTime) throws Exception;
 }

@@ -85,4 +85,6 @@ public interface FeedThreadLogic
 	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 	
 	public ResultValue getForumThreadListByCreateTime(long forumId, int pageNum, int pageSize, long currentUserId) throws Exception;
+	
+	public ResultValue getReplyHighestThreadList(long forumId) throws Exception;
 }

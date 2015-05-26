@@ -87,8 +87,12 @@ public class FeedTagLogicImpl implements FeedTagLogic {
 			int tagId = (int)RedisFaster.makeUniqueId(RedisKey.TAG_INCREMENT_ID_KEY);
 			model.setTagId(tagId);
 			tagService.add(model);
+			JSONObject data = new JSONObject();
+			data.put("tag_id", tagId);
+			data.put("tag_name", model.getTagName());
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
 			return result;
 		} catch (Exception e) {
 			throw new Exception("at FeedTagLogicImpl.add throw an error.", e);

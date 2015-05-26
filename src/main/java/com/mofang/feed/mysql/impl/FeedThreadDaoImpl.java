@@ -660,4 +660,18 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);
 	}
+
+	@Override
+	public List<Long> getThreadIdList(long forumId, long startTime, long endTime)
+			throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select thread_id from feed_thread ");
+		strSql.append(" where status = 1 and forum_id = " + forumId);
+		strSql.append(" and create_time > " + startTime);
+		strSql.append(" and create_time < " + endTime);
+		strSql.append(" order by replies desc limit 0,7");
+		ResultData data = super.executeQuery(strSql.toString());
+		return convertResultDataToList(data);
+	}
+	
 }
