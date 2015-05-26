@@ -110,6 +110,6 @@ public class TaskComponent
 				HttpComponent.execTask(task);
 			}
 		};
-		GlobalObject.ASYN_EXECUTOR.execute(taskExec);
+		GlobalObject.ASYN_HTTP_EXECUTOR.execute(taskExec);
 	}
 }

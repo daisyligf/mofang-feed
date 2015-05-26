@@ -110,7 +110,12 @@ public class GlobalObject
 	/**
 	 * Global Async Operation Executor Pool, as push notify ect. 
 	 */
-	public static ExecutorService ASYN_EXECUTOR = Executors.newFixedThreadPool(20);
+	public static ExecutorService ASYN_HTTP_EXECUTOR = Executors.newFixedThreadPool(20);
+	
+	/**
+	 *  异步mysql 任务线程池子
+	 */
+	public static ExecutorService ASYN_DAO_EXECUTOR = Executors.newFixedThreadPool(20);
 	
 	/**
 	 * Global Info Logger Instance 

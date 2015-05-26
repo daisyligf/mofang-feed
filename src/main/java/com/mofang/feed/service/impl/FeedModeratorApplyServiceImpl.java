@@ -120,7 +120,7 @@ public class FeedModeratorApplyServiceImpl implements FeedModeratorApplyService
 				}
 			}
 		};
-		GlobalObject.ASYN_EXECUTOR.execute(task);
+		GlobalObject.ASYN_DAO_EXECUTOR.execute(task);
 	}
 
 	@Override

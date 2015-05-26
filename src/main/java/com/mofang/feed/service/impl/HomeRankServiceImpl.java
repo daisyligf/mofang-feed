@@ -243,29 +243,30 @@ public class HomeRankServiceImpl implements HomeRankService {
 	private static final String WXYZ = "WXYZ";
 	
 	private static String in(String nameSp){
+		char p = nameSp.charAt(0);
 		int idx;
 		for(idx = 0; idx < ABCDE.length(); idx ++){
-			if(nameSp.toUpperCase().equals(ABCDE.charAt(idx))){
+			if(p == (ABCDE.charAt(idx))){
 				return ABCDE;
 			}
 		}
 		for(idx = 0; idx < FGHIJ.length(); idx ++){
-			if(nameSp.toUpperCase().equals(FGHIJ.charAt(idx))){
+			if(p == (FGHIJ.charAt(idx))){
 				return FGHIJ;
 			}
 		}
 		for(idx = 0; idx < KLMNO.length(); idx ++){
-			if(nameSp.toUpperCase().equals(KLMNO.charAt(idx))){
+			if(p == (KLMNO.charAt(idx))){
 				return KLMNO;
 			}
 		}
 		for(idx = 0; idx < PQRST.length(); idx ++){
-			if(nameSp.toUpperCase().equals(PQRST.charAt(idx))){
+			if(p == (PQRST.charAt(idx))){
 				return PQRST;
 			}
 		}
 		for(idx = 0; idx < WXYZ.length(); idx ++){
-			if(nameSp.toUpperCase().equals(WXYZ.charAt(idx))){
+			if(p == (WXYZ.charAt(idx))){
 				return WXYZ;
 			}
 		}

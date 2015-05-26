@@ -34,6 +34,7 @@ import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.record.StatForumViewHistoryRecorder;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
@@ -693,10 +694,22 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, long currentUserId, RequestFrom from) throws Exception
 	{
-		if(from == RequestFrom.APP)
-			return getThreadPostListByApp(threadId, pageNum, pageSize, currentUserId);
-		else if(from == RequestFrom.WEB)
-			return getThreadPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+		if(from == RequestFrom.APP){
+			ResultValue resultValue = getThreadPostListByApp(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
+		else if(from == RequestFrom.WEB){
+			ResultValue resultValue = getThreadPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
 		
 		ResultValue result = new ResultValue();
 		result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -707,10 +720,24 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId, RequestFrom from) throws Exception
 	{
-		if(from == RequestFrom.APP)
-			return getHostPostListByApp(threadId, pageNum, pageSize, currentUserId);
-		else if(from == RequestFrom.WEB)
-			return getHostPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+		if(from == RequestFrom.APP){
+			ResultValue resultValue = getHostPostListByApp(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
+			
+		else if(from == RequestFrom.WEB){
+			ResultValue resultValue =getHostPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
+			
 		
 		ResultValue result = new ResultValue();
 		result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);

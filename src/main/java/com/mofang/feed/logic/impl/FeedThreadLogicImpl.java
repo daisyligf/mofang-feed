@@ -32,6 +32,7 @@ import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.record.StatForumViewHistoryRecorder;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
@@ -1380,7 +1381,12 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		try
 		{
 			Page<FeedThread> page = threadService.getForumThreadList(forumId, pageNum, pageSize);
-			return formatForumThreads(forumId, page, currentUserId);
+			ResultValue resultValue = formatForumThreads(forumId, page, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInThreadLogic(forumId, currentUserId);
+			
+			return resultValue;
 		}
 		catch(Exception e)
 		{
@@ -1420,7 +1426,12 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		try
 		{
 			Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, pageNum, pageSize, timeType);
-			return formatForumThreads(forumId, page, currentUserId);
+			ResultValue resultValue = formatForumThreads(forumId, page, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInThreadLogic(forumId, currentUserId);
+			
+			return resultValue;
 		}
 		catch(Exception e)
 		{
@@ -2037,7 +2048,12 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			int pageNum, int pageSize, long currentUserId, int timeType) throws Exception {
 		try{
 			Page<FeedThread> page = threadService.getForumThreadListByTagId(forumId, tagId, timeType, pageNum, pageSize);
-			return formatForumThreads(forumId, page, currentUserId);
+			ResultValue resultValue = formatForumThreads(forumId, page, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInThreadLogic(forumId, currentUserId);
+			
+			return resultValue;
 		}catch(Exception e){
 			throw new Exception("at FeedThreadLogicImpl.getForumThreadListByTagId throw an error.", e);
 		}
@@ -2048,7 +2064,12 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			int pageNum, int pageSize, long currentUserId, int timeType) throws Exception {
 		try {
 			Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, tagId, timeType, pageNum, pageSize);
-			return formatForumThreads(forumId, page, currentUserId);
+			ResultValue resultValue = formatForumThreads(forumId, page, currentUserId);
+
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInThreadLogic(forumId, currentUserId);
+		
+		   return resultValue;
 		} catch(Exception e) {
 			throw new Exception("at FeedThreadLogicImpl.getForumEliteThreadList throw an error.", e);
 		}
@@ -2122,7 +2143,12 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			int pageNum, int pageSize, long currentUserId) throws Exception {
 		try {
 			Page<FeedThread> page = threadService.getForumThreadListByCreateTime(forumId, pageNum, pageSize);
-			return formatForumThreads(forumId, page, currentUserId);
+			ResultValue resultValue = formatForumThreads(forumId, page, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInThreadLogic(forumId, currentUserId);
+			
+			return resultValue;
 		} catch(Exception e) {
 			throw new Exception("at FeedThreadLogicImpl.getForumThreadList throw an error.", e);
 		}
