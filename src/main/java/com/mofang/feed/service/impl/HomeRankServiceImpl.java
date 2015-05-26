@@ -321,10 +321,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 		boolean flag = HttpComponent.checkGift(forum.getGameId());
 		if(flag){
 			map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + forum.getName());
-		}else{
+		}
+		else{
 			map.put(ForumURLKey.GIFT_URL_KEY, "");
 		}
-		map.put(ForumURLKey.PREFECTURE_URL_KEY, HttpComponent.getPrefectureUrl(forum.getForumId()));
+		String prefectureUrl = HttpComponent.getPrefectureUrl(forum.getForumId());
+		map.put(ForumURLKey.PREFECTURE_URL_KEY, prefectureUrl == null ? "":prefectureUrl);
 		return map;
 	}
 	

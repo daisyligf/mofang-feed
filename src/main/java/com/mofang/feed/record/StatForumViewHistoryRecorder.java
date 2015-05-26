@@ -2,11 +2,9 @@ package com.mofang.feed.record;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.DataSource;
-import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.StatForumViewHistory;
 import com.mofang.feed.mysql.impl.StatForumViewHistoryDaoImpl;
-import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 
 /***
