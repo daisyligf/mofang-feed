@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.app.forum;
+package com.mofang.feed.controller.v3.front.app.forum;
 
 import java.util.HashSet;
 import java.util.Set;

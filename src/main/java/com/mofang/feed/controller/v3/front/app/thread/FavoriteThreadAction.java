@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.app.thread;
+package com.mofang.feed.controller.v3.front.app.thread;
 
 import org.json.JSONObject;
 
