@@ -51,7 +51,9 @@ public class GlobalConfig
 	
 	public static String GAME_INFO_URL;
 	
-	public static String USER_FLLOW_FORUM_URL;
+	public static String USER_FOLLOW_FORUM_URL;
+	
+	public static String USER_FOLLOW_FORUM_DAYS_URL;
 	
 	public static String RECOMMEND_GAME_URL;
 	

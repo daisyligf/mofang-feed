@@ -49,7 +49,8 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.SENSITIVE_WORD_URL = config.get("api", "sensitive_word_url");
 		GlobalConfig.VIDEO_INFO_URL = config.get("api", "video_info_url");
 		GlobalConfig.GAME_INFO_URL = config.get("api", "game_info_url");
-		GlobalConfig.USER_FLLOW_FORUM_URL = config.get("api", "user_follow_forum_url");
+		GlobalConfig.USER_FOLLOW_FORUM_URL = config.get("api", "user_follow_forum_url");
+		GlobalConfig.USER_FOLLOW_FORUM_DAYS_URL = config.get("api", "user_follow_forum_days_url");
 		GlobalConfig.RECOMMEND_GAME_URL = config.get("api", "recommend_game_url");
 		GlobalConfig.FORUM_PARTITION_URL = config.get("api", "forum_partition_url");
 		GlobalConfig.GIFT_LIST_URL = config.get("api", "gift_list_url");

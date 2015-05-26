@@ -35,7 +35,6 @@ import com.mofang.feed.model.external.User;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
-import com.mofang.feed.service.FeedForumFollowService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedForumTagService;
 import com.mofang.feed.service.FeedOperateHistoryService;
@@ -45,7 +44,6 @@ import com.mofang.feed.service.FeedTagService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.ThreadReplyHighestListService;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
-import com.mofang.feed.service.impl.FeedForumFollowServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedForumTagServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
@@ -75,7 +73,6 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
-	private FeedForumFollowService followService = FeedForumFollowServiceImpl.getInstance();
 	private ThreadReplyHighestListService replyHighestThreadListService = ThreadReplyHighestListServiceImpl.getInstance();
 	
 	private FeedThreadLogicImpl()
@@ -235,8 +232,6 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			///权限检查
-			long forumId = threadInfo.getForumId();
-			///boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.EDIT_THREAD);
 			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
@@ -414,8 +409,6 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			///权限检查
-			long forumId = threadInfo.getForumId();
-			///boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.RESTORE_THREAD);
 			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
@@ -452,8 +445,6 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			///权限检查
-			long forumId = threadInfo.getForumId();
-			///boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.REMOVE_THREAD);
 			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
@@ -1635,8 +1626,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	{
 		try
 		{
-			//Set<Long> forumIds = HttpComponent.getFllowForums(userId);
-			Set<Long> forumIds = followService.getForumIdList(userId);
+			Set<Long> forumIds = HttpComponent.getFllowForums(userId);
 			Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
