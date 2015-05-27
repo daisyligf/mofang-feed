@@ -181,7 +181,29 @@ public class HomeRankServiceImpl implements HomeRankService {
 			Map<Long, ForumCount> uvMap = viewHistoryDao.getUV(forumIds, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> threadMap = threadDao.getThreadCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> replyMap = postDao.getReplyCount(forumIds, yesterdayStartTime, yesterdayEndTime);
-			Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			
+			/********************获取板块用户关注数 暂时请求http*************************/
+			Map<Long, ForumCount> followMap = new HashMap<Long, ForumCount>(size);
+			int step = 0;
+			int loopCount = size % 100 == 0 ? size / 100 : size / 100 + 1;
+			for(int idx = 0; idx < loopCount; idx ++){
+				int jdx = step;
+				int stepLimit = step + 100;
+				if(stepLimit > size) {
+					stepLimit = size;
+				}
+				//分批请求每次100个forumId
+				List<Long> list = new ArrayList<Long>(100);
+				for(;jdx < stepLimit; jdx ++) {
+					list.add(forumOrderList.get(jdx).getForumId());
+				}
+				Map<Long, ForumCount> map = HttpComponent.getForumFollow(list, yesterdayStartTime, yesterdayEndTime);
+				followMap.putAll(map);
+				step += 100;
+			}
+			/********************************************************************************/
+			//Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			
 			Map<Long, ForumCount> postRecommendMap = forumDao.getPostRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> threadRecommendMap = forumDao.getThreadRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> recommendMap = null;
