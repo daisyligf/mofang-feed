@@ -52,7 +52,13 @@ public class ThreadEditAction extends AbstractActionExecutor {
 
 		// /参数检查
 		if (threadId <= 0 || StringUtil.isNullOrEmpty(subject)
-				|| StringUtil.isNullOrEmpty(content)
+				|| StringUtil.isNullOrEmpty(content)) {
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
+		
+		if(subject.length() > LimitConstants.SUBJECT_LENGTH 
 				|| content.length() > LimitConstants.THREAD_CONTENT_LENGTH) {
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);

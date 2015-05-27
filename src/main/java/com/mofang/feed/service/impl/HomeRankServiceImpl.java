@@ -197,7 +197,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 				for(;jdx < stepLimit; jdx ++) {
 					list.add(forumOrderList.get(jdx).getForumId());
 				}
-				Map<Long, ForumCount> map = HttpComponent.getForumFollow(list, yesterdayStartTime, yesterdayEndTime);
+				Map<Long, ForumCount> map = HttpComponent.getForumFollow(list, yesterdayStartTime/1000, yesterdayEndTime/1000);
 				followMap.putAll(map);
 				step += 100;
 			}
