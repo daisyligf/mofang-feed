@@ -1138,7 +1138,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						}
 						
 						///获取楼层评论
-						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId());
+						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId(), RequestFrom.APP);
 						if(null == arrayComments)
 							arrayComments = new JSONArray();
 						jsonPost.put("replys", arrayComments);
@@ -1254,7 +1254,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						}
 						
 						///获取楼层评论
-						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId());
+						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId(), RequestFrom.WEB);
 						if(null == arrayComments)
 							arrayComments = new JSONArray();
 						jsonPost.put("replys", arrayComments);
@@ -1377,10 +1377,14 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		return jsonThread;
 	}
 	
-	private JSONArray buildPostCommentList(long postId) throws Exception
+	private JSONArray buildPostCommentList(long postId, RequestFrom from) throws Exception
 	{
 		JSONArray arrayComments = new JSONArray();
-		Page<FeedComment> pageComments = commentService.getPostCommentList(postId, 1, 10);
+		Page<FeedComment> pageComments = null;
+		if(from == RequestFrom.APP)
+			pageComments = commentService.getPostCommentList(postId, 1, 5);
+		else if(from == RequestFrom.WEB)
+			pageComments = commentService.getPostCommentList(postId, 1, 10);
 		if(null != pageComments)
 		{
 			List<FeedComment> comments = pageComments.getList();
