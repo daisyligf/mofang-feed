@@ -40,7 +40,7 @@ public class FeedPostRecommendTransfer extends BaseTransfer implements FeedTrans
 	private ResultSet getData()
 	{
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select pid, user_id, create_time from feed_post_recommend group by pid, user_id");
+		strSql.append("select pid, user_id, create_time from feed_post_recommend where pid > 0 and user_id > 0 group by pid, user_id");
 		return getData(strSql.toString());
 	}
 	

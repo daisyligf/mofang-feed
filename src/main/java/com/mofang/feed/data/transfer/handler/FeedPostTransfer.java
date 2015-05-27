@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.mofang.feed.data.transfer.BaseTransfer;
 import com.mofang.feed.data.transfer.FeedTransfer;
+import com.mofang.feed.data.transfer.ForumChangeUtil;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -51,17 +52,19 @@ public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 	
 	private ResultSet getData()
 	{
+		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select pid, fid, tid, user_id, post_time, message, original_message, position, comments, pic, status, recommends, video_id, thumbnail, duration, html_message, original_html_message ");
-		strSql.append("from feed_post where cpid = 0 and fid > 0 ");
+		strSql.append("from feed_post where cpid = 0 and fid in(" + forumIds + ") ");
 		return getData(strSql.toString());
 	}
 	
 	private ResultSet getDataWithNonFid()
 	{
+		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select a.pid, case when b.fid is NULL then 0 else b.fid end as fid, a.tid, a.user_id, a.post_time, a.message, a.original_message, a.position, a.comments, a.pic, a.status, a.recommends, a.video_id, a.thumbnail, a.duration, a.html_message, a.original_html_message ");
-		strSql.append("from feed_post a left join feed_thread b on a.tid = b.tid where a.cpid = 0 and a.fid = 0 ");
+		strSql.append("from feed_post a left join feed_thread b on a.tid = b.tid where a.cpid = 0 and a.fid = 0 and b.fid in (" + forumIds + ")");
 		return getData(strSql.toString());
 	}
 	
@@ -137,6 +140,10 @@ public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 			thumbnail = StringUtil.safeSql(thumbnail);
 			htmlMessage = StringUtil.safeSql(htmlMessage);
 			originalHtmlMessage = StringUtil.safeSql(originalHtmlMessage);
+			recommends = recommends < 0 ? 0 : recommends;
+			
+			if(ForumChangeUtil.ForumToForumMap.containsKey(forumId))
+				forumId = ForumChangeUtil.ForumToForumMap.get(forumId);
 			
 			StringBuilder strSql = new StringBuilder();
 			strSql.append("(" + postId + "," + forumId + "," + threadId + "," + userId + ",'" + originalMessage + "','" + message + "','" + message + "',");

@@ -30,6 +30,7 @@ public class TransferManager
 		long itemStart = 0L;
 		long itemEnd = 0L;
 		
+		/*
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedForumTransfer();
 		transfer.exec();
@@ -65,13 +66,13 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("psot recommend data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		*/
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedUserFavoriteTransfer();
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("user favorite data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		/*
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedModuleTransfer();
 		transfer.exec();
@@ -119,7 +120,7 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("black list data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		*/
 		long end = System.currentTimeMillis();
 		System.out.println("data transfer completed. cost time: " + (end - start) + " ms.");
 	}

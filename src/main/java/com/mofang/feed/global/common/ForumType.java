@@ -21,4 +21,9 @@ public class ForumType
 	 * 官方专区
 	 */
 	public final static int OFFICAL = 3;
+	
+	/**
+	 * 隐藏版块
+	 */
+	public final static int HIDDEN = 4;
 }

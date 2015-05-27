@@ -37,7 +37,8 @@ public abstract class BaseTransfer
 		try
 		{
 			Class.forName(Driver);
-			String url="jdbc:mysql://192.168.1.61:3306/feed?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			//String url="jdbc:mysql://192.168.1.61:3306/feed?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			String url="jdbc:mysql://127.0.0.1:3306/feed?user=root&password=root&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
 			Connection conn = DriverManager.getConnection(url);
 			PreparedStatement pstmt = conn.prepareStatement(strSql);
 			pstmt.execute();

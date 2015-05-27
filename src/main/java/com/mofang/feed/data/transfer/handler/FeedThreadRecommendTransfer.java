@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.mofang.feed.data.transfer.BaseTransfer;
 import com.mofang.feed.data.transfer.FeedTransfer;
+import com.mofang.feed.data.transfer.ForumChangeUtil;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -39,8 +40,13 @@ public class FeedThreadRecommendTransfer extends BaseTransfer implements FeedTra
 	
 	private ResultSet getData()
 	{
+		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select tid, user_id, create_time from feed_thread_recommend group by tid, user_id");
+		strSql.append("select a.tid, a.user_id, a.create_time ");
+		strSql.append("from feed_thread_recommend a ");
+		strSql.append("left join ");
+		strSql.append("(select tid from feed_thread where fid in (" + forumIds + ")) b on a.tid = b.tid ");
+		strSql.append("where b.tid is not null and a.user_id > 0 group by a.tid, a.user_id ");
 		return getData(strSql.toString());
 	}
 	

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.mofang.feed.data.transfer.BaseTransfer;
 import com.mofang.feed.data.transfer.FeedTransfer;
+import com.mofang.feed.data.transfer.ForumChangeUtil;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -23,7 +24,7 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 	{
 		truncate();
 		
-		///获取版块数据
+		///获取收藏数据
 		System.out.println("get user_favorite data......");
 		ResultSet rs = getData();
 		if(null == rs)
@@ -39,8 +40,13 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 	
 	private ResultSet getData()
 	{
+		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select uid, tid, create_time from feed_favorite group by uid,tid ");
+		strSql.append("select a.tid, a.uid, a.create_time ");
+		strSql.append("from feed_favorite a ");
+		strSql.append("left join ");
+		strSql.append("(select tid from feed_thread where fid in (" + forumIds + ")) b on a.tid = b.tid ");
+		strSql.append("where b.tid is not null and a.uid > 0 group by a.tid, a.uid ");
 		return getData(strSql.toString());
 	}
 	
