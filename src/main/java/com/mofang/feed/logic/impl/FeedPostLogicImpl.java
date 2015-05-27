@@ -34,6 +34,7 @@ import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.record.StatForumViewHistoryRecorder;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
@@ -693,10 +694,22 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, long currentUserId, RequestFrom from) throws Exception
 	{
-		if(from == RequestFrom.APP)
-			return getThreadPostListByApp(threadId, pageNum, pageSize, currentUserId);
-		else if(from == RequestFrom.WEB)
-			return getThreadPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+		if(from == RequestFrom.APP){
+			ResultValue resultValue = getThreadPostListByApp(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
+		else if(from == RequestFrom.WEB){
+			ResultValue resultValue = getThreadPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
 		
 		ResultValue result = new ResultValue();
 		result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -707,10 +720,24 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId, RequestFrom from) throws Exception
 	{
-		if(from == RequestFrom.APP)
-			return getHostPostListByApp(threadId, pageNum, pageSize, currentUserId);
-		else if(from == RequestFrom.WEB)
-			return getHostPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+		if(from == RequestFrom.APP){
+			ResultValue resultValue = getHostPostListByApp(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
+			
+		else if(from == RequestFrom.WEB){
+			ResultValue resultValue =getHostPostListByWeb(threadId, pageNum, pageSize, currentUserId);
+			
+			/*********记录用户浏览数**********/
+			StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
+			
+			return resultValue;
+		}
+			
 		
 		ResultValue result = new ResultValue();
 		result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -1111,7 +1138,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						}
 						
 						///获取楼层评论
-						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId());
+						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId(), RequestFrom.APP);
 						if(null == arrayComments)
 							arrayComments = new JSONArray();
 						jsonPost.put("replys", arrayComments);
@@ -1227,7 +1254,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						}
 						
 						///获取楼层评论
-						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId());
+						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId(), RequestFrom.WEB);
 						if(null == arrayComments)
 							arrayComments = new JSONArray();
 						jsonPost.put("replys", arrayComments);
@@ -1350,10 +1377,14 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		return jsonThread;
 	}
 	
-	private JSONArray buildPostCommentList(long postId) throws Exception
+	private JSONArray buildPostCommentList(long postId, RequestFrom from) throws Exception
 	{
 		JSONArray arrayComments = new JSONArray();
-		Page<FeedComment> pageComments = commentService.getPostCommentList(postId, 1, 10);
+		Page<FeedComment> pageComments = null;
+		if(from == RequestFrom.APP)
+			pageComments = commentService.getPostCommentList(postId, 1, 5);
+		else if(from == RequestFrom.WEB)
+			pageComments = commentService.getPostCommentList(postId, 1, 10);
 		if(null != pageComments)
 		{
 			List<FeedComment> comments = pageComments.getList();

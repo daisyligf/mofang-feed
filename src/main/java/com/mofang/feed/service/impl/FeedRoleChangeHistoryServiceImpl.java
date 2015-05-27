@@ -81,6 +81,6 @@ public class FeedRoleChangeHistoryServiceImpl implements FeedRoleChangeHistorySe
 				}
 			}
 		};
-		GlobalObject.ASYN_EXECUTOR.execute(task);
+		GlobalObject.ASYN_DAO_EXECUTOR.execute(task);
 	}
 }

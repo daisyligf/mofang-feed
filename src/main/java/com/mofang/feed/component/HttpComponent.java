@@ -2,6 +2,7 @@ package com.mofang.feed.component;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.external.FeedRecommendNotify;
+import com.mofang.feed.model.external.ForumCount;
 import com.mofang.feed.model.external.Game;
 import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
@@ -400,6 +402,47 @@ public class HttpComponent
 			return null;
 		}
 	}
+	
+	public static Map<Long, ForumCount> getForumFollow(List<Long> forumIdList, long startTime, long endTime) throws Exception{
+		try {
+			JSONArray arrForumIds = new JSONArray();
+			for(Long forumId : forumIdList){
+				arrForumIds.put(forumId);
+			}
+			
+			String requestUrl = GlobalConfig.FORUM_FOLLOW_COUNT_URL + "?fids=" + arrForumIds.toString() + "&start_time=" + startTime + "&end_time=" + endTime;
+			String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
+			if(StringUtil.isNullOrEmpty(result))
+				return null;
+			
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return null;
+			
+			JSONArray data = json.optJSONArray("data");
+			if(null == data)
+				return null;
+			
+			int size = data.length();
+			Map<Long, ForumCount> map = new HashMap<Long, ForumCount>(size);
+			for(int idx = 0; idx < size; idx ++){
+				JSONObject jsonObj = data.getJSONObject(idx);
+				long fid = jsonObj.optLong("fid", 0l);
+				int followCount = jsonObj.optInt("follow_count", 0);
+				
+				ForumCount forumCountModel = new ForumCount();
+				forumCountModel.forumId = fid;
+				forumCountModel.count = followCount;
+				map.put(fid, forumCountModel);
+			}
+			return map;
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getForumFollow.getForumFollow throw an error.", e);
+			return null;
+		}
+	}
+	
 	
 	private static String get(CloseableHttpClient httpClient, String requestUrl)
 	{

@@ -6,6 +6,7 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
+import com.mofang.feed.global.common.LimitConstants;
 import com.mofang.feed.logic.FeedPostLogic;
 import com.mofang.feed.logic.impl.FeedPostLogicImpl;
 import com.mofang.feed.model.FeedPost;
@@ -51,7 +52,8 @@ public class PostAddAction extends AbstractActionExecutor
 		String pics = json.optString("pic", "");
 		
 		///参数检查
-		if(threadId <= 0 || StringUtil.isNullOrEmpty(content))
+		if(threadId <= 0 || StringUtil.isNullOrEmpty(content)
+				|| content.length() > LimitConstants.POST_CONTENT_LENGTH)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);

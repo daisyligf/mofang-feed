@@ -56,12 +56,20 @@ public class ThreadAddAction extends AbstractActionExecutor {
 
 		// /参数检查
 		if (forumId <= 0 || StringUtil.isNullOrEmpty(subject)
-				|| StringUtil.isNullOrEmpty(content) || content.length() > LimitConstants.THREAD_CONTENT_LENGTH) {
+				|| StringUtil.isNullOrEmpty(content) ) {
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
 
+		if(subject.length() > LimitConstants.SUBJECT_LENGTH 
+				|| content.length() > LimitConstants.THREAD_CONTENT_LENGTH) {
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
+		
+		
 		// /判断是否为精华帖
 		boolean isElite = tags.contains(String.valueOf(ThreadTag.ELITE));
 		// /判断是否为视频帖

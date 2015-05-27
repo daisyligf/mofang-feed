@@ -169,7 +169,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		strSql.append("(select forum_id from feed_forum where type = " + type);
 		strSql.append(" ) a on a.forum_id = feed_post.forum_id) b left join ");
 		strSql.append("(select post_id from feed_post_recommend where ");
-		strSql.append("create_time > " + startTime + " and create_time < " + endTime +") c ");
+		strSql.append("create_time >= " + startTime + " and create_time <= " + endTime +") c ");
 		strSql.append("on b.post_id = c.post_id group by b.forum_id");
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
@@ -197,7 +197,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		strSql.append("(select forum_id from feed_forum where type = " + type);
 		strSql.append(" ) a on a.forum_id = feed_thread.forum_id) b left join ");
 		strSql.append("(select thread_id from feed_thread_recommend where ");
-		strSql.append("create_time > " + startTime + " and create_time < " + endTime +") c ");
+		strSql.append("create_time >= " + startTime + " and create_time <= " + endTime +") c ");
 		strSql.append("on b.thread_id = c.thread_id group by b.forum_id");
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)

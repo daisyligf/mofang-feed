@@ -63,6 +63,6 @@ public class FeedOperateHistoryServiceImpl implements FeedOperateHistoryService
 				}
 			}
 		};
-		GlobalObject.ASYN_EXECUTOR.execute(task);
+		GlobalObject.ASYN_DAO_EXECUTOR.execute(task);
 	}
 }

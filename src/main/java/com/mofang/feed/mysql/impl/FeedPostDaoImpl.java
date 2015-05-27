@@ -289,8 +289,8 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select count(1),forum_id from feed_post where forum_id in (" + strForumIds + ")");
-		strSql.append(" and create_time > " + startTime);
-		strSql.append(" and create_time < " + endTime);
+		strSql.append(" and create_time >= " + startTime);
+		strSql.append(" and create_time <= " + endTime);
 		strSql.append(" group by forum_id");
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)

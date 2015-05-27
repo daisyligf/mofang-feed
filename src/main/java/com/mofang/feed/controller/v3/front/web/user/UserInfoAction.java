@@ -2,6 +2,8 @@ package com.mofang.feed.controller.v3.front.web.user;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
+import com.mofang.feed.global.ReturnCode;
+import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.admin.FeedUserLogic;
 import com.mofang.feed.logic.admin.impl.FeedUserLogicImpl;
 import com.mofang.framework.util.StringUtil;
@@ -20,6 +22,13 @@ public class UserInfoAction extends AbstractActionExecutor {
 		
 		if(StringUtil.isLong(strUserId))
 			userId = Long.parseLong(strUserId);
+		
+		if(userId <= 0){
+			ResultValue result = new ResultValue();
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
 		
 		
 		return logic.getInfo(userId);

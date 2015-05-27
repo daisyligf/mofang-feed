@@ -39,7 +39,7 @@ public class ThreadReplyHighestListRedisImpl implements
 			@Override
 			public Set<String> execute(Jedis jedis) throws Exception {
 				String key = RedisKey.buildRedisKey(RedisKey.REPLYHIGHEST_THREAD_KEY_PREFIX, forumId);
-				Set<String> set = jedis.zrange(key, 0, 6);
+				Set<String> set = jedis.zrevrange(key, 0, 6);
 				return set;
 			}
 		};

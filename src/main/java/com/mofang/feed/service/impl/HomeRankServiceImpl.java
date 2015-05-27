@@ -181,7 +181,29 @@ public class HomeRankServiceImpl implements HomeRankService {
 			Map<Long, ForumCount> uvMap = viewHistoryDao.getUV(forumIds, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> threadMap = threadDao.getThreadCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> replyMap = postDao.getReplyCount(forumIds, yesterdayStartTime, yesterdayEndTime);
-			Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			
+			/********************获取板块用户关注数 暂时请求http*************************/
+			Map<Long, ForumCount> followMap = new HashMap<Long, ForumCount>(size);
+			int step = 0;
+			int loopCount = size % 100 == 0 ? size / 100 : size / 100 + 1;
+			for(int idx = 0; idx < loopCount; idx ++){
+				int jdx = step;
+				int stepLimit = step + 100;
+				if(stepLimit > size) {
+					stepLimit = size;
+				}
+				//分批请求每次100个forumId
+				List<Long> list = new ArrayList<Long>(100);
+				for(;jdx < stepLimit; jdx ++) {
+					list.add(forumOrderList.get(jdx).getForumId());
+				}
+				Map<Long, ForumCount> map = HttpComponent.getForumFollow(list, yesterdayStartTime/1000, yesterdayEndTime/1000);
+				followMap.putAll(map);
+				step += 100;
+			}
+			/********************************************************************************/
+			//Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			
 			Map<Long, ForumCount> postRecommendMap = forumDao.getPostRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> threadRecommendMap = forumDao.getThreadRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> recommendMap = null;
@@ -243,29 +265,30 @@ public class HomeRankServiceImpl implements HomeRankService {
 	private static final String WXYZ = "WXYZ";
 	
 	private static String in(String nameSp){
+		char p = nameSp.charAt(0);
 		int idx;
 		for(idx = 0; idx < ABCDE.length(); idx ++){
-			if(nameSp.toUpperCase().equals(ABCDE.charAt(idx))){
+			if(p == (ABCDE.charAt(idx))){
 				return ABCDE;
 			}
 		}
 		for(idx = 0; idx < FGHIJ.length(); idx ++){
-			if(nameSp.toUpperCase().equals(FGHIJ.charAt(idx))){
+			if(p == (FGHIJ.charAt(idx))){
 				return FGHIJ;
 			}
 		}
 		for(idx = 0; idx < KLMNO.length(); idx ++){
-			if(nameSp.toUpperCase().equals(KLMNO.charAt(idx))){
+			if(p == (KLMNO.charAt(idx))){
 				return KLMNO;
 			}
 		}
 		for(idx = 0; idx < PQRST.length(); idx ++){
-			if(nameSp.toUpperCase().equals(PQRST.charAt(idx))){
+			if(p == (PQRST.charAt(idx))){
 				return PQRST;
 			}
 		}
 		for(idx = 0; idx < WXYZ.length(); idx ++){
-			if(nameSp.toUpperCase().equals(WXYZ.charAt(idx))){
+			if(p == (WXYZ.charAt(idx))){
 				return WXYZ;
 			}
 		}
@@ -320,10 +343,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 		boolean flag = HttpComponent.checkGift(forum.getGameId());
 		if(flag){
 			map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + forum.getName());
-		}else{
+		}
+		else{
 			map.put(ForumURLKey.GIFT_URL_KEY, "");
 		}
-		map.put(ForumURLKey.PREFECTURE_URL_KEY, HttpComponent.getPrefectureUrl(forum.getForumId()));
+		String prefectureUrl = HttpComponent.getPrefectureUrl(forum.getForumId());
+		map.put(ForumURLKey.PREFECTURE_URL_KEY, prefectureUrl == null ? "":prefectureUrl);
 		return map;
 	}
 	

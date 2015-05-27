@@ -41,7 +41,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail, null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -80,7 +80,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -120,7 +120,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), clickAction);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -158,7 +158,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -195,7 +195,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -232,7 +232,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -269,7 +269,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -306,7 +306,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -344,7 +344,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -382,7 +382,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -421,7 +421,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -459,7 +459,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
@@ -496,7 +496,7 @@ public class SysMessageNotifyComponent
 					pushNotify(userId, category, title, detail.toString(), null);
 				}
 			};
-			GlobalObject.ASYN_EXECUTOR.execute(pushTask);
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
 		}
 		catch(Exception e)
 		{
