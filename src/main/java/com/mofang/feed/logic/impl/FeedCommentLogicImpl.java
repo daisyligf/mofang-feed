@@ -31,7 +31,6 @@ import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
-import com.mofang.feed.record.StatForumViewHistoryRecorder;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
