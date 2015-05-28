@@ -29,9 +29,4 @@ public class UserInfoAction extends AbstractActionExecutor
 		
 		return logic.getInfo(userId);
 	}
-	
-	protected boolean needCheckAtom()
-	{
-		return false;
-	}
 }

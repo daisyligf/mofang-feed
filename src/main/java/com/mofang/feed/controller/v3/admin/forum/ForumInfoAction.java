@@ -44,9 +44,4 @@ public class ForumInfoAction extends AbstractActionExecutor
 		
 		return logic.getInfo(forumId);
 	}
-	
-	protected boolean needCheckAtom()
-	{
-		return false;
-	}
 }

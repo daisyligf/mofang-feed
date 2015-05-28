@@ -16,9 +16,4 @@ public class TagListAction extends AbstractActionExecutor {
 	protected ResultValue exec(HttpRequestContext context) throws Exception {
 		return logic.getList();
 	}
-
-	protected boolean needCheckAtom()
-	{
-		return false;
-	}
 }

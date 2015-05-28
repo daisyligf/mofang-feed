@@ -29,9 +29,4 @@ public class ThreadInfoAction  extends AbstractActionExecutor
 		
 		return logic.getInfo(threadId);
 	}
-	
-	protected boolean needCheckAtom()
-	{
-		return false;
-	}
 }

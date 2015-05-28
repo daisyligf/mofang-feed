@@ -56,9 +56,4 @@ public class PostSearchAction extends AbstractActionExecutor
 		
 		return logic.search(forumId, null, null, keyword, status, pageNum, pageSize);
 	}
-	
-	protected boolean needCheckAtom()
-	{
-		return false;
-	}
 }

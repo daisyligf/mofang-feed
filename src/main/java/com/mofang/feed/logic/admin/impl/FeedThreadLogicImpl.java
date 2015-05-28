@@ -648,6 +648,9 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 						jsonThread.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
 						jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
 						jsonThread.put("status", threadInfo.getStatus());         ///主题状态
+						jsonThread.put("is_elite", threadInfo.isElite());			///是否为精华帖
+						jsonThread.put("is_top", threadInfo.isTop());			///是否为置顶帖
+						jsonThread.put("is_closed", threadInfo.isClosed());		///主题是否关闭(锁定)
 						
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", threadInfo.getForumId());
@@ -744,6 +747,9 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 						jsonThread.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
 						jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
 						jsonThread.put("status", threadInfo.getStatus());         ///主题状态
+						jsonThread.put("is_elite", threadInfo.isElite());			///是否为精华帖
+						jsonThread.put("is_top", threadInfo.isTop());			///是否为置顶帖
+						jsonThread.put("is_closed", threadInfo.isClosed());		///主题是否关闭(锁定)
 						
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", threadInfo.getForumId());

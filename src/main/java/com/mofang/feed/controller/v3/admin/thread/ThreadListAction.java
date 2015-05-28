@@ -44,9 +44,4 @@ public class ThreadListAction extends AbstractActionExecutor
 		
 		return logic.getThreadList(forumId, status, pageNum, pageSize);
 	}
-	
-	protected boolean needCheckAtom()
-	{
-		return false;
-	}
 }
