@@ -55,6 +55,8 @@ public class GlobalConfig
 	
 	public static String USER_FOLLOW_FORUM_DAYS_URL;
 	
+	public static String FORUM_FOLLOW_COUNT_BYTIME_URL;
+	
 	public static String FORUM_FOLLOW_COUNT_URL;
 	
 	public static String RECOMMEND_GAME_URL;

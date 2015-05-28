@@ -1637,7 +1637,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	{
 		try
 		{
-			Set<Long> forumIds = HttpComponent.getFllowForums(userId);
+			Set<Long> forumIds = HttpComponent.getUserFllowForums(userId);
 			Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();

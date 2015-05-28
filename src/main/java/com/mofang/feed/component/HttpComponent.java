@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.external.FeedRecommendNotify;
+import com.mofang.feed.model.external.FollowForumCount;
 import com.mofang.feed.model.external.ForumCount;
 import com.mofang.feed.model.external.Game;
 import com.mofang.feed.model.external.PostReplyNotify;
@@ -367,7 +368,7 @@ public class HttpComponent
 		}
 	}
 	
-	public static Set<Long> getFllowForums(long userId)
+	public static Set<Long> getUserFllowForums(long userId)
 	{
 		String requestUrl = GlobalConfig.USER_FOLLOW_FORUM_URL + "?uid=" + userId + "&pagesize=20";
 		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
@@ -398,19 +399,19 @@ public class HttpComponent
 		}
 		catch(Exception e)
 		{
-			GlobalObject.ERROR_LOG.error("at HttpComponent.getFllowForums throw an error.", e);
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getUserFllowForums throw an error.", e);
 			return null;
 		}
 	}
 	
-	public static Map<Long, ForumCount> getForumFollow(List<Long> forumIdList, long startTime, long endTime) throws Exception{
+	public static Map<Long, ForumCount> getForumFollowCountByTime(List<Long> forumIdList, long startTime, long endTime) throws Exception{
 		try {
 			JSONArray arrForumIds = new JSONArray();
 			for(Long forumId : forumIdList){
 				arrForumIds.put(forumId);
 			}
 			
-			String requestUrl = GlobalConfig.FORUM_FOLLOW_COUNT_URL + "?fids=" + arrForumIds.toString() + "&start_time=" + startTime + "&end_time=" + endTime;
+			String requestUrl = GlobalConfig.FORUM_FOLLOW_COUNT_BYTIME_URL + "?fids=" + arrForumIds.toString() + "&start_time=" + startTime + "&end_time=" + endTime;
 			String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
 			if(StringUtil.isNullOrEmpty(result))
 				return null;
@@ -438,11 +439,61 @@ public class HttpComponent
 			}
 			return map;
 		} catch (Exception e) {
-			GlobalObject.ERROR_LOG.error("at HttpComponent.getForumFollow.getForumFollow throw an error.", e);
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getForumFollowCountByTime throw an error.", e);
 			return null;
 		}
 	}
 	
+	public static Map<Long, FollowForumCount> getForumFollowCount(Set<Long> forumIds)
+	{
+		String fids = "";
+		for(long forumId : forumIds)
+			fids += forumId + ",";
+		
+		if(fids.length() > 0)
+			fids = fids.substring(0, fids.length() - 1);
+		
+		String requestUrl = GlobalConfig.FORUM_FOLLOW_COUNT_URL + "?fids=" + fids;
+		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return null;
+		
+		try
+		{
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return null;
+			
+			JSONArray data = json.optJSONArray("data");
+			if(null == data)
+				return null;
+			
+			Map<Long, FollowForumCount> map = new HashMap<Long, FollowForumCount>();
+			JSONObject item = null;
+			FollowForumCount countInfo = null;
+			for(int i=0; i<data.length(); i++)
+			{
+				item = data.optJSONObject(i);
+				if(null == item)
+					continue;
+				
+				long forumId = item.optLong("fid");
+				int yestodyFollows = item.optInt("yestoday_count", 0);
+				int totalFollows = item.optInt("totle_count", 0);
+				countInfo = new FollowForumCount();
+				countInfo.setYestodyFollows(yestodyFollows);
+				countInfo.setTotalFollows(totalFollows);
+				map.put(forumId, countInfo);
+			}
+			return map;
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getForumFollowCount throw an error.", e);
+			return null;
+		}
+	}
 	
 	private static String get(CloseableHttpClient httpClient, String requestUrl)
 	{

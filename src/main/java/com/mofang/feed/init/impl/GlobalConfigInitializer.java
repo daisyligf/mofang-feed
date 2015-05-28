@@ -54,6 +54,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.RECOMMEND_GAME_URL = config.get("api", "recommend_game_url");
 		GlobalConfig.FORUM_PARTITION_URL = config.get("api", "forum_partition_url");
 		GlobalConfig.GIFT_LIST_URL = config.get("api", "gift_list_url");
+		GlobalConfig.FORUM_FOLLOW_COUNT_BYTIME_URL = config.get("api", "forum_follow_count_bytime_url");
 		GlobalConfig.FORUM_FOLLOW_COUNT_URL = config.get("api", "forum_follow_count_url");
 		
 		GlobalConfig.FEED_DETAIL_URL = config.get("link", "feed_detail_url");

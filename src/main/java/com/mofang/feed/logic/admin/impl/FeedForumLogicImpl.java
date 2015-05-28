@@ -1,6 +1,8 @@
 package com.mofang.feed.logic.admin.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -11,22 +13,19 @@ import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.ForumType;
-import com.mofang.feed.global.common.QueryTimeType;
 import com.mofang.feed.logic.admin.FeedForumLogic;
 import com.mofang.feed.model.FeedForum;
-import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.FollowForumCount;
 import com.mofang.feed.model.external.Game;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedForumTagService;
 import com.mofang.feed.service.FeedTagService;
-import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedForumTagServiceImpl;
 import com.mofang.feed.service.impl.FeedTagServiceImpl;
-import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -38,7 +37,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 {
 	private final static FeedForumLogicImpl LOGIC = new FeedForumLogicImpl();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
-	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedForumTagService forumTagService = FeedForumTagServiceImpl.getInstance();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
@@ -208,10 +206,22 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			data.put("type", forumInfo.getType());
 			data.put("threads", forumInfo.getThreads());
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
-			data.put("follows", forumInfo.getFollows());
-			data.put("yestoday_follows", forumInfo.getYestodayFollows());
 			data.put("today_threads", forumInfo.getTodayThreads());
 			data.put("create_time", forumInfo.getCreateTime());
+			
+			///获取关注数
+			Set<Long> forumIds = new HashSet<Long>();
+			forumIds.add(forumId);
+			Map<Long, FollowForumCount> followMap = HttpComponent.getForumFollowCount(forumIds);
+			int totalFollows = 0;
+			int yestodayFollows = 0;
+			if(null != followMap && followMap.containsKey(forumId))
+			{
+				totalFollows = followMap.get(forumId).getTotalFollows();
+				yestodayFollows = followMap.get(forumId).getYestodyFollows();
+			}
+			data.put("follows", totalFollows);
+			data.put("yestoday_follows", yestodayFollows);
 			
 			List<Integer> tagList = forumInfo.getTags();
 			JSONArray arrayTags = new JSONArray();
@@ -250,6 +260,8 @@ public class FeedForumLogicImpl implements FeedForumLogic
 	{
 		try
 		{
+			///存储版块ID, 用于批量获取版块关注数据
+			Set<Long> forumIds = new HashSet<Long>();
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
 			long total = 0;
@@ -264,6 +276,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					JSONObject jsonForum = null;
 					for(FeedForum forumInfo : forums)
 					{
+						forumIds.add(forumInfo.getForumId());
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", forumInfo.getForumId());
 						jsonForum.put("name", forumInfo.getName());
@@ -272,10 +285,29 @@ public class FeedForumLogicImpl implements FeedForumLogic
 						jsonForum.put("type", forumInfo.getType());
 						jsonForum.put("threads", forumInfo.getThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-						jsonForum.put("follows", forumInfo.getFollows());
-						jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
 						jsonForum.put("create_time", forumInfo.getCreateTime());
 						arrayForums.put(jsonForum);
+					}
+					
+					///填充版块关注数据
+					Map<Long, FollowForumCount> followMap = HttpComponent.getForumFollowCount(forumIds);
+					if(null != followMap)
+					{
+						for(int i=0; i<arrayForums.length(); i++)
+						{
+							jsonForum = arrayForums.getJSONObject(i);
+							long forumId = jsonForum.optLong("fid", 0L);
+							
+							int totalFollows = 0;
+							int yestodayFollows = 0;
+							if(followMap.containsKey(forumId))
+							{
+								totalFollows = followMap.get(forumId).getTotalFollows();
+								yestodayFollows = followMap.get(forumId).getYestodyFollows();
+							}
+							jsonForum.put("follows", totalFollows);
+							jsonForum.put("yestoday_follows", yestodayFollows);
+						}
 					}
 				}
 			}
@@ -293,66 +325,12 @@ public class FeedForumLogicImpl implements FeedForumLogic
 	}
 
 	@Override
-	public ResultValue getForumList(Set<Long> forumIds) throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			JSONArray data = new JSONArray();
-			JSONObject jsonForum = null;
-			JSONArray arrayThreads = null;
-			FeedForum forumInfo = null;
-			for(long forumId : forumIds)
-			{
-				forumInfo = forumService.getInfo(forumId);
-				if(null == forumInfo)
-					continue;
-				
-				jsonForum = new JSONObject();
-				jsonForum.put("fid", forumInfo.getForumId());
-				jsonForum.put("name", forumInfo.getName());
-				jsonForum.put("name_spell", forumInfo.getNameSpell());
-				jsonForum.put("icon", forumInfo.getIcon());
-				jsonForum.put("color", forumInfo.getColor());
-				jsonForum.put("threads", forumInfo.getThreads());
-				jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-				jsonForum.put("follows", forumInfo.getFollows());
-				jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
-				jsonForum.put("create_time", forumInfo.getCreateTime());
-				
-				///获取版块精华帖
-				Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, 1, 10, QueryTimeType.LAST_POST_TIME);
-				arrayThreads = new JSONArray();
-				if(null != page)
-				{
-					List<FeedThread> list = page.getList();
-					if(null != list && list.size() > 0)
-					{
-						for(FeedThread threadInfo : list)
-							arrayThreads.put(threadInfo.getSubjectFilter());
-					}
-				}
-				jsonForum.put("thread", arrayThreads);
-				data.put(jsonForum);
-			}
-			
-			///返回结果
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedForumLogicImpl.getInfo throw an error.", e);
-		}
-	}
-
-	@Override
 	public ResultValue search(String forumName, int pageNum, int pageSize) throws Exception
 	{
 		try
 		{
+			///存储版块ID, 用于批量获取版块关注数据
+			Set<Long> forumIds = new HashSet<Long>();
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
 			long total = 0L;
@@ -367,6 +345,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 					JSONObject jsonForum = null;
 					for(FeedForum forumInfo : list)
 					{
+						forumIds.add(forumInfo.getForumId());
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", forumInfo.getForumId());
 						jsonForum.put("name", forumInfo.getName());
@@ -379,6 +358,26 @@ public class FeedForumLogicImpl implements FeedForumLogic
 						jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
 						jsonForum.put("create_time", forumInfo.getCreateTime());
 						arrayForums.put(jsonForum);
+					}
+					///填充版块关注数据
+					Map<Long, FollowForumCount> followMap = HttpComponent.getForumFollowCount(forumIds);
+					if(null != followMap)
+					{
+						for(int i=0; i<arrayForums.length(); i++)
+						{
+							jsonForum = arrayForums.getJSONObject(i);
+							long forumId = jsonForum.optLong("fid", 0L);
+							
+							int totalFollows = 0;
+							int yestodayFollows = 0;
+							if(followMap.containsKey(forumId))
+							{
+								totalFollows = followMap.get(forumId).getTotalFollows();
+								yestodayFollows = followMap.get(forumId).getYestodyFollows();
+							}
+							jsonForum.put("follows", totalFollows);
+							jsonForum.put("yestoday_follows", yestodayFollows);
+						}
 					}
 				}
 			}
