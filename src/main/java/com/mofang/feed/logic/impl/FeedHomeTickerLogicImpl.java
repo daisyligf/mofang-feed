@@ -57,15 +57,12 @@ public class FeedHomeTickerLogicImpl implements FeedHomeTickerLogic {
 				JSONObject objNewspaper = null;
 				for(FeedHomeTicker model : list){
 					objNewspaper = new JSONObject();
-					
 					objNewspaper.put("icon", model.getIcon());
 					objNewspaper.put("link_url", model.getLinkUrl());
 					objNewspaper.put("display_order", model.getDisplayOrder());
-					
 					data.put(objNewspaper);
 				}
 			}
-			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);

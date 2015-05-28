@@ -79,11 +79,12 @@ public class FeedHomeRecommendGameRankLogicImpl implements
 			if(list != null){
 				JSONObject objRecommendGameRank = null;
 				for(FeedHomeRecommendGameRank model : list){
-					objRecommendGameRank = new JSONObject();
 					long forumId = model.getForumId();
 					FeedForum forum = forumService.getInfo(forumId);
 					if(forum == null)
 						continue;
+					objRecommendGameRank = new JSONObject();
+					
 					objRecommendGameRank.put("forum_id", forumId);
 					objRecommendGameRank.put("forum_name", forum.getName());
 					objRecommendGameRank.put("icon", forum.getIcon());
