@@ -270,5 +270,8 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 	{
 		String strSql = "truncate table feed_forum";
 		execute(strSql);
+		
+		strSql = "truncate table feed_forum_tag";
+		execute(strSql);
 	}
 }

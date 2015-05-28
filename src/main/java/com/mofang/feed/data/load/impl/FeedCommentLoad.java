@@ -47,7 +47,7 @@ public class FeedCommentLoad implements FeedLoad
 			solrList.add(commentInfo);
 			if(total % STEP == 0 || total == list.size())
 			{
-				//handleSolr(solrList);
+				handleSolr(solrList);
 				solrList.clear();
 			}
 			total++;

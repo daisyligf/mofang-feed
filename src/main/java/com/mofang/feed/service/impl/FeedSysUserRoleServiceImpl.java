@@ -7,7 +7,9 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedSysUserRole;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.mysql.FeedAdminUserDao;
 import com.mofang.feed.mysql.FeedSysUserRoleDao;
+import com.mofang.feed.mysql.impl.FeedAdminUserDaoImpl;
 import com.mofang.feed.mysql.impl.FeedSysUserRoleDaoImpl;
 import com.mofang.feed.redis.FeedSysRoleRedis;
 import com.mofang.feed.redis.FeedSysUserRoleRedis;
@@ -28,6 +30,7 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 	private FeedSysUserRoleRedis userRoleRedis = FeedSysUserRoleRedisImpl.getInstance();
 	private FeedSysUserRoleDao userRoleDao = FeedSysUserRoleDaoImpl.getInstance();
 	private FeedSysRoleRedis roleRedis = FeedSysRoleRedisImpl.getInstance();
+	private FeedAdminUserDao adminDao = FeedAdminUserDaoImpl.getInstance();
 	
 	private FeedSysUserRoleServiceImpl()
 	{}
@@ -119,10 +122,12 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 	{
 		try
 		{
-			int roleId = userRoleRedis.getUserRole(forumId, userId);
-			if(0 == roleId)
-				roleId = 1;      ///默认为普通用户角色
+			///判断是否为管理员
+			boolean isAdmin = adminDao.exists(userId);
+			if(isAdmin)
+				return true;
 			
+			int roleId = userRoleRedis.getUserRole(forumId, userId);
 			FeedSysRole roleInfo = roleRedis.getInfo(roleId);
 			if(null == roleInfo)
 				return false;
@@ -171,6 +176,20 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 		catch (Exception e) 
 		{
 			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getUserList throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public List<FeedSysUserRole> getForumListByUserId(long userId) throws Exception
+	{
+		try 
+		{
+			return userRoleDao.getForumListByUserId(userId);
+		} 
+		catch (Exception e) 
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getForumListByUserId throw an error.", e);
 			throw e;
 		}
 	}

@@ -220,7 +220,7 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 			///构建content信息
 			String content = threadInfo.getSubject();
 			if(null != threadInfo.getPost())
-				content += "|" + threadInfo.getPost().getContent();
+				content += "|" + threadInfo.getPost().getContentFilter();
 			
 			solrDoc.addField("id", threadInfo.getThreadId());
 			solrDoc.addField("forum_id", forumId);

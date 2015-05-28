@@ -36,7 +36,7 @@ public class FeedPostLoad implements FeedLoad
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
 	private WaterproofWallRedis waterproofWallRedis = WaterproofWallRedisImpl.getInstance();
 	private FeedPostSolr postSolr = FeedPostSolrImpl.getInstance();
-	private final static int MAX_POST_ID = 6000000;
+	private final static int MAX_POST_ID = 6500000;
 	private final static int STEP = 50000;
 	
 	public void exec()
@@ -58,7 +58,7 @@ public class FeedPostLoad implements FeedLoad
 				solrList.add(postInfo);
 				if(total % STEP == 0 || total == list.size())
 				{
-					//handleSolr(solrList);
+					handleSolr(solrList);
 					solrList.clear();
 				}
 				total++;

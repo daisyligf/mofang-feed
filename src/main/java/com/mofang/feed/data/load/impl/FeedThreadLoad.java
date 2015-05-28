@@ -1,13 +1,18 @@
 package com.mofang.feed.data.load.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mofang.feed.data.load.FeedLoad;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.ThreadStatus;
+import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
+import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedThreadDao;
+import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.WaterproofWallRedis;
@@ -28,6 +33,7 @@ public class FeedThreadLoad implements FeedLoad
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
 	private WaterproofWallRedis waterproofWallRedis = WaterproofWallRedisImpl.getInstance();
 	private FeedThreadSolr threadSolr = FeedThreadSolrImpl.getInstance();
+	private FeedPostDao postDao = FeedPostDaoImpl.getInstance();
 
 	public void exec()
 	{
@@ -38,16 +44,26 @@ public class FeedThreadLoad implements FeedLoad
 			return;
 		}
 		
+		Map<Long, String> map = getThreadContentMap();
+		
 		int total = 1;
 		List<FeedThread> solrList = new ArrayList<FeedThread>();
+		FeedPost postInfo = null;
 		for(FeedThread threadInfo : list)
 		{
+			if(map.containsKey(threadInfo.getThreadId()))
+			{
+				postInfo = new FeedPost();
+				postInfo.setContentFilter(map.get(threadInfo.getThreadId()));
+				threadInfo.setPost(postInfo);
+			}
+			
 			handleRedis(threadInfo);
 			///添加到solr列表中
 			solrList.add(threadInfo);
 			if(total % STEP == 0 || total == list.size())
 			{
-				//handleSolr(solrList);
+				handleSolr(solrList);
 				solrList.clear();
 			}
 			total++;
@@ -131,6 +147,19 @@ public class FeedThreadLoad implements FeedLoad
 		{
 			GlobalObject.ERROR_LOG.error("at FeedThreadLoad.getData throw an error.", e);
 			return null;
+		}
+	}
+	
+	private Map<Long, String> getThreadContentMap()
+	{
+		try
+		{
+			return postDao.getThreadContentMap();
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadLoad.getThreadContentMap throw an error.", e);
+			return new HashMap<Long, String>();
 		}
 	}
 }

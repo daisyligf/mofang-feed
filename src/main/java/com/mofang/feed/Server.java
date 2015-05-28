@@ -37,12 +37,12 @@ public class Server
 			initializer.init();
 			System.out.println("initialize config completed!");
 			
-			//启动定时器
-			ScheduledManager.getInstance().execute();
-			
 			///初始化redis数据
 			if(GlobalConfig.LOAD_DATA)
 				LoadManager.execute(GlobalConfig.LOAD_LIST);
+			
+			//启动定时器
+			ScheduledManager.getInstance().execute();
 			
 			///启动服务器
 			ActionResolve httpActionResolve = new DefaultHttpActionResolve();

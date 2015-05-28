@@ -307,4 +307,28 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		}
 		return map;
 	}
+
+	@Override
+	public Map<Long, String> getThreadContentMap() throws Exception
+	{
+		Map<Long, String> map = new HashMap<Long, String>();
+		String strSql = "select thread_id, content_filter from feed_post where position = 1";
+		ResultData  data = super.executeQuery(strSql);
+		if(null == data)
+			return map;
+		
+		List<RowData> rows = data.getQueryResult();
+		if (rows == null || rows.size() == 0)
+			return map;
+		
+		long threadId = 0L;
+		String content = "";
+		for (RowData row : rows)
+		{
+			threadId = row.getLong(0);
+			content = row.getString(1);
+			map.put(threadId, content);
+		}
+		return map;
+	}
 }

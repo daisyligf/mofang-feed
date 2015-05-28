@@ -42,7 +42,7 @@ public class FeedForumLoad implements FeedLoad
 		///更新redis自增ID的值
 		initUniqueId();
 		
-		//handleSolr();
+		handleSolr();
 		list = null;
 		System.gc();
 	}

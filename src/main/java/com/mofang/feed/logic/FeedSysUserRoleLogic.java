@@ -19,4 +19,6 @@ public interface FeedSysUserRoleLogic
 	public ResultValue getInfo(long forumId, long userId) throws Exception;
 	
 	public ResultValue getRoleInfoList(long forumId) throws Exception;
+	
+	public ResultValue getUserRoleInfo(long userId) throws Exception;
 }

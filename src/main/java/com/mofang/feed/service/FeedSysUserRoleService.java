@@ -27,4 +27,6 @@ public interface FeedSysUserRoleService
 	public List<Integer> getRoleIdList(long forumId) throws Exception;
 	
 	public Page<FeedSysUserRole> getUserList(int pageNum, int pageSize) throws Exception;
+	
+	public List<FeedSysUserRole> getForumListByUserId(long userId) throws Exception;
 }

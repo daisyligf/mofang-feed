@@ -103,4 +103,11 @@ public interface FeedPostDao
 	public long getUserReplyCount(long userId) throws Exception;
 	
 	public Map<Long,ForumCount> getReplyCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
+	
+	/**
+	 * 获取主题的内容(数据初始化使用)
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<Long, String> getThreadContentMap() throws Exception;
 }

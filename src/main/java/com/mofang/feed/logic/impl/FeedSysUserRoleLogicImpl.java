@@ -10,10 +10,15 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.logic.FeedSysUserRoleLogic;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedSysUserRole;
+import com.mofang.feed.service.FeedAdminUserService;
+import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedSysRoleService;
 import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
+import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedSysRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 
@@ -27,6 +32,8 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 	private final static FeedSysUserRoleLogicImpl LOGIC = new FeedSysUserRoleLogicImpl();
 	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
 	private FeedSysRoleService sysRoleService = FeedSysRoleServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
+	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	
 	private FeedSysUserRoleLogicImpl()
 	{}
@@ -221,5 +228,49 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			throw new Exception("at FeedSysUserRoleLogicImpl.getRoleInfoList throw an error.", e);
 		}
 	}
-	
+
+	@Override
+	public ResultValue getUserRoleInfo(long userId) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			boolean isAdmin = adminService.exists(userId);
+			boolean isModerator = false;
+			JSONArray arrayForums = new JSONArray();
+			List<FeedSysUserRole> list = userRoleService.getForumListByUserId(userId);
+			if(null != list && list.size() > 0)
+			{
+				isModerator = true;
+				JSONObject jsonForum = null;
+				FeedForum forumInfo = null;
+				for(FeedSysUserRole userRoleInfo : list)
+				{
+					forumInfo = forumService.getInfo(userRoleInfo.getForumId());
+					if(null != forumInfo)
+					{
+						jsonForum = new JSONObject();
+						jsonForum.put("fid", forumInfo.getForumId());
+						jsonForum.put("name", forumInfo.getName());
+						arrayForums.put(jsonForum);
+					}
+				}
+			}
+			JSONObject data = new JSONObject();
+			data.put("user_id", userId);
+			data.put("is_admin", isAdmin);
+			data.put("is_moderator", isModerator);
+			data.put("moderator_forums", arrayForums);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedSysUserRoleLogicImpl.getUserRoleInfo throw an error.", e);
+		}
+	}
 }
