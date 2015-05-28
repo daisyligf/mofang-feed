@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.mofang.feed.data.load.FeedLoad;
 import com.mofang.feed.global.GlobalObject;
-import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
@@ -54,8 +53,8 @@ public class FeedForumLoad implements FeedLoad
 		{
 			forumRedis.save(forumInfo);
 			
-			///保存到Solr(非顶级版块和非公会版块才进入solr)
-			if(forumInfo.getParentId() > 0)
+			///保存到Solr(非隐藏版块才进入solr)
+			if(!forumInfo.isHidden())
 				solrList.add(forumInfo);
 		}
 		catch(Exception e)

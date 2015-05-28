@@ -8,6 +8,7 @@ import com.mofang.feed.data.load.impl.FeedPostLoad;
 import com.mofang.feed.data.load.impl.FeedPostRecommendLoad;
 import com.mofang.feed.data.load.impl.FeedSysRoleLoad;
 import com.mofang.feed.data.load.impl.FeedSysUserRoleLoad;
+import com.mofang.feed.data.load.impl.FeedTagLoad;
 import com.mofang.feed.data.load.impl.FeedThreadLoad;
 import com.mofang.feed.data.load.impl.FeedThreadRecommendLoad;
 import com.mofang.framework.util.StringUtil;
@@ -46,6 +47,8 @@ public class LoadFactory
 			load = new FeedSysUserRoleLoad();
 		else if("blacklist".equals(loadName))
 			load = new FeedBlackListLoad();
+		else if("tag".equals(loadName))
+			load = new FeedTagLoad();
 		
 		return load;
 	}

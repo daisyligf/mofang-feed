@@ -6,6 +6,7 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.redis.FeedTagRedis;
 import com.mofang.framework.data.redis.RedisWorker;
+import com.mofang.framework.data.redis.workers.SetWorker;
 import com.mofang.framework.util.StringUtil;
 
 public class FeedTagRedisImpl implements FeedTagRedis {
@@ -16,6 +17,14 @@ public class FeedTagRedisImpl implements FeedTagRedis {
 	
 	public static FeedTagRedisImpl getInstance(){
 		return REDIS;
+	}
+
+	@Override
+	public void initUniqueId(int tagId) throws Exception
+	{
+		String key = RedisKey.TAG_INCREMENT_ID_KEY;
+		RedisWorker<Boolean> worker = new SetWorker(key, String.valueOf(tagId));
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 
 	@Override
@@ -57,5 +66,4 @@ public class FeedTagRedisImpl implements FeedTagRedis {
 		};
 		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
-
 }
