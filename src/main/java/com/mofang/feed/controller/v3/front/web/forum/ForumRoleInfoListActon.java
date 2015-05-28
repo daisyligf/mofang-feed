@@ -25,6 +25,13 @@ public class ForumRoleInfoListActon extends AbstractActionExecutor {
 			return result;
 		}
 		long forumId = Long.parseLong(strForumId);	
+		
+		if(forumId <= 0){
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
+		
 		return logic.getRoleInfoList(forumId);
 	}
 

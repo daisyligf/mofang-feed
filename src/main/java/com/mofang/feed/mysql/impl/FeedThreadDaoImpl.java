@@ -667,8 +667,8 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");
 		strSql.append(" where status = 1 and forum_id = " + forumId);
-		strSql.append(" and create_time > " + startTime);
-		strSql.append(" and create_time < " + endTime);
+		strSql.append(" and create_time >= " + startTime);
+		strSql.append(" and create_time <= " + endTime);
 		strSql.append(" order by replies desc limit 0,7");
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);

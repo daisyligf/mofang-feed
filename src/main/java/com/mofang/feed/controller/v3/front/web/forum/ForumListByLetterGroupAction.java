@@ -32,7 +32,7 @@ public class ForumListByLetterGroupAction extends AbstractActionExecutor {
 		String strLetterGroup = context.getParamMap().get("letterGroup");
 
 		int pageNum = 1;
-		int pageSize = 8;
+		int pageSize = 20;
 		int type = 0;
 
 		if (StringUtil.isInteger(strType))
