@@ -71,8 +71,8 @@ public class FeedHomeRecommendGameServiceImpl implements
 			List<FeedHomeRecommendGame> list = new ArrayList<FeedHomeRecommendGame>(idSet.size());
 			
 			for(String idStr : idSet){
-				FeedHomeRecommendGame model = new FeedHomeRecommendGame();
 				long forumId = Long.parseLong(idStr);
+				FeedHomeRecommendGame model = new FeedHomeRecommendGame();
 				model.setForumId(forumId);
 				Map<String, String> urlMap = forumUrlRedis.getUrl(forumId);
 				if(urlMap != null){

@@ -79,12 +79,12 @@ public class FeedHomeRecommendGameLogicImpl implements
 			if(list != null){
 				JSONObject objRecommendGame = null;
 				for(FeedHomeRecommendGame model : list){
-					objRecommendGame = new JSONObject();
-					
 					long forumId = model.getForumId();
 					FeedForum feedForum = forumService.getInfo(forumId);
 					if(feedForum == null)
 						continue;
+					
+					objRecommendGame = new JSONObject();
 					objRecommendGame.put("forum_id", forumId);
 					objRecommendGame.put("forum_name", feedForum.getName());
 					objRecommendGame.put("icon", feedForum.getIcon());
@@ -118,12 +118,12 @@ public class FeedHomeRecommendGameLogicImpl implements
 			List<FeedHomeRecommendGame> list = page.getList();
 			JSONObject objRecommendGame = null;
 			for(FeedHomeRecommendGame model : list){
-				objRecommendGame = new JSONObject();
-				
 				long forumId = model.getForumId();
 				FeedForum feedForum = forumService.getInfo(forumId);
 				if(feedForum == null)
 					continue;
+				
+				objRecommendGame = new JSONObject();
 				objRecommendGame.put("forum_id", forumId);
 				objRecommendGame.put("forum_name", feedForum.getName());
 				objRecommendGame.put("icon", feedForum.getIcon());

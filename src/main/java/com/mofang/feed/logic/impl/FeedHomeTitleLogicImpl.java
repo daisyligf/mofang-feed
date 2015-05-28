@@ -72,16 +72,13 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 			if(list != null){
 				JSONObject objTitle = null;
 				for(FeedHomeTitle model : list){
-					objTitle =  new JSONObject();
-					
 					long threadId = model.getThreadId();
 					int displayOrder = model.getDisplayOrder();
-					
 					FeedThread thread = threadService.getFullInfo(threadId);
 					if(thread == null)
 						continue;
 					
-					//String subject = thread.getSubjectFilter();
+					objTitle =  new JSONObject();
 					String content = thread.getPost().getContentFilter();
 					String linkUrl = thread.getLinkUrl();
 					

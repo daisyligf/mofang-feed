@@ -47,21 +47,20 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 			}
 			for(FeedHomeHotForum model : modelList){
 				long forumId = model.getForumId();
-				//设置专区地址
-				String prefectureUrl = HttpComponent.getPrefectureUrl(forumId);
-				model.setPrefectureUrl(prefectureUrl);
-				/*
-				 * 设置礼包地址
-				 * 1、通过该game_id判断是否有礼包
-				 * 2、如果有礼包，设置礼包地址s
-				 */
 				FeedForum forum = forumService.getInfo(forumId);
 				if(forum == null){
 					result.setCode(ReturnCode.FORUM_NOT_EXISTS);
 					result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
 					return result;
 				}
-				
+				//设置专区地址
+				String prefectureUrl = HttpComponent.getPrefectureUrl(forumId);
+				model.setPrefectureUrl(prefectureUrl);
+				/*
+				 * 设置礼包地址
+				 * 1、通过该game_id判断是否有礼包
+				 * 2、如果有礼包，设置礼包地址
+				 */
 				boolean flag = HttpComponent.checkGift(forum.getGameId());
 				if(flag){
 					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
@@ -96,8 +95,8 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 					objHotForum.put("icon", feedForum.getIcon());
 					objHotForum.put("today_threads", feedForum.getTodayThreads());
 					objHotForum.put("total_threads", feedForum.getThreads());
-					objHotForum.put("prefecture_url", model.getPrefectureUrl());//专区地址 调用产品库
-					objHotForum.put("gift_url", model.getGiftUrl());//自己拼
+					objHotForum.put("prefecture_url", model.getPrefectureUrl());
+					objHotForum.put("gift_url", model.getGiftUrl());
 					
 					data.put(objHotForum);
 				}

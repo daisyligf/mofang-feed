@@ -59,11 +59,11 @@ public class FeedHomeHotForumRankLogicImpl implements FeedHomeHotForumRankLogic 
 			if(list != null){
 				JSONObject objForumRank = null;
 				for(FeedHomeHotForumRank model : list){
-					objForumRank = new JSONObject();
 					long forumId = model.getForumId();
 					FeedForum forum = forumService.getInfo(forumId);
 					if(forum == null)
 						continue;
+					objForumRank = new JSONObject();
 					objForumRank.put("forum_id", forumId);
 					objForumRank.put("forum_name", forum.getName());
 					objForumRank.put("up_down", model.getUpDown());
