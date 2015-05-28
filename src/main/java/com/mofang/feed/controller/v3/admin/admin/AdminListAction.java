@@ -34,4 +34,9 @@ public class AdminListAction extends AbstractActionExecutor
 		
 		return logic.getUserList(pageNum, pageSize);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

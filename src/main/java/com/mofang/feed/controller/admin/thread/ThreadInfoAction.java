@@ -35,4 +35,9 @@ public class ThreadInfoAction extends AbstractActionExecutor
 		long threadId = Long.parseLong(strThreadId);
 		return logic.getInfo(threadId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

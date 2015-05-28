@@ -45,4 +45,9 @@ public class ForumSearchAction extends AbstractActionExecutor
 		
 		return logic.search(forumName, pageNum, pageSize);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

@@ -39,4 +39,9 @@ public class ForumListAction extends AbstractActionExecutor
 		
 		return logic.getForumList(type, pageNum, pageSize);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

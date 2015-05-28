@@ -34,4 +34,9 @@ public class ModeratorListAction extends AbstractActionExecutor
 		
 		return logic.getModeratorList(pageNum, pageSize);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

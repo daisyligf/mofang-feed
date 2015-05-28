@@ -29,4 +29,9 @@ public class AdminExistsAction extends AbstractActionExecutor
 		
 		return logic.exists(userId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }
