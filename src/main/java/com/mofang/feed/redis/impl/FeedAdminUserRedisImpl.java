@@ -3,10 +3,10 @@ package com.mofang.feed.redis.impl;
 import redis.clients.jedis.Jedis;
 
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.RedisFaster;
 import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.redis.FeedAdminUserRedis;
 import com.mofang.framework.data.redis.RedisWorker;
-import com.mofang.framework.data.redis.workers.DeleteWorker;
 
 public class FeedAdminUserRedisImpl implements FeedAdminUserRedis {
 
@@ -24,7 +24,7 @@ public class FeedAdminUserRedisImpl implements FeedAdminUserRedis {
 			@Override
 			public Boolean execute(Jedis jedis) throws Exception {
 				String key = RedisKey.ADMIN_USER_LIST_KEY;
-				return jedis.hexists(key, String.valueOf(userId));
+				return jedis.sismember(key, String.valueOf(userId));
 			}
 		};
 		return GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
@@ -46,8 +46,7 @@ public class FeedAdminUserRedisImpl implements FeedAdminUserRedis {
 	@Override
 	public void delete(long userId) throws Exception {
 		String key = RedisKey.ADMIN_USER_LIST_KEY;
-		RedisWorker<Boolean> worker = new DeleteWorker(key);
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+		RedisFaster.srem(key, String.valueOf(userId));
 	}
 
 }
