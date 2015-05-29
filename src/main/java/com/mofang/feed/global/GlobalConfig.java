@@ -13,6 +13,10 @@ public class GlobalConfig
 	
 	public static int READ_TIMEOUT;
 	
+	public static String SERVER_SECRET;
+	
+	public static String SERVER_APPID;
+	
 	public static String SCAN_PACKAGE_PATH;
 	
 	public static String MYSQL_CONFIG_PATH;

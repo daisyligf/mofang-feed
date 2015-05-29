@@ -27,6 +27,8 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.SERVER_PORT = config.getInt("common", "server_port");
 		GlobalConfig.CONN_TIMEOUT = config.getInt("common", "conn_timeout");
 		GlobalConfig.READ_TIMEOUT = config.getInt("common", "read_timeout");
+		GlobalConfig.SERVER_SECRET = config.get("common", "server_secret");
+		GlobalConfig.SERVER_APPID = config.get("common", "server_appid");
 		
 		GlobalConfig.SCAN_PACKAGE_PATH = config.get("conf", "scan_package_path");
 		GlobalConfig.MYSQL_CONFIG_PATH = config.get("conf", "mysql_config_path");

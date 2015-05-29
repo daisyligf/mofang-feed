@@ -33,6 +33,11 @@ public class ReturnCode
 	public final static int INVALID_OPERATION = 403;
 	
 	/**
+	 * 服务签名错误
+	 */
+	public final static int SIGN_ERROR = 410;
+	
+	/**
 	 * 服务器错误
 	 */
 	public final static int SERVER_ERROR = 500;

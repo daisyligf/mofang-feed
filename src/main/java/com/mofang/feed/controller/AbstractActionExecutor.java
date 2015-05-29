@@ -1,13 +1,17 @@
 package com.mofang.feed.controller;
 
 import java.net.URLDecoder;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
 
+import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnCodeHelper;
+import com.mofang.feed.util.SignUtil;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 import com.mofang.framework.web.server.reactor.context.RequestContext;
@@ -36,6 +40,31 @@ public abstract class AbstractActionExecutor implements ActionExecutor
 		try
 		{
 			ResultValue result = new ResultValue();
+			
+			if(needCheckSign())
+			{
+				///验证签名
+				String appId = context.getParameters("appid");
+				if(!appId.equals(GlobalConfig.SERVER_APPID))
+				{
+					result.setCode(ReturnCode.SIGN_ERROR);
+					result.setMessage("服务签名错误");
+					return result.toJsonString();
+				}
+				
+				Map<String, String> getParam = context.getParamMap();
+				JSONObject jsonPost = new JSONObject(postData);
+				String postParam = jsonPost.toString();
+				String mySign = SignUtil.buildSign(getParam, postParam, GlobalConfig.SERVER_SECRET);
+				String sign = context.getParameters("sign");
+				if(!mySign.equals(sign))
+				{
+					result.setCode(ReturnCode.SIGN_ERROR);
+					result.setMessage("服务签名错误");
+					return result.toJsonString();
+				}
+			}
+			
 			///解密原子封装
 			atom = context.getParameters("atom");
 			if(StringUtil.isNullOrEmpty(atom))
@@ -97,6 +126,11 @@ public abstract class AbstractActionExecutor implements ActionExecutor
 	protected boolean needCheckAtom()
 	{
 		return true;
+	}
+	
+	protected boolean needCheckSign()
+	{
+		return false;
 	}
 	
 	protected abstract ResultValue exec(HttpRequestContext context) throws Exception;
