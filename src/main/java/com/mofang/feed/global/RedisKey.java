@@ -262,6 +262,13 @@ public class RedisKey
 	 */
 	public final static String REPLYHIGHEST_THREAD_KEY_PREFIX = "forum_replyhighest_thread_list_";
 	
+	/***
+	 * 管理员列表
+	 * 结构: Set
+	 * 示例: sadd admin_user_list ${user_id}
+	 */
+	public final static String ADMIN_USER_LIST_KEY = "admin_user_list";
+	
 	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀

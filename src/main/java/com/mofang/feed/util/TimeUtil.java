@@ -12,6 +12,8 @@ public class TimeUtil {
 		Calendar cl = Calendar.getInstance();
 		cl.get(Calendar.HOUR_OF_DAY);
 		cl.set(Calendar.HOUR_OF_DAY, hour);
+		cl.set(Calendar.MINUTE, 0);
+		cl.set(Calendar.SECOND, 0);
 		return cl.getTimeInMillis() - System.currentTimeMillis();
 	}
 
@@ -36,8 +38,9 @@ public class TimeUtil {
 	}
 
 	public static void main(String[] args) {
-		long ysTime = getYesterdyEndTime();
-		System.out.println(format.format(ysTime));
+		long time = getInitDelay(24);
+		System.out.println(time);
+		System.out.println(time / 1000 / 60 / 60);
 	}
 
 }
