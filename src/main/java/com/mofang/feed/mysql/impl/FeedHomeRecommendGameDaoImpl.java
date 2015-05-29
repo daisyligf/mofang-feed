@@ -43,8 +43,9 @@ public class FeedHomeRecommendGameDaoImpl extends
 			Operand where = new WhereOperand();
 			Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
 			where.append(equal);
-			super.deleteByWhere(where);
-			super.insert(model);
+			if(!super.updateByWhere(model, where)){
+				super.insert(model);
+			}
 		}
 
 	}
