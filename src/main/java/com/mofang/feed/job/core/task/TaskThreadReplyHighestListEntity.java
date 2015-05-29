@@ -28,7 +28,7 @@ public class TaskThreadReplyHighestListEntity extends TaskEntity {
 	
 	public TaskThreadReplyHighestListEntity() {
 		super.setTask(new Task());
-		super.setInitialDelay(TimeUtil.getInitDelay(24));
+		super.setInitialDelay(10000l);
 		super.setPeriod(24 * 60 * 60 * 1000l);
 		super.setUnit(TimeUnit.MILLISECONDS);
 	}
