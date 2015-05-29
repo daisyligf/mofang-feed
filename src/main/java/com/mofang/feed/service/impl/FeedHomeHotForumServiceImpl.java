@@ -76,7 +76,7 @@ public class FeedHomeHotForumServiceImpl implements FeedHomeHotForumService {
 				Map<String, String> urlMap = forumUrlRedis.getUrl(forumId);
 				if(urlMap != null){
 					model.setGiftUrl(urlMap.get(ForumURLKey.GIFT_URL_KEY));
-					model.setPrefectureUrl(ForumURLKey.PREFECTURE_URL_KEY);
+					model.setPrefectureUrl(urlMap.get(ForumURLKey.PREFECTURE_URL_KEY));
 				}
 				list.add(model);
 			}

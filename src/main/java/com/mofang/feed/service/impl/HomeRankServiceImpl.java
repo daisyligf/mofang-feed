@@ -165,6 +165,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 	@Override
 	public void refresh(int type) throws Exception {
 		try {
+			System.out.println("-------------刷新排行榜任务");
 			long startTime = System.currentTimeMillis();
 			List<FeedForumOrder> forumOrderList = forumDao.getForumOrderList(type);
 			if(forumOrderList == null){
