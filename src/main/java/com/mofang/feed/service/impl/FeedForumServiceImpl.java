@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.CommentStatus;
 import com.mofang.feed.global.common.PostStatus;
@@ -87,9 +88,13 @@ public class FeedForumServiceImpl implements FeedForumService
 			forumDao.add(model);
 			
 			/******************************Solr操作******************************/
-			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
+			///保存到solr(隐藏版块不进入Solr)
 			if(!model.isHidden())
 				forumSolr.add(model);
+			
+			/******************************同步产品库版块ID******************************/
+			if(model.getGameId() > 0)
+				HttpComponent.SyncGameForumId(model.getGameId(), forumId);
 			
 			return forumId;
 		}
@@ -117,9 +122,13 @@ public class FeedForumServiceImpl implements FeedForumService
 			forumDao.update(model);
 			
 			/******************************Solr操作******************************/
-			///保存到solr(顶级版块&工会版块&隐藏版块不进入Solr)
+			///保存到solr(隐藏版块不进入Solr)
 			if(!model.isHidden())
 				forumSolr.add(model);
+			
+			/******************************同步产品库版块ID******************************/
+			if(model.getGameId() > 0)
+				HttpComponent.SyncGameForumId(model.getGameId(), model.getForumId());
 		}
 		catch(Exception e)
 		{

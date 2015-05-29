@@ -71,6 +71,8 @@ public class GlobalConfig
 	
 	public static String SENSITIVE_WORD_URL;
 	
+	public static String SYNC_GAME_FORUMID_URL;
+	
 	public static String FEED_DETAIL_URL;
 	
 	public static String FORUM_DETAIL_URL;

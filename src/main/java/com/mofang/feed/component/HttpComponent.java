@@ -85,6 +85,15 @@ public class HttpComponent
 	}
 	
 	/**
+	 * 同步给产品库游戏对应的版块ID
+	 */
+	public static void SyncGameForumId(int gameId, long forumId)
+	{
+		String requestUrl = GlobalConfig.SYNC_GAME_FORUMID_URL + "?game_id=" + gameId + "&forum_id=" + forumId;
+		get(GlobalObject.HTTP_CLIENT_GAMESERVICE, requestUrl);
+	}
+	
+	/**
 	 *  获取专区地址
 	 * @param forumId
 	 * @return
