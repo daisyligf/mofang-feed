@@ -32,13 +32,22 @@ public class FeedHomeRecommendGameDaoImpl extends
 	
 	@Override
 	public void edit(FeedHomeRecommendGame model) throws Exception {
-		Operand where = new WhereOperand();
-		Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
-		where.append(equal);
-		boolean flag = super.updateByWhere(model, where);
-		if(!flag){
-			super.insert(model);
-		}		
+		long forumId = model.getForumId();
+		FeedHomeRecommendGame oldModel = super.getByPrimaryKey(forumId);
+		if(oldModel != null){
+			super.deleteByPrimaryKey(forumId);
+			if(!super.updateByPrimaryKey(model)){
+				super.insert(model);
+			}
+		}else{
+			Operand where = new WhereOperand();
+			Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
+			where.append(equal);
+			if(!super.updateByWhere(model, where)){
+				super.insert(model);
+			}
+		}
+
 	}
 
 	@Override

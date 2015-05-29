@@ -37,6 +37,7 @@ import com.mofang.feed.model.external.User;
 import com.mofang.feed.record.StatForumViewHistoryRecorder;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedBlackListService;
 import com.mofang.feed.service.FeedCommentService;
 import com.mofang.feed.service.FeedForumService;
@@ -45,6 +46,7 @@ import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.FeedUserFavoriteService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
@@ -74,6 +76,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private FeedCommentService commentService = FeedCommentServiceImpl.getInstance();
 	private FeedUserFavoriteService favoriteService = FeedUserFavoriteServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	
 	private FeedPostLogicImpl()
 	{}
@@ -1372,6 +1375,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			///判断是否为版主
 			int roleId = userRoleService.getRoleId(threadInfo.getForumId(), threadInfo.getUserId());
 			jsonUser.put("is_moderator", roleId > 0);
+			jsonUser.put("is_admin", adminService.exists(currentUserId));
 			jsonThread.put("user", jsonUser);
 		}
 		return jsonThread;

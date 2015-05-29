@@ -7,6 +7,8 @@ import com.mofang.feed.model.FeedAdminUser;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedAdminUserDao;
 import com.mofang.feed.mysql.impl.FeedAdminUserDaoImpl;
+import com.mofang.feed.redis.FeedAdminUserRedis;
+import com.mofang.feed.redis.impl.FeedAdminUserRedisImpl;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.util.MysqlPageNumber;
 
@@ -19,6 +21,7 @@ public class FeedAdminUserServiceImpl implements FeedAdminUserService
 {
 	private final static FeedAdminUserServiceImpl SERVICE = new FeedAdminUserServiceImpl();
 	private FeedAdminUserDao adminDao = FeedAdminUserDaoImpl.getInstance();
+	private FeedAdminUserRedis adminRedis = FeedAdminUserRedisImpl.getInstance();
 	
 	private FeedAdminUserServiceImpl()
 	{}
@@ -33,7 +36,7 @@ public class FeedAdminUserServiceImpl implements FeedAdminUserService
 	{
 		try
 		{
-			return adminDao.exists(userId);
+			return adminRedis.exists(userId);
 		}
 		catch(Exception e)
 		{
@@ -47,6 +50,8 @@ public class FeedAdminUserServiceImpl implements FeedAdminUserService
 	{
 		try
 		{
+			adminRedis.add(model.getUserId());
+
 			adminDao.add(model);
 		}
 		catch(Exception e)
@@ -61,6 +66,8 @@ public class FeedAdminUserServiceImpl implements FeedAdminUserService
 	{
 		try
 		{
+			adminRedis.delete(userId);
+			
 			adminDao.delete(userId);
 		}
 		catch(Exception e)

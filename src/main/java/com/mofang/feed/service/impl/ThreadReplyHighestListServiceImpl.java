@@ -51,7 +51,7 @@ public class ThreadReplyHighestListServiceImpl implements
 				}
 			}
 			long _endTime = System.currentTimeMillis();
-			GlobalObject.ERROR_LOG.info("at ThreadReplyHighestListServiceImpl.generate, 生成最高回复7条帖子--用时：" + (_endTime - _startTime) + "毫秒");
+			GlobalObject.INFO_LOG.info("at ThreadReplyHighestListServiceImpl.generate, 生成最高回复7条帖子--用时：" + (_endTime - _startTime) + "毫秒");
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at ThreadReplyHighestListServiceImpl.generate throw an error.", e);
 			throw e;
