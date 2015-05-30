@@ -233,7 +233,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(model.getForumId(), operatorId, FeedPrivilege.EDIT_THREAD);
+			boolean hasPrivilege = userRoleService.hasPrivilege(threadInfo.getForumId(), operatorId, FeedPrivilege.EDIT_THREAD);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);

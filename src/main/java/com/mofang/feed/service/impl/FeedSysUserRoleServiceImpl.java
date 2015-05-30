@@ -7,12 +7,12 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedSysUserRole;
 import com.mofang.feed.model.Page;
-import com.mofang.feed.mysql.FeedAdminUserDao;
 import com.mofang.feed.mysql.FeedSysUserRoleDao;
-import com.mofang.feed.mysql.impl.FeedAdminUserDaoImpl;
 import com.mofang.feed.mysql.impl.FeedSysUserRoleDaoImpl;
+import com.mofang.feed.redis.FeedAdminUserRedis;
 import com.mofang.feed.redis.FeedSysRoleRedis;
 import com.mofang.feed.redis.FeedSysUserRoleRedis;
+import com.mofang.feed.redis.impl.FeedAdminUserRedisImpl;
 import com.mofang.feed.redis.impl.FeedSysRoleRedisImpl;
 import com.mofang.feed.redis.impl.FeedSysUserRoleRedisImpl;
 import com.mofang.feed.service.FeedSysUserRoleService;
@@ -30,7 +30,7 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 	private FeedSysUserRoleRedis userRoleRedis = FeedSysUserRoleRedisImpl.getInstance();
 	private FeedSysUserRoleDao userRoleDao = FeedSysUserRoleDaoImpl.getInstance();
 	private FeedSysRoleRedis roleRedis = FeedSysRoleRedisImpl.getInstance();
-	private FeedAdminUserDao adminDao = FeedAdminUserDaoImpl.getInstance();
+	private FeedAdminUserRedis adminRedis = FeedAdminUserRedisImpl.getInstance();
 	
 	private FeedSysUserRoleServiceImpl()
 	{}
@@ -123,7 +123,7 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 		try
 		{
 			///判断是否为管理员
-			boolean isAdmin = adminDao.exists(userId);
+			boolean isAdmin = adminRedis.exists(userId);
 			if(isAdmin)
 				return true;
 			
