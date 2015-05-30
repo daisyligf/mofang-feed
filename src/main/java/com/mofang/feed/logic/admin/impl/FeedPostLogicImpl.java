@@ -233,7 +233,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						
 						jsonThread = new JSONObject();
 						jsonThread.put("tid", postInfo.getThreadId());
-						threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+						threadInfo = threadService.getInfo(postInfo.getThreadId(), DataSource.REDIS);
 						if(null != threadInfo)
 							jsonThread.put("subject", threadInfo.getSubjectFilter());
 						
