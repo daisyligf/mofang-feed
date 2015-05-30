@@ -7,7 +7,6 @@ import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.LimitConstants;
-import com.mofang.feed.global.common.ThreadTag;
 import com.mofang.feed.global.common.ThreadType;
 import com.mofang.feed.logic.FeedThreadLogic;
 import com.mofang.feed.logic.impl.FeedThreadLogicImpl;
@@ -47,9 +46,9 @@ public class ThreadAddAction extends AbstractActionExecutor {
 		String htmlContent = content;
 		String pics = json.optString("pic", "");
 		String linkUrl = json.optString("linkurl", "");
-		long videoId = json.optLong("video_id", 0L);
+		//long videoId = json.optLong("video_id", 0L);
 		int type = json.optInt("type", 0);
-		String tags = json.optString("tags", "");
+		//String tags = json.optString("tags", "");
 		//long moduleId = json.optLong("vid", 0L);
 		int gameId = json.optInt("game_id", 0);
 		int tagId = json.optInt("tag_id", 0);
@@ -71,11 +70,11 @@ public class ThreadAddAction extends AbstractActionExecutor {
 		
 		
 		// /判断是否为精华帖
-		boolean isElite = tags.contains(String.valueOf(ThreadTag.ELITE));
+		//boolean isElite = tags.contains(String.valueOf(ThreadTag.ELITE));
 		// /判断是否为视频帖
-		boolean isVideo = videoId > 0L;
+		//boolean isVideo = videoId > 0L;
 		// /判断是否为标红帖
-		boolean isMark = tags.contains(String.valueOf(ThreadTag.MARK));
+		//boolean isMark = tags.contains(String.valueOf(ThreadTag.MARK));
 
 		// /主题类型
 		int threadType = ThreadType.NORMAL;
@@ -92,9 +91,9 @@ public class ThreadAddAction extends AbstractActionExecutor {
 		threadInfo.setLinkUrl(linkUrl);
 		threadInfo.setType(threadType);
 		threadInfo.setLastPostUid(userId);
-		threadInfo.setElite(isElite);
-		threadInfo.setVideo(isVideo);
-		threadInfo.setMark(isMark);
+//		threadInfo.setElite(isElite);
+//		threadInfo.setVideo(isVideo);
+//		threadInfo.setMark(isMark);
 		threadInfo.setGameId(gameId);
 		threadInfo.setTagId(tagId);
 
@@ -105,7 +104,7 @@ public class ThreadAddAction extends AbstractActionExecutor {
 		postInfo.setContent(content);
 		postInfo.setHtmlContent(htmlContent);
 		postInfo.setPictures(pics);
-		postInfo.setVideoId(videoId);
+//		postInfo.setVideoId(videoId);
 		threadInfo.setPost(postInfo);
 
 		return logic.add(threadInfo, 0);
