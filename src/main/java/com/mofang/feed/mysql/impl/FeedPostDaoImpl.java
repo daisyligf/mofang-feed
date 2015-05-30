@@ -237,7 +237,7 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		strSql.append("select post_id as source_id, 'post' as type from feed_post where user_id = " + userId + " and status = 1 ");
 		strSql.append("union all ");
 		strSql.append("select comment_id as source_id, 'comment' as type from feed_comment where user_id = " + userId + " and status = 1 ");
-		strSql.append(") a order by create_time desc ");
+		strSql.append(") a order by comment_id desc ");
 		strSql.append("limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		if(null == data)
