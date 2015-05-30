@@ -19,14 +19,17 @@ import com.mofang.feed.global.common.OperateSourceType;
 import com.mofang.feed.logic.admin.FeedCommentLogic;
 import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedOperateHistory;
+import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedCommentService;
 import com.mofang.feed.service.FeedOperateHistoryService;
+import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
+import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -40,6 +43,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedOperateHistoryService operateService = FeedOperateHistoryServiceImpl.getInstance();
 	private FeedCommentService commentService = FeedCommentServiceImpl.getInstance();
+	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	
 	private FeedCommentLogicImpl()
 	{}
@@ -196,6 +200,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 					JSONObject jsonPost = null;
 					JSONObject jsonUser = null;
 					User userInfo = null;
+					FeedThread threadInfo = null;
 					for(FeedComment commentInfo : comments)
 					{
 						jsonComment = new JSONObject();
@@ -209,6 +214,9 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 						
 						jsonThread = new JSONObject();
 						jsonThread.put("tid", commentInfo.getThreadId());
+						threadInfo = threadService.getInfo(commentInfo.getThreadId(), DataSource.REDIS);
+						if(null != threadInfo)
+							jsonThread.put("subject", threadInfo.getSubjectFilter());
 						
 						jsonPost = new JSONObject();
 						jsonPost.put("pid", commentInfo.getPostId());
@@ -293,6 +301,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 					JSONObject jsonPost = null;
 					JSONObject jsonUser = null;
 					User userInfo = null;
+					FeedThread threadInfo = null;
 					for(FeedComment commentInfo : comments)
 					{
 						jsonComment = new JSONObject();
@@ -306,6 +315,9 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 						
 						jsonThread = new JSONObject();
 						jsonThread.put("tid", commentInfo.getThreadId());
+						threadInfo = threadService.getInfo(commentInfo.getThreadId(), DataSource.REDIS);
+						if(null != threadInfo)
+							jsonThread.put("subject", threadInfo.getSubjectFilter());
 						
 						jsonPost = new JSONObject();
 						jsonPost.put("pid", commentInfo.getPostId());

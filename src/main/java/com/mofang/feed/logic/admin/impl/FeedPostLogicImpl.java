@@ -216,6 +216,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 					JSONObject jsonThread = null;
 					JSONObject jsonUser = null;
 					User userInfo = null;
+					FeedThread threadInfo = null;
 					for(FeedPost postInfo : posts)
 					{
 						jsonPost = new JSONObject();
@@ -232,6 +233,9 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						
 						jsonThread = new JSONObject();
 						jsonThread.put("tid", postInfo.getThreadId());
+						threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+						if(null != threadInfo)
+							jsonThread.put("subject", threadInfo.getSubjectFilter());
 						
 						jsonUser = new JSONObject();
 						jsonUser.put("user_id", postInfo.getUserId());
@@ -311,6 +315,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 					JSONObject jsonThread = null;
 					JSONObject jsonUser = null;
 					User userInfo = null;
+					FeedThread threadInfo = null;
 					for(FeedPost postInfo : list)
 					{
 						jsonPost = new JSONObject();
@@ -327,6 +332,9 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						
 						jsonThread = new JSONObject();
 						jsonThread.put("tid", postInfo.getThreadId());       ///楼层所属主题ID
+						threadInfo = threadService.getInfo(postInfo.getThreadId(), DataSource.REDIS);
+						if(null != threadInfo)
+							jsonThread.put("subject", threadInfo.getSubjectFilter());
 						
 						jsonUser = new JSONObject();
 						jsonUser.put("user_id", postInfo.getUserId());
