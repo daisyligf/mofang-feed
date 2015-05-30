@@ -44,8 +44,8 @@ public class ThreadEditAction extends AbstractActionExecutor {
 		String content = json.optString("content", "");
 		String htmlContent = content;
 		String pics = json.optString("pic", "");
-		long videoId = json.optLong("video_id", 0);
-		String tags = json.optString("tags", "");
+		//long videoId = json.optLong("video_id", 0);
+		//String tags = json.optString("tags", "");
 		//long moduleId = json.optLong("vid", 0);
 		int gameId = json.optInt("game_id", 0);
 		int tagId = json.optInt("tag_id", 0);
@@ -66,19 +66,19 @@ public class ThreadEditAction extends AbstractActionExecutor {
 		}
 
 		// /判断是否为精华帖
-		boolean isElite = tags.contains("1");
+		//boolean isElite = tags.contains("1");
 		// /判断是否为视频帖
-		boolean isVideo = videoId > 0L;
+		//boolean isVideo = videoId > 0L;
 		// /判断是否为标红帖
-		boolean isMark = tags.contains("");
+		//boolean isMark = tags.contains("");
 
 		// /构建主题实体
 		FeedThread threadInfo = new FeedThread();
 		threadInfo.setThreadId(threadId);
 		threadInfo.setSubject(subject);
-		threadInfo.setElite(isElite);
-		threadInfo.setVideo(isVideo);
-		threadInfo.setMark(isMark);
+		//threadInfo.setElite(isElite);
+		//threadInfo.setVideo(isVideo);
+		//threadInfo.setMark(isMark);
 		threadInfo.setGameId(gameId);
 		threadInfo.setTagId(tagId);
 
@@ -87,7 +87,7 @@ public class ThreadEditAction extends AbstractActionExecutor {
 		postInfo.setContent(content);
 		postInfo.setHtmlContent(htmlContent);
 		postInfo.setPictures(pics);
-		postInfo.setVideoId(videoId);
+		//postInfo.setVideoId(videoId);
 		threadInfo.setPost(postInfo);
 		return logic.edit(threadInfo, 0, operatorId);
 	}
