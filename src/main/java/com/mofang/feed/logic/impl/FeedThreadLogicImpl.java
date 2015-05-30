@@ -233,7 +233,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			///权限检查
-			boolean hasPrivilege = false;
+			boolean hasPrivilege = userRoleService.hasPrivilege(model.getForumId(), operatorId, FeedPrivilege.EDIT_THREAD);
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -759,7 +759,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			String subject = threadInfo.getSubject();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.MARK_THREAD);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -777,7 +777,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			FeedOperateHistory operateInfo = new FeedOperateHistory();
 			operateInfo.setUserId(userId);
 			operateInfo.setForumId(forumId);
-			operateInfo.setPrivilegeId(FeedPrivilege.MARK_THREAD);
+			operateInfo.setPrivilegeId(0);
 			operateInfo.setSourceType(OperateSourceType.THREAD);
 			operateInfo.setSourceId(threadId);
 			operateInfo.setOperateBehavior(OperateBehavior.MARK_THREAD);
@@ -824,7 +824,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			long userId = threadInfo.getUserId();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.MARK_THREAD);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -839,7 +839,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			FeedOperateHistory operateInfo = new FeedOperateHistory();
 			operateInfo.setUserId(userId);
 			operateInfo.setForumId(forumId);
-			operateInfo.setPrivilegeId(FeedPrivilege.MARK_THREAD);
+			operateInfo.setPrivilegeId(0);
 			operateInfo.setSourceType(OperateSourceType.THREAD);
 			operateInfo.setSourceId(threadId);
 			operateInfo.setOperateBehavior(OperateBehavior.CANCEL_MARK_THREAD);
@@ -1001,7 +1001,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			long userId = threadInfo.getUserId();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.MOVE_THREAD);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -1016,7 +1016,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			FeedOperateHistory operateInfo = new FeedOperateHistory();
 			operateInfo.setUserId(userId);
 			operateInfo.setForumId(forumId);
-			operateInfo.setPrivilegeId(FeedPrivilege.MOVE_THREAD);
+			operateInfo.setPrivilegeId(0);
 			operateInfo.setSourceType(OperateSourceType.THREAD);
 			operateInfo.setSourceId(threadId);
 			operateInfo.setOperateBehavior(OperateBehavior.MOVE_THREAD);
@@ -1054,7 +1054,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			long userId = threadInfo.getUserId();
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.UPDOWN);
+			boolean hasPrivilege = false;
 			if(!hasPrivilege)
 			{
 				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
@@ -1069,7 +1069,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			FeedOperateHistory operateInfo = new FeedOperateHistory();
 			operateInfo.setUserId(userId);
 			operateInfo.setForumId(forumId);
-			operateInfo.setPrivilegeId(FeedPrivilege.UPDOWN);
+			operateInfo.setPrivilegeId(0);
 			operateInfo.setSourceType(OperateSourceType.THREAD);
 			operateInfo.setSourceId(threadId);
 			operateInfo.setOperateBehavior(OperateBehavior.UPDOWN);
