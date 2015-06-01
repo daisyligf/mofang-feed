@@ -151,7 +151,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			model.setDisplayOrder(idx + 1);
 			FeedForum forum = forumService.getInfo(forumId);
 			if(forum != null){
-				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
+				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getGameId());
 				boolean flag = HttpComponent.checkGift(forum.getGameId());
 				if(flag){
 					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
@@ -340,7 +340,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 	
 	private Map<String, String> buildUrlMap(FeedForum forum){
 		Map<String,String> map = new HashMap<String, String>(3);
-		map.put(ForumURLKey.DOWNLOAD_URL_KEY, GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
+		map.put(ForumURLKey.DOWNLOAD_URL_KEY, GlobalConfig.GAME_DOWNLOAD_URL + forum.getGameId());
 		boolean flag = HttpComponent.checkGift(forum.getGameId());
 		if(flag){
 			map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + forum.getName());
