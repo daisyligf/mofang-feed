@@ -1507,7 +1507,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	{
 		try
 		{
-			Page<FeedThread> page = threadService.getUserEliteThreadList(userId, pageNum, pageSize);
+			Page<FeedThread> page = threadService.getUserFavoriteThreadList(userId, pageNum, pageSize);
 			ResultValue value = formatUserThreads(page);
 			JSONObject data = (JSONObject)value.getData();
 			if(null != data)

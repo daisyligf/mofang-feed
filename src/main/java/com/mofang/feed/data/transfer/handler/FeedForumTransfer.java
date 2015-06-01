@@ -59,6 +59,10 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("prepare add new forum data......");
 		addNewForum();
 		System.out.println("add new forum data completed!");
+		
+		System.out.println("prepare add forum index......");
+		addIndex();
+		System.out.println("add forum index completed!");
 	}
 	
 	private ResultSet getData()
@@ -273,5 +277,12 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 		
 		strSql = "truncate table feed_forum_tag";
 		execute(strSql);
+	}
+	
+	private void addIndex()
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("ALTER TABLE feed_forum ADD INDEX idx_type(type);");
+		execute(strSql.toString());
 	}
 }
