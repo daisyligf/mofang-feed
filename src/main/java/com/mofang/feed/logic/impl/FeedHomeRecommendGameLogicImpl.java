@@ -54,7 +54,7 @@ public class FeedHomeRecommendGameLogicImpl implements
 					return result;
 				}
 				//设置下载地址
-				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
+				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getGameId());
 				//设置礼包地址
 				boolean flag = HttpComponent.checkGift(forum.getGameId());
 				if(flag){
