@@ -46,6 +46,10 @@ public class FeedThreadTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("prepare handle thread data......");
 		handle(rs);
 		System.out.println("thread data transfer completed!");
+		
+		System.out.println("prepare add thread index......");
+		addIndex();
+		System.out.println("add thread index completed!");
 	}
 	
 	private ResultSet getData()
@@ -180,5 +184,14 @@ public class FeedThreadTransfer extends BaseTransfer implements FeedTransfer
 	{
 		String strSql = "truncate table feed_thread";
 		execute(strSql);
+	}
+
+	private void addIndex()
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("ALTER TABLE feed_thread ADD INDEX idx_user_id(user_id);");
+		strSql.append("ALTER TABLE feed_thread ADD INDEX idx_forum_id(forum_id);");
+		strSql.append("ALTER TABLE feed_thread ADD INDEX idx_status(status);");
+		execute(strSql.toString());
 	}
 }

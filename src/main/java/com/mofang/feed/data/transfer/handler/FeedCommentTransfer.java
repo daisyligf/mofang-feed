@@ -36,6 +36,10 @@ public class FeedCommentTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("prepare handle comment data......");
 		handle(rs);
 		System.out.println("comment data transfer completed!");
+		
+		System.out.println("prepare add comment index......");
+		addIndex();
+		System.out.println("add comment index completed!");
 	}
 	
 	private ResultSet getData()
@@ -127,5 +131,14 @@ public class FeedCommentTransfer extends BaseTransfer implements FeedTransfer
 	{
 		String strSql = "truncate table feed_comment";
 		execute(strSql);
+	}
+
+	private void addIndex()
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("ALTER TABLE feed_comment ADD INDEX idx_user_id(user_id);");
+		strSql.append("ALTER TABLE feed_comment ADD INDEX idx_post_id(post_id);");
+		strSql.append("ALTER TABLE feed_comment ADD INDEX idx_status(status);");
+		execute(strSql.toString());
 	}
 }
