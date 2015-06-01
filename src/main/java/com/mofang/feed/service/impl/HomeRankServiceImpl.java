@@ -151,7 +151,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			model.setDisplayOrder(idx + 1);
 			FeedForum forum = forumService.getInfo(forumId);
 			if(forum != null){
-				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getName());
+				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getGameId());
 				boolean flag = HttpComponent.checkGift(forum.getGameId());
 				if(flag){
 					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
