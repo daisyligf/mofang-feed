@@ -152,11 +152,15 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 	}
 
 	@Override
-	public List<Integer> getRoleIdList(long forumId) throws Exception {
-		try {
-			return userRoleDao.getRoleIdListByForumId(forumId);
-		} catch (Exception e) {
-			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getRoleIdList throw an error.", e);
+	public List<FeedSysUserRole> getUserListByForumId(long forumId) throws Exception
+	{
+		try 
+		{
+			return userRoleDao.getListByForumId(forumId);
+		}
+		catch (Exception e) 
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getUserListByForumId throw an error.", e);
 			throw e;
 		}
 	}

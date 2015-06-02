@@ -10,7 +10,6 @@ import com.mofang.framework.data.mysql.core.criterion.operand.LimitOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
-import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 
 /**
@@ -59,12 +58,11 @@ public class FeedAdminUserDaoImpl extends AbstractMysqlSupport<FeedAdminUser> im
 	@Override
 	public List<FeedAdminUser> getList(int start, int end) throws Exception
 	{
-		Operand where = new WhereOperand();
 		OrderByEntry entry = new OrderByEntry("create_time", SortType.Desc);
 		Operand orderby = new OrderByOperand(entry);
 		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
-		where.append(orderby).append(limit);
-		return super.getList(where);
+		orderby.append(limit);
+		return super.getList(orderby);
 	}
 
 	@Override

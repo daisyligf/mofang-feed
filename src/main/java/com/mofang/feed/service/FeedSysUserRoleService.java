@@ -24,7 +24,7 @@ public interface FeedSysUserRoleService
 	
 	public boolean hasPrivilege(long forumId, long userId, int privilegeId) throws Exception;
 	
-	public List<Integer> getRoleIdList(long forumId) throws Exception;
+	public List<FeedSysUserRole> getUserListByForumId(long forumId) throws Exception;
 	
 	public Page<FeedSysUserRole> getUserList(int pageNum, int pageSize) throws Exception;
 	

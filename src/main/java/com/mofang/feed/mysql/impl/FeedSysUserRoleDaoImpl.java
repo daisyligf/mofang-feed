@@ -1,6 +1,5 @@
 package com.mofang.feed.mysql.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.mofang.feed.global.GlobalObject;
@@ -16,8 +15,6 @@ import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.criterion.type.SortType;
-import com.mofang.framework.data.mysql.core.meta.ResultData;
-import com.mofang.framework.data.mysql.core.meta.RowData;
 
 /**
  * 
@@ -123,21 +120,12 @@ public class FeedSysUserRoleDaoImpl extends AbstractMysqlSupport<FeedSysUserRole
 	}
 
 	@Override
-	public List<Integer> getRoleIdListByForumId(long forumId) throws Exception {
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select role_id from feed_sys_user_role ");
-		strSql.append("where forum_id = "+ forumId);
-		ResultData data = super.executeQuery(strSql.toString());
-		if (data == null)
-			return null;
-		List<RowData> rows = data.getQueryResult();
-		if (rows == null || rows.size() == 0)
-			return null;
-		List<Integer> list = new ArrayList<Integer>(rows.size());
-		for (RowData row : rows){
-			list.add(row.getInteger(0));
-		}
-		return list;
+	public List<FeedSysUserRole> getListByForumId(long forumId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand forumEqual = new EqualOperand("forum_id", forumId);
+		where.append(forumEqual);
+		return super.getList(where);
 	}
 
 	@Override

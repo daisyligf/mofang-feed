@@ -1,18 +1,22 @@
-package com.mofang.feed.logic.impl;
+package com.mofang.feed.logic.web.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.global.common.FeedPrivilege;
-import com.mofang.feed.logic.FeedSysUserRoleLogic;
+import com.mofang.feed.logic.web.FeedSysUserRoleLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedSysUserRole;
+import com.mofang.feed.model.external.User;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedSysRoleService;
@@ -21,6 +25,7 @@ import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedSysRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
+import com.mofang.framework.util.StringUtil;
 
 /**
  * 
@@ -41,117 +46,6 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 	public static FeedSysUserRoleLogicImpl getInstance()
 	{
 		return LOGIC;
-	}
-
-	@Override
-	public ResultValue add(FeedSysUserRole model, long operatorId) throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			
-			///权限检查
-			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.ADD_SYS_USER_ROLE);
-			boolean hasPrivilege = false;
-			if(!hasPrivilege)
-			{
-				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
-				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
-				return result;
-			}
-			
-			///保存用户角色信息
-			userRoleService.save(model);
-			
-			///返回结果
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedSysUserRoleLogicImpl.add throw an error.", e);
-		}
-	}
-
-	@Override
-	public ResultValue edit(FeedSysUserRole model, long operatorId) throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			
-			///验证用户角色有效性
-			boolean exists = userRoleService.exists(model.getForumId(), model.getUserId());
-			if(!exists)
-			{
-				result.setCode(ReturnCode.USER_ROLE_NOT_EXISTS);
-				result.setMessage(ReturnMessage.USER_ROLE_NOT_EXISTS);
-				return result;
-			}
-			
-			///权限检查
-			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.EDIT_SYS_USER_ROLE);
-			boolean hasPrivilege = false;
-			if(!hasPrivilege)
-			{
-				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
-				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
-				return result;
-			}
-			
-			///保存用户角色信息
-			userRoleService.save(model);
-			
-			///返回结果
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedSysUserRoleLogicImpl.edit throw an error.", e);
-		}
-	}
-
-	@Override
-	public ResultValue delete(long forumId, long userId, long operatorId) throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			
-			///验证用户角色有效性
-			boolean exists = userRoleService.exists(forumId, userId);
-			if(!exists)
-			{
-				result.setCode(ReturnCode.USER_ROLE_NOT_EXISTS);
-				result.setMessage(ReturnMessage.USER_ROLE_NOT_EXISTS);
-				return result;
-			}
-			
-			///权限检查
-			///boolean hasPrivilege = userRoleService.hasPrivilege(0L, operatorId, FeedPrivilege.DELETE_SYS_USER_ROLE);
-			boolean hasPrivilege = false;
-			if(!hasPrivilege)
-			{
-				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
-				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
-				return result;
-			}
-			
-			///删除用户角色信息
-			userRoleService.delete(forumId, userId);
-			
-			///返回结果
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedSysUserRoleLogicImpl.delete throw an error.", e);
-		}
 	}
 
 	@Override
@@ -200,8 +94,71 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 	}
 
 	@Override
-	public ResultValue getRoleInfoList(long forumId) throws Exception {
-		return null;
+	public ResultValue getRoleList(long forumId) throws Exception 
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
+			Set<Long> uids = new HashSet<Long>();
+			JSONArray data = new JSONArray();
+			List<FeedSysUserRole> list = userRoleService.getUserListByForumId(forumId);
+			if(list != null)
+			{
+				JSONObject jsonUserRole = null;
+				User userInfo = null;
+				for(FeedSysUserRole userRoleInfo : list)
+				{
+					jsonUserRole = new JSONObject();
+					jsonUserRole.put("user_id", userRoleInfo.getUserId());
+					
+					userInfo = UserComponent.getInfoFromCache(userRoleInfo.getUserId());
+					if(null == userInfo)
+						uids.add(userRoleInfo.getUserId());
+					else
+					{
+						jsonUserRole.put("nickname", userInfo.getNickName());
+						jsonUserRole.put("avatar", userInfo.getAvatar());
+					}
+					data.put(jsonUserRole);
+				}
+				
+				///填充用户信息
+				if(uids.size() > 0)
+				{
+					Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
+					if(null != userMap)
+					{
+						for(int i=0; i<data.length(); i++)
+						{
+							jsonUserRole = data.getJSONObject(i);
+							String nickName = jsonUserRole.optString("nickname", "");
+							long userId = jsonUserRole.optLong("user_id", 0L);
+							
+							///填充用户信息
+							if(StringUtil.isNullOrEmpty(nickName))
+							{
+								if(userMap.containsKey(userId))
+								{
+									userInfo = userMap.get(userId);
+									jsonUserRole.put("nickname", userInfo.getNickName());
+									jsonUserRole.put("avatar", userInfo.getAvatar());
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch (Exception e) 
+		{
+			throw new Exception("at FeedSysUserRoleLogicImpl.getRoleList throw an error.", e);
+		}
 	}
 
 	@Override

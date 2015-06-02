@@ -10,9 +10,9 @@ import com.mofang.feed.model.FeedThread;
  */
 public interface FeedThreadLogic
 {
-	public ResultValue add(FeedThread model, long moduleId) throws Exception;
+	public ResultValue add(FeedThread model) throws Exception;
 	
-	public ResultValue edit(FeedThread model, long moduleId, long operatorId) throws Exception;
+	public ResultValue edit(FeedThread model, long operatorId) throws Exception;
 	
 	public ResultValue delete(long threadId, long operatorId, String reason) throws Exception;
 	
