@@ -34,17 +34,9 @@ public interface FeedThreadLogic
 	
 	public ResultValue getForumThreadList(long forumId, int pageNum, int pageSize, long currentUserId) throws Exception;
 
-	public ResultValue getForumThreadListByTagId(long forumId, int tagId, int pageNum, int pageSize, long currentUserId, int timeType) throws Exception;
+	public ResultValue getForumTopThreadList(long forumId, long currentUserId) throws Exception;
 
-	public ResultValue getForumThreadListByCreateTime(long forumId, int pageNum, int pageSize, long currentUserId) throws Exception;
-	
-	public ResultValue getForumTopThreadList(long forumId, int pageNum, int pageSize) throws Exception;
-	
-	public ResultValue getForumEliteThreadList(long forumId, int pageNum, int pageSize, long currentUserId, int timeType) throws Exception;
-	
-	public ResultValue getForumEliteThreadList(long forumId, int tagId, int pageNum, int pageSize, long currentUserId, int timeType) throws Exception;
-	
-	public ResultValue getThreadTagList(long threadId) throws Exception;
+	public ResultValue getForumThreadListByCondition(long forumId, int tagId, boolean isElite, int timeType, int pageNum, int pageSize, long currentUserId) throws Exception;
 	
 	public ResultValue getReplyHighestThreadList(long forumId) throws Exception;
 	

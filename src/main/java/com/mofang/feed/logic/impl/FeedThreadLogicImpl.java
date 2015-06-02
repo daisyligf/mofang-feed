@@ -1389,12 +1389,14 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		{
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
-			JSONArray arrayThreads = null;
-			List<FeedThread> threads = threadService.getForumTopThreadList(forumId, 3);
-			if(null != threads)
-				arrayThreads = listToJSONArray(threads, 0L);
-			else
-				arrayThreads = new JSONArray();
+			JSONArray arrayThreads = new JSONArray();
+			Page<FeedThread> page = threadService.getForumTopThreadList(forumId, 3);
+			if(null != page)
+			{
+				List<FeedThread> threads = page.getList();
+				if(null != threads)
+					arrayThreads = listToJSONArray(threads, 0L);
+			}
 			
 			data.put("threads", arrayThreads);
 			result.setCode(ReturnCode.SUCCESS);

@@ -705,16 +705,17 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	}
 
 	@Override
-	public List<FeedThread> getForumTopThreadList(long forumId, int pageSize) throws Exception
+	public Page<FeedThread> getForumTopThreadList(long forumId, int pageSize) throws Exception
 	{
 		try
 		{
+			long total = threadRedis.getForumTopThreadCount(forumId);
 			Set<String> idSet = threadRedis.getForumTopThreadList(forumId, 0, pageSize);
 			if(null == idSet || idSet.size() == 0)
 				return null;
 			
 			List<FeedThread> list = threadRedis.convertEntityList(idSet);
-			return list;
+			return new Page<FeedThread>(total, list);
 		}
 		catch(Exception e)
 		{
@@ -997,52 +998,33 @@ public class FeedThreadServiceImpl implements FeedThreadService
 		}
 	}
 
+	/**
+	 * 根据不同条件获取版块下的主题列表(用于web端)
+	 * @param forumId 版块ID
+	 * @param tagId 标签ID(等于0时为全部主题)
+	 * @param isElite 是否过滤精华帖
+	 * @param timeType 排序时间类型
+	 * @param start 起始记录数
+	 * @param end 截止记录数
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
-	public Page<FeedThread> getForumThreadListByTagId(long forumId, int tagId, int timeType, int pageNum,
-			int pageSize) throws Exception {
-		try {
-			long total = threadDao.getForumThreadCountByTagId(forumId, tagId);
+	public Page<FeedThread> getForumThreadListByCondition(long forumId, int tagId, boolean isElite, int timeType, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			long total = threadDao.getForumThreadCountByCondition(forumId, tagId, isElite);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getThreadIdListByTagId(forumId, tagId, timeType, start, end);
+			List<Long> idList = threadDao.getForumThreadListByCondition(forumId, tagId, isElite, timeType, start, end);
 			return convertEntityList(total, idList);
-		} catch (Exception e) {
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumThreadListByTagId throw an error.", e);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumThreadListByCondition throw an error.", e);
 			throw e;
 		}
 	}
-
-	@Override
-	public Page<FeedThread> getForumEliteThreadList(long forumId, long tagId, int timeType,
-			int pageNum, int pageSize) throws Exception {
-		try {
-			long total = threadDao.getForumEliteThreadCount(forumId, tagId);
-			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
-			int start = pageNumber.getStart();
-			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumEliteThreadList(forumId, tagId, timeType, start, end);
-			return convertEntityList(total, idList);
-		} catch(Exception e) {
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumEliteThreadList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public Page<FeedThread> getForumThreadListByCreateTime(long forumId,
-			int pageNum, int pageSize) throws Exception {
-		try {
-			long total = threadDao.getThreadCount(forumId, 1);
-			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
-			int start = pageNumber.getStart();
-			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumThreadListByCreateTime(forumId, start, end);
-			return convertEntityList(total, idList);
-		} catch (Exception e) {
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumThreadListByCreateTime throw an error.", e);
-			throw e;
-		}
-	}
-	
 }

@@ -1,6 +1,5 @@
 package com.mofang.feed.service;
 
-import java.util.List;
 import java.util.Set;
 
 import com.mofang.feed.global.common.DataSource;
@@ -195,7 +194,7 @@ public interface FeedThreadService
 	 * @return
 	 * @throws Exception
 	 */
-	public List<FeedThread> getForumTopThreadList(long forumId, int pageSize) throws Exception;
+	public Page<FeedThread> getForumTopThreadList(long forumId, int pageSize) throws Exception;
 	
 	/**
 	 * 获取版块精华主题列表
@@ -336,10 +335,16 @@ public interface FeedThreadService
 	 */
 	public Page<FeedThread> search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
 	
-	public Page<FeedThread> getForumThreadListByTagId(long forumId, int tagId, int timeType, int pageNum, int pageSize) throws Exception;
-	
-	public Page<FeedThread> getForumEliteThreadList(long forumId, long tagId, int timeType, int pageNum, int pageSize) throws Exception;
-	
-	public Page<FeedThread> getForumThreadListByCreateTime(long forumId, int pageNum, int pageSize) throws Exception;
-
+	/**
+	 * 根据不同条件获取版块下的主题列表(用于web端)
+	 * @param forumId 版块ID
+	 * @param tagId 标签ID(等于0时为全部主题)
+	 * @param isElite 是否过滤精华帖
+	 * @param timeType 排序时间类型
+	 * @param start 起始记录数
+	 * @param end 截止记录数
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<FeedThread> getForumThreadListByCondition(long forumId, int tagId, boolean isElite, int timeType, int pageNum, int pageSize) throws Exception;
 }

@@ -258,17 +258,30 @@ public interface FeedThreadDao
 	
 	public Map<Long,ForumCount> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 	
-	public long getForumThreadCountByTagId(long forumId, int tagId) throws Exception;
-	
-	public List<Long> getThreadIdListByTagId(long foumId, int tagId, int timeType, int start, int end) throws Exception;
-	
-	public List<Long> getForumEliteThreadList(long forumId, long tagId, int timeType, int start, int end) throws Exception;
-	
-	public long getForumEliteThreadCount(long forumId, long tagId) throws Exception;
-	
 	public long getUserTopOrEliteThreadCount(long userId) throws Exception;
 	
-	public List<Long> getForumThreadListByCreateTime(long forumId, int start, int end) throws Exception;
-	
 	public List<Long> getThreadIdList(long forumId, long startTime, long endTime) throws Exception;
+	
+	/**
+	 * 根据不同条件获取版块下的主题列表(用于web端)
+	 * @param forumId 版块ID
+	 * @param tagId 标签ID(等于0时为全部主题)
+	 * @param isElite 是否过滤精华帖
+	 * @param timeType 排序时间类型
+	 * @param start 起始记录数
+	 * @param end 截止记录数
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Long> getForumThreadListByCondition(long forumId, int tagId, boolean isElite, int timeType, int start, int end) throws Exception;
+	
+	/**
+	 * 根据不同条件获取版块下的主题总数(用于web端) 
+	 * @param forumId 版块ID
+	 * @param tagId 标签ID(等于0时为全部主题)
+	 * @param isElite 是否过滤精华帖
+	 * @return
+	 * @throws Exception
+	 */
+	public long getForumThreadCountByCondition(long forumId, int tagId, boolean isElite) throws Exception;
 }

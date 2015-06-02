@@ -29,7 +29,8 @@ public class ThreadListAction extends AbstractActionExecutor
 		String strTimeType = context.getParameters("timetype");
 		
 		///参数检查
-		if(!StringUtil.isLong(strForumId)){
+		if(!StringUtil.isLong(strForumId))
+		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
@@ -56,20 +57,13 @@ public class ThreadListAction extends AbstractActionExecutor
 		if(StringUtil.isInteger(strTimeType))
 			timeType = Integer.parseInt(strTimeType);
 		
-		if(tagId == 0){
-			if(type == 1)
-				return logic.getForumEliteThreadList(forumId, pageNum, pageSize, userId, timeType);
-			else{
-				if(timeType == QueryTimeType.CREATE_TIME)
-					return logic.getForumThreadListByCreateTime(forumId, pageNum, pageSize, userId);
-				else
-					return logic.getForumThreadList(forumId, pageNum, pageSize, userId);
-			}
-		}else{
-			if(type == 1)
-				return logic.getForumEliteThreadList(forumId, tagId, pageNum, pageSize, userId, timeType);
-			else
-				return logic.getForumThreadListByTagId(forumId, tagId, pageNum, pageSize, userId, timeType);
-		}
+		boolean filterTag = tagId != 0;
+		boolean filterElite = type == 1;
+		boolean filterLastPostTime = timeType == QueryTimeType.LAST_POST_TIME;
+		boolean useRedis = (!filterTag && !filterElite && filterLastPostTime);
+		if(useRedis)
+			return logic.getForumThreadList(forumId, pageNum, pageSize, userId);
+		else
+			return logic.getForumThreadListByCondition(forumId, tagId, filterElite, timeType, pageNum, pageSize, userId);
 	}
 }

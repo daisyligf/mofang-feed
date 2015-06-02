@@ -490,6 +490,9 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		return convertResultDataToList(data);
 	}
 
+	/**
+	 * 获取指定版块的精华帖总数(用于游戏宝,用户关注的版块精华帖总数)
+	 */
 	@Override
 	public long getForumEliteThreadCount(Set<Long> forumIds) throws Exception {
 		Operand where = new WhereOperand();
@@ -549,69 +552,6 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 	}
 
 	@Override
-	public List<Long> getThreadIdListByTagId(long fourmId, int tagId, int timeType, int start, int end) throws Exception {
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select thread_id from feed_thread ");
-		strSql.append("where forum_id = " + fourmId);
-		strSql.append(" and status = 1 and tag_id = " + tagId);
-		
-		if(timeType == QueryTimeType.LAST_POST_TIME)
-			strSql.append(" order by last_post_time desc ");
-		else if(timeType == QueryTimeType.CREATE_TIME)
-			strSql.append(" order by create_time desc ");
-		
-		strSql.append(" limit " + start + ", " + end);
-		ResultData data = super.executeQuery(strSql.toString());
-		return convertResultDataToList(data);
-	}
-
-	@Override
-	public long getForumThreadCountByTagId(long forumId, int tagId)
-			throws Exception {
-		Operand where = new WhereOperand();
-		Operand forumEqual = new EqualOperand("forum_id", forumId);
-		Operand statusEqual = new EqualOperand("status", 1);
-		Operand tagEqual = new EqualOperand("tag_id", tagId);
-		Operand and = new AndOperand();
-		where.append(forumEqual).append(and).append(statusEqual).append(and)
-				.append(tagEqual);
-		return super.getCount(where);
-	}
-
-	@Override
-	public List<Long> getForumEliteThreadList(long forumId, long tagId, int timeType, 
-			int start, int end) throws Exception {
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select thread_id from feed_thread ");
-		strSql.append("where forum_id = " + forumId);
-		strSql.append(" and status = 1 and is_elite = 1");
-		strSql.append(" and tag_id = " + tagId);
-		
-		if(timeType == QueryTimeType.LAST_POST_TIME)
-			strSql.append(" order by last_post_time desc ");
-		else if(timeType == QueryTimeType.CREATE_TIME)
-			strSql.append(" order by create_time desc ");
-		
-		strSql.append(" limit " + start + ", " + end);
-		ResultData data = super.executeQuery(strSql.toString());
-		return convertResultDataToList(data);
-	}
-
-	@Override
-	public long getForumEliteThreadCount(long forumId, long tagId)
-			throws Exception {
-		Operand where = new WhereOperand();
-		Operand forumEqual = new EqualOperand("forum_id", forumId);
-		Operand statusEqual = new EqualOperand("status", 1);
-		Operand isEliteEqual = new EqualOperand("is_elite", 1);
-		Operand tagIdEqual = new EqualOperand("tag_id", tagId);
-		Operand and = new AndOperand();
-		where.append(forumEqual).append(and).append(statusEqual).append(and)
-				.append(isEliteEqual).append(and).append(tagIdEqual);
-		return super.getCount(where);
-	}
-
-	@Override
 	public long getUserTopOrEliteThreadCount(long userId) throws Exception
 	{
 		StringBuilder strSql = new StringBuilder();
@@ -651,17 +591,6 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 	}
 
 	@Override
-	public List<Long> getForumThreadListByCreateTime(long forumId, int start, int end) throws Exception {
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select thread_id from feed_thread ");	
-		strSql.append("where status = 1 and forum_id = " + forumId);
-		strSql.append(" order by create_time desc");
-		strSql.append(" limit " + start + ", " + end);
-		ResultData data = super.executeQuery(strSql.toString());
-		return convertResultDataToList(data);
-	}
-
-	@Override
 	public List<Long> getThreadIdList(long forumId, long startTime, long endTime)
 			throws Exception {
 		StringBuilder strSql = new StringBuilder();
@@ -673,5 +602,60 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);
 	}
-	
+
+	/**
+	 * 根据不同条件获取版块下的主题列表(用于web端)
+	 * 注意: 需要排除掉置顶帖
+	 * @param forumId 版块ID
+	 * @param tagId 标签ID(等于0时为全部主题)
+	 * @param isElite 是否过滤精华帖
+	 * @param timeType 排序时间类型
+	 * @param start 起始记录数
+	 * @param end 截止记录数
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public List<Long> getForumThreadListByCondition(long forumId, int tagId, boolean isElite, int timeType, int start, int end) throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select thread_id from feed_thread ");
+		strSql.append("where forum_id = " + forumId + " ");
+		strSql.append("and status = " + ThreadStatus.NORMAL + " ");      ///非删除帖
+		strSql.append("and is_top = 0 ");												///非置顶帖
+		if(tagId > 0)
+			strSql.append("and tag_id = " + tagId + " ");							///特定标签ID
+		if(isElite)
+			strSql.append("and is_elite = 1 ");											///精华帖
+		
+		if(timeType == QueryTimeType.LAST_POST_TIME)
+			strSql.append("order by last_post_time desc ");
+		else if(timeType == QueryTimeType.CREATE_TIME)
+			strSql.append("order by create_time desc ");
+		
+		strSql.append("limit " + start + ", " + end);
+		ResultData data = super.executeQuery(strSql.toString());
+		return convertResultDataToList(data);
+	}
+
+	@Override
+	public long getForumThreadCountByCondition(long forumId, int tagId, boolean isElite) throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select count(1) from feed_thread ");	
+		strSql.append("where forum_id = " + forumId + " ");
+		strSql.append("and status = " + ThreadStatus.NORMAL + " ");      ///非删除帖
+		strSql.append("and is_top = 0 ");												///非置顶帖
+		if(tagId > 0)
+			strSql.append("and tag_id = " + tagId + " ");							///特定标签ID
+		if(isElite)
+			strSql.append("and is_elite = 1 ");		
+		
+		ResultData data = super.executeQuery(strSql.toString());
+		if(null == data || null == data.getQueryResult() || data.getQueryResult().size() == 0)
+			return 0L;
+		
+		List<RowData> rows = data.getQueryResult();
+		return rows.get(0).getLong(0);
+	}
 }
