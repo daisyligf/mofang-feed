@@ -106,6 +106,6 @@ public class ThreadAddAction extends AbstractActionExecutor
 		postInfo.setVideoId(videoId);
 		threadInfo.setPost(postInfo);
 		
-		return logic.add(threadInfo, moduleId);
+		return logic.add(threadInfo);
 	}
 }
