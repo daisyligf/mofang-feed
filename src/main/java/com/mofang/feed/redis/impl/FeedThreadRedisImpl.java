@@ -10,7 +10,6 @@ import redis.clients.jedis.Jedis;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.global.RedisFaster;
-import com.mofang.feed.global.common.ThreadUpDown;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.redis.FeedThreadRedis;
@@ -203,110 +202,6 @@ public class FeedThreadRedisImpl implements FeedThreadRedis
 	}
 
 	@Override
-	public void updateMark(final long threadId, final boolean isMark) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
-				if(!jedis.exists(key))
-					return false;
-				
-				jedis.hset(key, "is_mark", String.valueOf(isMark));
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void updateVideo(final long threadId, final boolean isVideo) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
-				if(!jedis.exists(key))
-					return false;
-				
-				jedis.hset(key, "is_video", String.valueOf(isVideo));
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void updateUpDown(final long threadId, final int updown, final long updownTime) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
-				Map<String, String> map = jedis.hgetAll(key);
-				if(null == map)
-					return false;
-				
-				///更新实体信息
-				jedis.hset(key, "updown", String.valueOf(updown));
-				jedis.hset(key, "updown_time", String.valueOf(updownTime));
-				
-				///更新版块主题列表的score
-				FeedThread threadInfo = new FeedThread(map);
-				long lastPostTime = threadInfo.getLastPostTime();
-				long score = lastPostTime;
-				if(updown == ThreadUpDown.UP)
-					score += updownTime;
-				else if(updown == ThreadUpDown.DOWN)
-					score -= updownTime;
-				
-				///保存到版块对应的帖子列表
-				addForumThreadList(threadInfo.getForumId(), threadId, score);
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
-	public void updateForumId(final FeedThread model, final long destForumId) throws Exception
-	{
-		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
-		{
-			@Override
-			public Boolean execute(Jedis jedis) throws Exception
-			{
-				long threadId = model.getThreadId();
-				String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
-				Map<String, String> map = jedis.hgetAll(key);
-				if(null == map)
-					return false;
-				
-				///更新实体信息
-				jedis.hset(key, "forum_id", String.valueOf(destForumId));
-				
-				///从原版块主题列表中删除
-				long oriForumId = model.getForumId();
-				deleteFromForumThreadList(oriForumId, threadId);
-				
-				///从原版块置顶主题列表中删除
-				deleteFromForumTopThreadList(oriForumId, threadId);
-				
-				///添加到目标版块主题列表中
-				addForumThreadList(destForumId, threadId, model.getLastPostTime());
-				return true;
-			}
-		};
-		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
-	}
-
-	@Override
 	public void incrReplies(final long threadId) throws Exception
 	{
 		String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
@@ -332,13 +227,6 @@ public class FeedThreadRedisImpl implements FeedThreadRedis
 	{
 		String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
 		RedisFaster.hincrBy(key, "recommends", -1);
-	}
-
-	@Override
-	public void incrShareTimes(final long threadId) throws Exception
-	{
-		String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
-		RedisFaster.hincrBy(key, "share_times", 1);
 	}
 
 	@Override

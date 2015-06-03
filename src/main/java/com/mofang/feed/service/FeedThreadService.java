@@ -80,34 +80,11 @@ public interface FeedThreadService
 	public void setElite(long threadId, boolean isElite) throws Exception;
 	
 	/**
-	 * 设置/取消标红
-	 * @param threadId 主题ID
-	 * @throws Exception
-	 */
-	public void setMark(long threadId, boolean isMark) throws Exception;
-	
-	/**
 	 * 打开/关闭主题
 	 * @param threadId 主题ID
 	 * @throws Exception
 	 */
 	public void setClosed(long threadId, boolean isClosed) throws Exception;
-	
-	/**
-	 * 上升下移主题
-	 * @param threadId 主题ID
-	 * @param updown 上升/下移
-	 * @throws Exception
-	 */
-	public void updown(long threadId, int updown) throws Exception;
-	
-	/**
-	 * 移动主题
-	 * @param model 主题实体
-	 * @param destForumId 目标版块ID
-	 * @throws Exception
-	 */
-	public void move(FeedThread model, long destForumId) throws Exception;
 	
 	/**
 	 * 主题点赞
@@ -141,13 +118,6 @@ public interface FeedThreadService
 	 * @throws Exception
 	 */
 	public Set<String> getUserRecommendThreadSet(long userId) throws Exception;
-	
-	/**
-	 * 分享主题
-	 * @param threadId 主题ID
-	 * @throws Exception
-	 */
-	public void share(long threadId) throws Exception;
 	
 	/**
 	 * 获取主题信息
@@ -207,46 +177,6 @@ public interface FeedThreadService
 	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize) throws Exception;
 	
 	/**
-	 * 获取版块视频主题列表
-	 * @param forumId 版块ID
-	 * @param pageNum 页数
-	 * @param pageSize 每页记录数
-	 * @return
-	 * @throws Exception
-	 */
-	public Page<FeedThread> getForumVideoThreadList(long forumId, int pageNum, int pageSize) throws Exception;
-	
-	/**
-	 * 获取版块热门视频主题列表
-	 * @param forumId 版块ID
-	 * @param pageNum 页数
-	 * @param pageSize 每页记录数
-	 * @return
-	 * @throws Exception
-	 */
-	public Page<FeedThread> getForumHotVideoThreadList(long forumId, int pageNum, int pageSize) throws Exception;
-	
-	/**
-	 * 获取版块提问主题列表
-	 * @param forumId 版块ID
-	 * @param pageNum 页数
-	 * @param pageSize 每页记录数
-	 * @return
-	 * @throws Exception
-	 */
-	public Page<FeedThread> getForumQuestionThreadList(long forumId, int pageNum, int pageSize) throws Exception;
-	
-	/**
-	 * 获取版块标红主题列表
-	 * @param forumId 版块ID
-	 * @param pageNum 页数
-	 * @param pageSize 每页记录数
-	 * @return
-	 * @throws Exception
-	 */
-	public Page<FeedThread> getForumMarkThreadList(long forumId, int pageNum, int pageSize) throws Exception;
-	
-	/**
 	 * 获取用户主题列表(我的帖子)
 	 * @param userId 用户ID
 	 * @param pageNum 页数
@@ -291,16 +221,6 @@ public interface FeedThreadService
 	 * @throws Exception
 	 */
 	public long getUserEliteThreadCount(long userId) throws Exception;
-	
-	/**
-	 * 获取用户提问主题列表
-	 * @param userId 用户ID
-	 * @param pageNum 页数
-	 * @param pageSize 每页记录数
-	 * @return
-	 * @throws Exception
-	 */
-	public Page<FeedThread> getUserQuestionThreadList(long userId, int pageNum, int pageSize) throws Exception;
 	
 	/**
 	 * 获取全局精华主题列表(web端)

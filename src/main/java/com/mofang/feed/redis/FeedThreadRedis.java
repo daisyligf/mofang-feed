@@ -104,41 +104,6 @@ public interface FeedThreadRedis
 	public void updateClosed(long threadId, boolean isClosed) throws Exception;
 	
 	/**
-	 * 设置/取消主题标红
-	 * @param threadId 主题ID
-	 * @param isMark 是否标红
-	 * @return
-	 * @throws Exception
-	 */
-	public void updateMark(long threadId, boolean isMark) throws Exception;
-	
-	/**
-	 * 设置/取消主题是否为视频帖
-	 * @param threadId 主题ID
-	 * @param isVideo 是否为视频贴
-	 * @return
-	 * @throws Exception
-	 */
-	public void updateVideo(long threadId, boolean isVideo) throws Exception;
-	
-	/**
-	 * 设置主题上升下移状态
-	 * @param threadId 主题ID
-	 * @param updown 上升/下移
-	 * @param updownTime 上升下移时间
-	 * @throws Exception
-	 */
-	public void updateUpDown(long threadId, int updown, long updownTime) throws Exception;
-	
-	/**
-	 * 更新主题的版块ID
-	 * @param model 主题实体
-	 * @param destForumId 目标版块ID
-	 * @throws Exception
-	 */
-	public void updateForumId(FeedThread model, long destForumId) throws Exception;
-	
-	/**
 	 * 递增主题回复数(楼层 + 评论)
 	 * @param threadId 主题ID
 	 * @return
@@ -169,14 +134,6 @@ public interface FeedThreadRedis
 	 * @throws Exception
 	 */
 	public void decrRecommends(long threadId) throws Exception;
-	
-	/**
-	 * 递增主题分享数
-	 * @param threadId 主题ID
-	 * @return
-	 * @throws Exception
-	 */
-	public void incrShareTimes(long threadId) throws Exception;
 	
 	/**
 	 * 递增主题浏览数

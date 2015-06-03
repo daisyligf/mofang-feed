@@ -38,15 +38,7 @@ public interface FeedThreadDao
 	
 	public void updateElite(long threadId, boolean isElite) throws Exception;
 	
-	public void updateMark(long threadId, boolean isMark) throws Exception;
-	
 	public void updateClosed(long threadId, boolean isClosed) throws Exception;
-	
-	public void updateVideo(long threadId, boolean isVideo) throws Exception;
-	
-	public void updateUpDown(long threadId, int updown, long updownTime) throws Exception;
-	
-	public void updateForumId(long threadId, long destForumId) throws Exception;
 	
 	public void incrReplies(long threadId) throws Exception;
 	
@@ -55,8 +47,6 @@ public interface FeedThreadDao
 	public void incrRecommends(long threadId) throws Exception;
 	
 	public void decrRecommends(long threadId) throws Exception;
-	
-	public void incrShareTimes(long threadId) throws Exception;
 	
 	public void incrPageView(long threadId) throws Exception;
 	
@@ -97,78 +87,6 @@ public interface FeedThreadDao
 	 * @throws Exception
 	 */
 	public long getForumEliteThreadCount(long forumId) throws Exception;
-	
-	/**
-	 * 获取版块视频主题ID列表
-	 * @param forumId 版块ID
-	 * @param start 起始记录
-	 * @param end 截止记录
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Long> getForumVideoThreadList(long forumId, int start, int end) throws Exception;
-	
-	/**
-	 * 获取版块视频主题总数
-	 * @param forumId 版块ID
-	 * @return
-	 * @throws Exception
-	 */
-	public long getForumVideoThreadCount(long forumId) throws Exception; 
-	
-	/**
-	 * 获取版块热门视频主题ID列表
-	 * @param forumId 版块ID
-	 * @param start 起始记录
-	 * @param end 截止记录
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Long> getForumHotVideoThreadList(long forumId, int start, int end) throws Exception;
-	
-	/**
-	 * 获取版块热门视频主题总数
-	 * @param forumId 版块ID
-	 * @return
-	 * @throws Exception
-	 */
-	public long getForumHotVideoThreadCount(long forumId) throws Exception; 
-	
-	/**
-	 * 获取版块提问主题ID列表
-	 * @param forumId 版块ID
-	 * @param start 起始记录
-	 * @param end 截止记录
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Long> getForumQuestionThreadList(long forumId, int start, int end) throws Exception;
-	
-	/**
-	 * 获取版块提问主题总数
-	 * @param forumId 版块ID
-	 * @return
-	 * @throws Exception
-	 */
-	public long getForumQuestionThreadCount(long forumId) throws Exception; 
-	
-	/**
-	 * 获取版块标红主题ID列表
-	 * @param forumId 版块ID
-	 * @param start 起始记录
-	 * @param end 截止记录
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Long> getForumMarkThreadList(long forumId, int start, int end) throws Exception;
-	
-	/**
-	 * 获取版块标红主题总数
-	 * @param forumId 版块ID
-	 * @return
-	 * @throws Exception
-	 */
-	public long getForumMarkThreadCount(long forumId) throws Exception; 
 	
 	/**
 	 * 获取用户主题ID列表
@@ -217,24 +135,6 @@ public interface FeedThreadDao
 	public long getUserEliteThreadCount(long userId) throws Exception; 
 	
 	/**
-	 * 获取用户提问主题ID列表
-	 * @param userId 用户ID
-	 * @param start 起始记录
-	 * @param end 截止记录
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Long> getUserQuestionThreadList(long userId, int start, int end) throws Exception;
-	
-	/**
-	 * 获取用户提问主题总数
-	 * @param userId 用户ID
-	 * @return
-	 * @throws Exception
-	 */
-	public long getUserQuestionThreadCount(long userId) throws Exception; 
-	
-	/**
 	 * 获取多个版块的精华主题列表
 	 * @param forumIds 版块ID集合
 	 * @param start 起始记录
@@ -252,9 +152,9 @@ public interface FeedThreadDao
 	 */
 	public long getForumEliteThreadCount(Set<Long> forumIds) throws Exception;
 	
-	public long getGlobalEliteThreadCount() throws Exception;
-	
 	public List<Long> getGlobalEliteThreadList(int start, int end) throws Exception;
+
+	public long getGlobalEliteThreadCount() throws Exception;
 	
 	public Map<Long,ForumCount> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 	

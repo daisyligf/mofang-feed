@@ -16,14 +16,12 @@ import com.mofang.feed.model.FeedThreadRecommend;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedCommentDao;
 import com.mofang.feed.mysql.FeedForumDao;
-import com.mofang.feed.mysql.FeedModuleItemDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.feed.mysql.FeedThreadRecommendDao;
 import com.mofang.feed.mysql.FeedUserFavoriteDao;
 import com.mofang.feed.mysql.impl.FeedCommentDaoImpl;
 import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
-import com.mofang.feed.mysql.impl.FeedModuleItemDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadRecommendDaoImpl;
@@ -70,7 +68,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	private FeedPostSolr postSolr = FeedPostSolrImpl.getInstance();
 	private FeedCommentSolr commentSolr = FeedCommentSolrImpl.getInstance();
 	private FeedThreadRecommendDao recommendDao = FeedThreadRecommendDaoImpl.getInstance();
-	private FeedModuleItemDao moduleItemDao = FeedModuleItemDaoImpl.getInstance();
 	
 	private FeedThreadServiceImpl()
 	{}
@@ -344,8 +341,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			favoriteDao.deleteByThreadId(threadId);
 			///将主题点赞表中 主题ID和用户ID的对应关系删除
 			recommendDao.deleteByThreadId(threadId);
-			///将虚拟版块主题表中版块ID和主题ID的对应关系删除
-			moduleItemDao.deleteByThreadId(threadId);
 			
 			/******************************solr操作******************************/
 			///将主题信息从索引中删除
@@ -454,25 +449,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	}
 
 	@Override
-	public void setMark(long threadId, boolean isMark) throws Exception
-	{
-		try
-		{
-			/******************************redis操作******************************/
-			///更新主题的是否为标红字段
-			threadRedis.updateMark(threadId, isMark);
-			/******************************数据库操作******************************/
-			///更新主题的是否为标红字段
-			threadDao.updateMark(threadId, isMark);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.setMark throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
 	public void setClosed(long threadId, boolean isClosed) throws Exception
 	{
 		try
@@ -487,50 +463,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.setClosed throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public void updown(long threadId, int updown) throws Exception
-	{
-		try
-		{
-			long updownTime = System.currentTimeMillis();
-			/******************************redis操作******************************/
-			///更新主题的上升下移字段
-			threadRedis.updateUpDown(threadId, updown, updownTime);
-			/******************************数据库操作******************************/
-			///更新主题的上升下移字段
-			threadDao.updateUpDown(threadId, updown, updownTime);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.updown throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public void move(FeedThread model, long destForumId) throws Exception
-	{
-		try
-		{
-			/******************************redis操作******************************/
-			///更新主题的forumId字段
-			threadRedis.updateForumId(model, destForumId);
-			/******************************数据库操作******************************/
-			long threadId = model.getForumId();
-			///更新主题的forumId字段
-			threadDao.updateForumId(threadId, destForumId);
-			///更新楼层的forumId字段
-			postDao.updateForumIdByThreadId(threadId, destForumId);
-			///更新评论的forumId字段
-			commentDao.updateForumIdByThreadId(threadId, destForumId);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.move throw an error.", e);
 			throw e;
 		}
 	}
@@ -610,25 +542,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getUserRecommendThreadSet throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public void share(long threadId) throws Exception
-	{
-		try
-		{
-			/******************************redis操作******************************/
-			///主题分享数 +1
-			threadRedis.incrShareTimes(threadId);
-			/******************************数据库操作******************************/
-			///主题分享数 +1
-			threadDao.incrShareTimes(threadId);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.share throw an error.", e);
 			throw e;
 		}
 	}
@@ -744,82 +657,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	}
 
 	@Override
-	public Page<FeedThread> getForumVideoThreadList(long forumId, int pageNum, int pageSize) throws Exception
-	{
-		try
-		{
-			long total = threadDao.getForumVideoThreadCount(forumId);
-			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
-			int start = pageNumber.getStart();
-			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumVideoThreadList(forumId, start, end);
-			return convertEntityList(total, idList);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumVideoThreadList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public Page<FeedThread> getForumHotVideoThreadList(long forumId, int pageNum, int pageSize) throws Exception
-	{
-		try
-		{
-			long total = threadDao.getForumHotVideoThreadCount(forumId);
-			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
-			int start = pageNumber.getStart();
-			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumHotVideoThreadList(forumId, start, end);
-			return convertEntityList(total, idList);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumHotVideoThreadList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public Page<FeedThread> getForumQuestionThreadList(long forumId, int pageNum, int pageSize) throws Exception
-	{
-		try
-		{
-			long total = threadDao.getForumQuestionThreadCount(forumId);
-			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
-			int start = pageNumber.getStart();
-			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumQuestionThreadList(forumId, start, end);
-			return convertEntityList(total, idList);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumQuestionThreadList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public Page<FeedThread> getForumMarkThreadList(long forumId, int pageNum, int pageSize) throws Exception
-	{
-		try
-		{
-			long total = threadDao.getForumMarkThreadCount(forumId);
-			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
-			int start = pageNumber.getStart();
-			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumMarkThreadList(forumId, start, end);
-			return convertEntityList(total, idList);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumMarkThreadList throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
 	public Page<FeedThread> getUserThreadList(long userId, int pageNum, int pageSize) throws Exception
 	{
 		try
@@ -900,25 +737,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getUserEliteThreadCount throw an error.", e);
-			throw e;
-		}
-	}
-
-	@Override
-	public Page<FeedThread> getUserQuestionThreadList(long userId, int pageNum, int pageSize) throws Exception
-	{
-		try
-		{
-			long total = threadDao.getUserQuestionThreadCount(userId);
-			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
-			int start = pageNumber.getStart();
-			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getUserQuestionThreadList(userId, start, end);
-			return convertEntityList(total, idList);
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getUserQuestionThreadList throw an error.", e);
 			throw e;
 		}
 	}

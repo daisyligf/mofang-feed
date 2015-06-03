@@ -4,7 +4,6 @@ import com.mofang.feed.data.load.impl.FeedAdminUserLoad;
 import com.mofang.feed.data.load.impl.FeedBlackListLoad;
 import com.mofang.feed.data.load.impl.FeedCommentLoad;
 import com.mofang.feed.data.load.impl.FeedForumLoad;
-import com.mofang.feed.data.load.impl.FeedModuleItemLoad;
 import com.mofang.feed.data.load.impl.FeedPostLoad;
 import com.mofang.feed.data.load.impl.FeedPostRecommendLoad;
 import com.mofang.feed.data.load.impl.FeedSysRoleLoad;
@@ -36,8 +35,6 @@ public class LoadFactory
 			load = new FeedPostLoad();
 		else if("comment".equals(loadName))
 			load = new FeedCommentLoad();
-		else if("moduleitem".equals(loadName))
-			load = new FeedModuleItemLoad();
 		else if("threadrecommend".equals(loadName))
 			load = new FeedThreadRecommendLoad();
 		else if("postrecommend".equals(loadName))

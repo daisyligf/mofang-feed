@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.mofang.feed.model.FeedTag;
 
-public interface FeedTagService {
-	
+public interface FeedTagService
+{
 	public List<FeedTag> getList()  throws Exception;
 	
 	public void delete(List<Integer> tagIdList) throws Exception;
@@ -13,5 +13,4 @@ public interface FeedTagService {
 	public void add(FeedTag tag) throws Exception;
 	
 	public String getTagName(int tagId) throws Exception;
-	
 }
