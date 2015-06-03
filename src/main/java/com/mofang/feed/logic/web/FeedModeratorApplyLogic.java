@@ -10,5 +10,7 @@ import com.mofang.feed.model.FeedModeratorApply;
  */
 public interface FeedModeratorApplyLogic
 {	
+	public ResultValue check(long forumId, long userId) throws Exception;
+	
 	public ResultValue apply(FeedModeratorApply model) throws Exception;
 }
