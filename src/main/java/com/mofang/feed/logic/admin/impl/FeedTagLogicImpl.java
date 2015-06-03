@@ -1,4 +1,4 @@
-package com.mofang.feed.logic.impl;
+package com.mofang.feed.logic.admin.impl;
 
 import java.util.List;
 
@@ -10,21 +10,21 @@ import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.FeedTagLogic;
+import com.mofang.feed.logic.admin.FeedTagLogic;
 import com.mofang.feed.model.FeedTag;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedTagService;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedTagServiceImpl;
 
-public class FeedTagLogicImpl implements FeedTagLogic {
-
+public class FeedTagLogicImpl implements FeedTagLogic
+{
 	private static final FeedTagLogicImpl LOGIC = new FeedTagLogicImpl();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 
-	private FeedTagLogicImpl() {
-	}
+	private FeedTagLogicImpl()
+	{}
 
 	public static FeedTagLogicImpl getInstance() {
 		return LOGIC;

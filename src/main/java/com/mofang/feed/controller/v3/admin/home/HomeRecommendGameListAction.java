@@ -2,8 +2,8 @@ package com.mofang.feed.controller.v3.admin.home;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
-import com.mofang.feed.logic.FeedHomeRecommendGameLogic;
-import com.mofang.feed.logic.impl.FeedHomeRecommendGameLogicImpl;
+import com.mofang.feed.logic.web.FeedHomeRecommendGameLogic;
+import com.mofang.feed.logic.web.impl.FeedHomeRecommendGameLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 

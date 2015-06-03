@@ -1,4 +1,4 @@
-package com.mofang.feed.logic;
+package com.mofang.feed.logic.admin;
 
 import java.util.List;
 
@@ -12,5 +12,4 @@ public interface FeedTagLogic {
 	public ResultValue delete(List<Integer> tagIdList, long operatorId) throws Exception;
 	
 	public ResultValue add(FeedTag model, long operatorId) throws Exception;
-	
 }
