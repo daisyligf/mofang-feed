@@ -9,6 +9,8 @@ import com.mofang.feed.global.ResultValue;
  */
 public interface FeedSysUserRoleLogic
 {
+	public ResultValue delete(long forumId, long userId) throws Exception;
+	
 	public ResultValue getInfo(long forumId, long userId) throws Exception;
 	
 	public ResultValue getRoleList(long forumId) throws Exception;

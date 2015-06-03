@@ -47,6 +47,25 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 	{
 		return LOGIC;
 	}
+	
+	@Override
+	public ResultValue delete(long forumId, long userId) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			userRoleService.delete(forumId, userId);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedSysUserRoleLogicImpl.delete throw an error.", e);
+		}
+	}
 
 	@Override
 	public ResultValue getInfo(long forumId, long userId) throws Exception
