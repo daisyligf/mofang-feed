@@ -65,6 +65,7 @@ public class FeedHomeHotForumRankLogicImpl implements FeedHomeHotForumRankLogic 
 						continue;
 					objForumRank = new JSONObject();
 					objForumRank.put("forum_id", forumId);
+					objForumRank.put("icon", forum.getIcon());
 					objForumRank.put("forum_name", forum.getName());
 					objForumRank.put("up_down", model.getUpDown());
 					data.put(objForumRank);
