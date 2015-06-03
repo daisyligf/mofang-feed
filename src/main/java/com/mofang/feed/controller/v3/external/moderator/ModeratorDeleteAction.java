@@ -15,6 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 /**
  * 
  * @author zhaodx
+ * 当用户取消关注版块时调用
  *
  */
 @Action(url = "feed/v2/external/moderator/delete")
