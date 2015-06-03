@@ -761,6 +761,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		{
 			jsonThread.put("forum_name", forumInfo.getName());
 			jsonThread.put("forum_type", forumInfo.getType());
+			jsonThread.put("forum_icon", forumInfo.getIcon());
 		}
 		
 		///获取主题视频信息
