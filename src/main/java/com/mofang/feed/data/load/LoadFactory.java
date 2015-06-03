@@ -1,5 +1,6 @@
 package com.mofang.feed.data.load;
 
+import com.mofang.feed.data.load.impl.FeedAdminUserLoad;
 import com.mofang.feed.data.load.impl.FeedBlackListLoad;
 import com.mofang.feed.data.load.impl.FeedCommentLoad;
 import com.mofang.feed.data.load.impl.FeedForumLoad;
@@ -49,6 +50,8 @@ public class LoadFactory
 			load = new FeedBlackListLoad();
 		else if("tag".equals(loadName))
 			load = new FeedTagLoad();
+		else if("admin".equals(loadName))
+			load = new FeedAdminUserLoad();
 		
 		return load;
 	}

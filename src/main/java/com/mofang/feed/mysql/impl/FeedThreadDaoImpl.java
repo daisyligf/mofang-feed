@@ -256,18 +256,13 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread>
 	}
 
 	@Override
-	public List<Long> getForumEliteThreadList(long forumId, int timeType, int start, int end)
+	public List<Long> getForumEliteThreadList(long forumId, int start, int end)
 			throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");
 		strSql.append("where forum_id = " + forumId + " ");
 		strSql.append("and status = 1 and is_elite = 1 ");
-		
-		if(timeType == QueryTimeType.LAST_POST_TIME)
-			strSql.append(" order by last_post_time desc ");
-		else if(timeType == QueryTimeType.CREATE_TIME)
-			strSql.append(" order by create_time desc ");
-		
+		strSql.append(" order by last_post_time desc ");
 		strSql.append("limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);

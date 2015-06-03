@@ -204,7 +204,7 @@ public interface FeedThreadService
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize, int timeType) throws Exception;
+	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize) throws Exception;
 	
 	/**
 	 * 获取版块视频主题列表

@@ -725,7 +725,7 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	}
 
 	@Override
-	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize, int timeType) throws Exception
+	public Page<FeedThread> getForumEliteThreadList(long forumId, int pageNum, int pageSize) throws Exception
 	{
 		try
 		{
@@ -733,7 +733,7 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = threadDao.getForumEliteThreadList(forumId, timeType, start, end);
+			List<Long> idList = threadDao.getForumEliteThreadList(forumId, start, end);
 			return convertEntityList(total, idList);
 		}
 		catch(Exception e)

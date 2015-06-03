@@ -88,7 +88,7 @@ public interface FeedThreadDao
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Long> getForumEliteThreadList(long forumId, int timeType, int start, int end) throws Exception;
+	public List<Long> getForumEliteThreadList(long forumId, int start, int end) throws Exception;
 	
 	/**
 	 * 获取版块精华主题总数

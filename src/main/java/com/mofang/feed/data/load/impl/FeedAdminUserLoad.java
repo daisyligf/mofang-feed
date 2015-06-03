@@ -2,6 +2,7 @@ package com.mofang.feed.data.load.impl;
 
 import java.util.List;
 
+import com.mofang.feed.data.load.FeedLoad;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedAdminUser;
 import com.mofang.feed.mysql.FeedAdminUserDao;
@@ -14,7 +15,7 @@ import com.mofang.feed.redis.impl.FeedAdminUserRedisImpl;
  * @author zhaodx
  *
  */
-public class FeedAdminUserLoad
+public class FeedAdminUserLoad implements FeedLoad
 {
 	private FeedAdminUserDao adminDao  = FeedAdminUserDaoImpl.getInstance();
 	private FeedAdminUserRedis adminRedis = FeedAdminUserRedisImpl.getInstance();
