@@ -836,6 +836,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			data.put("create_time", threadInfo.getCreateTime());        ///主题发布时间
 			data.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
 			data.put("recommends", threadInfo.getRecommends());        ///主题点赞数
+			data.put("tag_id", threadInfo.getTagId());						///主题标签ID
 			data.put("status", threadInfo.getStatus());         ///主题状态
 			data.put("is_elite", threadInfo.isElite());			///是否为精华帖
 			data.put("is_top", threadInfo.isTop());			///是否为置顶帖
