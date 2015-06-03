@@ -7,7 +7,7 @@ import com.mofang.feed.logic.web.impl.FeedHomePrefectureLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/home/prefecture")
+@Action(url = "feed/v2/web/home/prefecture")
 public class HomePrefectureAction extends AbstractActionExecutor
 {
 	private FeedHomePrefectureLogic logic = FeedHomePrefectureLogicImpl.getInstance();

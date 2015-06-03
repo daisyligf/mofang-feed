@@ -7,7 +7,7 @@ import com.mofang.feed.logic.web.impl.FeedHomeRecommendGameRankLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/home/recommendGameRank")
+@Action(url = "feed/v2/web/home/recommendGameRank")
 public class HomeRecommendGameRankAction extends AbstractActionExecutor
 {
 	private FeedHomeRecommendGameRankLogic logic = FeedHomeRecommendGameRankLogicImpl.getInstance();
