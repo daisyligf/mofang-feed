@@ -285,6 +285,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			threadInfo.setVideo(model.isVideo());
 			threadInfo.setMark(model.isMark());
 			threadInfo.setGameId(model.getGameId());
+			threadInfo.setTagId(model.getTagId());
 			
 			///保存主题信息
 			threadService.edit(threadInfo);
