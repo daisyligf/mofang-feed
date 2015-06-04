@@ -25,7 +25,7 @@ public class RedisPageNumber
 	private void init()
 	{
 		start = (pageNum - 1) * pageSize;
-		end = start + pageSize;
+		end = start + pageSize - 1;
 	}
 	
 	public int getStart()

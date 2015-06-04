@@ -261,8 +261,9 @@ public class HomeRankServiceImpl implements HomeRankService {
 	private static final String KLMNO = "KLMNO";
 	private static final String PQRST = "PQRST";
 	private static final String WXYZ = "WXYZ";
+	private static final String OTHER = "OTHER";
 	
-	private static String in(String nameSp){
+	private static String math(String nameSp){
 		char p = nameSp.charAt(0);
 		int idx;
 		for(idx = 0; idx < ABCDE.length(); idx ++){
@@ -290,7 +291,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 				return WXYZ;
 			}
 		}
-		return null;
+		return OTHER;
 	}
 	
 	/**
@@ -305,7 +306,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = in(nameSpell);
+				String key = math(nameSpell);
 				if(key==null)
 					continue;
 				hotForumListRedis.addHotForumList(key, forumId, model.getCreateTime());
@@ -326,7 +327,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = in(nameSpell);
+				String key = math(nameSpell);
 				if(key==null)
 					continue;
 				recommendGameListRedis.addRecommendGameList(key, forumId, model.getCreateTime());
