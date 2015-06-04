@@ -22,6 +22,7 @@ import com.mofang.feed.global.common.OperateSourceType;
 import com.mofang.feed.global.common.ReplyType;
 import com.mofang.feed.logic.web.FeedPostLogic;
 import com.mofang.feed.model.FeedComment;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedSysRole;
@@ -36,6 +37,7 @@ import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedBlackListService;
 import com.mofang.feed.service.FeedCommentService;
+import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysRoleService;
@@ -45,6 +47,7 @@ import com.mofang.feed.service.FeedUserFavoriteService;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
+import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysRoleServiceImpl;
@@ -73,6 +76,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private FeedUserFavoriteService favoriteService = FeedUserFavoriteServiceImpl.getInstance();
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedSysRoleService roleService = FeedSysRoleServiceImpl.getInstance();
+	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	
 	private FeedPostLogicImpl()
 	{}
@@ -634,6 +638,9 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		JSONObject jsonForum = new JSONObject();
 		jsonForum.put("fid", threadInfo.getForumId());
 		jsonThread.put("forum", jsonForum);
+		FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+		if(null != forumInfo)
+			jsonForum.put("name", forumInfo.getName());
 		
 		///获取主题用户信息
 		JSONObject jsonUser = new JSONObject();
