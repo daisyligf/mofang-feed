@@ -208,6 +208,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
 			data.put("today_threads", forumInfo.getTodayThreads());
 			data.put("create_time", forumInfo.getCreateTime());
+			data.put("game_id", forumInfo.getGameId());
 			
 			///获取关注数
 			Set<Long> forumIds = new HashSet<Long>();
