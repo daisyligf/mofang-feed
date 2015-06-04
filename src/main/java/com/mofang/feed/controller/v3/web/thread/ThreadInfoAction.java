@@ -19,7 +19,7 @@ public class ThreadInfoAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		String strThreadId = context.getParameters("tid");
-		if(StringUtil.isLong(strThreadId))
+		if(!StringUtil.isLong(strThreadId))
 		{
 			ResultValue result = new ResultValue();
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
