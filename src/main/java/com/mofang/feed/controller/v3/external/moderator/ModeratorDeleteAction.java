@@ -47,4 +47,9 @@ public class ModeratorDeleteAction extends AbstractActionExecutor
 		}
 		return logic.delete(forumId, userId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

@@ -44,4 +44,9 @@ public class UserRoleInfoAction extends AbstractActionExecutor
 		
 		return logic.getUserRoleInfo(userId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }
