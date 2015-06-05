@@ -1,7 +1,10 @@
 package com.mofang.feed.data.load.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.mofang.feed.data.load.FeedLoad;
 import com.mofang.feed.global.GlobalObject;
@@ -38,6 +41,7 @@ public class FeedPostLoad implements FeedLoad
 	private FeedPostSolr postSolr = FeedPostSolrImpl.getInstance();
 	private final static int MAX_POST_ID = 6500000;
 	private final static int STEP = 50000;
+	private static Map<Long, Integer> POSITION_MAP = new HashMap<Long, Integer>();
 	
 	public void exec()
 	{
@@ -53,6 +57,15 @@ public class FeedPostLoad implements FeedLoad
 			List<FeedPost> solrList = new ArrayList<FeedPost>();
 			for(FeedPost postInfo : list)
 			{
+				///设置主题的最大楼层数
+				int position = postInfo.getPosition();
+				if(POSITION_MAP.containsKey(postInfo.getThreadId()))
+				{
+					if(POSITION_MAP.get(postInfo.getThreadId()) > position)
+						position = POSITION_MAP.get(postInfo.getThreadId());
+				}
+				POSITION_MAP.put(postInfo.getThreadId(), position);
+				
 				handleRedis(postInfo);
 				///添加到solr列表中
 				solrList.add(postInfo);
@@ -63,12 +76,17 @@ public class FeedPostLoad implements FeedLoad
 				}
 				total++;
 			}
-			///更新redis自增ID的值
-			initUniqueId();
-			
 			list = null;
 			System.gc();
 		}
+		
+		///更新redis自增ID的值
+		initUniqueId();
+		
+		///	更新position
+		initPosition();
+		POSITION_MAP = null;
+		System.gc();
 	}
 	
 	private void handleRedis(FeedPost postInfo)
@@ -104,6 +122,26 @@ public class FeedPostLoad implements FeedLoad
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedPostLoad.handleRedis throw an error.", e);
+		}
+	}
+	
+	private void initPosition()
+	{
+		Iterator<Long> iterator = POSITION_MAP.keySet().iterator();
+		long threadId = 0L;
+		int position = 0;
+		try
+		{
+			while(iterator.hasNext())
+			{
+				threadId = iterator.next();
+				position = POSITION_MAP.get(threadId);
+				postRedis.initPosition(threadId, position);
+			}
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedPostLoad.initPosition throw an error.", e);
 		}
 	}
 	

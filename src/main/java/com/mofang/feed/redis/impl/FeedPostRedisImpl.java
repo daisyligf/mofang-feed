@@ -94,6 +94,13 @@ public class FeedPostRedisImpl implements FeedPostRedis
 	}
 
 	@Override
+	public void initPosition(long threadId, int position) throws Exception
+	{
+		String key = RedisKey.buildRedisKey(RedisKey.POST_POSITION_KEY_PREFIX, threadId);
+		RedisFaster.set(key, String.valueOf(position));
+	}
+
+	@Override
 	public int incrPosition(long threadId) throws Exception
 	{
 		String key = RedisKey.buildRedisKey(RedisKey.POST_POSITION_KEY_PREFIX, threadId);

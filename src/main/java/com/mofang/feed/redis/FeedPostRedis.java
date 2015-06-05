@@ -50,6 +50,14 @@ public interface FeedPostRedis
 	public FeedPost getInfo(long postId) throws Exception;
 	
 	/**
+	 * 初始化楼层数
+	 * @param threadId 主题ID
+	 * @param position 楼层数
+	 * @throws Exception
+	 */
+	public void initPosition(long threadId, int position) throws Exception;
+	
+	/**
 	 * 递增楼层数
 	 * @param threadId 主题ID
 	 * @return

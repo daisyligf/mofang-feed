@@ -9,6 +9,8 @@ import com.mofang.feed.mysql.FeedThreadRecommendDao;
 import com.mofang.feed.mysql.impl.FeedThreadRecommendDaoImpl;
 import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
+import com.mofang.framework.data.mysql.core.criterion.operand.LimitOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
  * 
@@ -19,22 +21,24 @@ public class FeedThreadRecommendLoad implements FeedLoad
 {
 	private FeedThreadRecommendDao threadRecommendDao  = FeedThreadRecommendDaoImpl.getInstance();
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
+	private final static int MAX_RECOMMEND_ID = 3000000;
+	private final static int STEP = 100000;
 
 	public void exec()
 	{
-		List<FeedThreadRecommend> list = getData();
-		if(null == list || list.size() == 0)
+		for(int i=0; i< MAX_RECOMMEND_ID; i = i+STEP)
 		{
-			GlobalObject.ERROR_LOG.error("thread recommend data is null or empty.");
-			return;
+			List<FeedThreadRecommend> list = getData(i, i + STEP);
+			if(null == list || list.size() == 0)
+				continue;
+			
+			for(FeedThreadRecommend recommendInfo : list)
+			{
+				handle(recommendInfo);
+			}
+			list = null;
+			System.gc();
 		}
-		
-		for(FeedThreadRecommend recommendInfo : list)
-		{
-			handle(recommendInfo);
-		}
-		list = null;
-		System.gc();
 	}
 	
 	private void handle(FeedThreadRecommend recommendInfo)
@@ -49,11 +53,13 @@ public class FeedThreadRecommendLoad implements FeedLoad
 		}
 	}
 	
-	private List<FeedThreadRecommend> getData()
+	private List<FeedThreadRecommend> getData(int start, int end)
 	{
 		try
 		{
-			return threadRecommendDao.getList(null);
+			System.out.println("start: " + start + ", end: " + end);
+			Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+			return threadRecommendDao.getList(limit);
 		}
 		catch(Exception e)
 		{
