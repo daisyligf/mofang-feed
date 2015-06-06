@@ -132,7 +132,7 @@ public class HttpComponent
 		map.put("appid", appid);
 		String sign = SignUtil.buildSign(map, null, secret);
 		StringBuilder sb = new StringBuilder();
-		sb.append("game_id").append(gameId).append("&limit=1").append("&appid=").append(appid).append("&sign=").append(sign);
+		sb.append("game_id=").append(gameId).append("&limit=1").append("&appid=").append(appid).append("&sign=").append(sign);
 		String requestUrl = GlobalConfig.GIFT_LIST_URL + "?" + sb.toString();
 		String result = get(GlobalObject.HTTP_CLIENT_FAHAOSERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
