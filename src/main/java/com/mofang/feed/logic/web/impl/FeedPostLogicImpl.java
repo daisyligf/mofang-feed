@@ -553,6 +553,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						else
 						{
 							jsonUser.put("nickname", userInfo.getNickName());
+							jsonUser.put("avatar", userInfo.getAvatar());
 						}
 						jsonPost.put("user", jsonUser);
 						
