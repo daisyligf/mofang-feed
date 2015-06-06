@@ -37,4 +37,9 @@ public class ModeratorListActon extends AbstractActionExecutor {
 		
 		return logic.getRoleList(forumId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

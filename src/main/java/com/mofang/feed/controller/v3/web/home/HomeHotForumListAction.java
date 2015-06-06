@@ -17,4 +17,9 @@ public class HomeHotForumListAction extends AbstractActionExecutor
 	{
 		return logic.getList();
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

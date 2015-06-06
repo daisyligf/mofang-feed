@@ -66,4 +66,9 @@ public class ThreadListAction extends AbstractActionExecutor
 		else
 			return logic.getForumThreadListByCondition(forumId, tagId, filterElite, timeType, pageNum, pageSize, userId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

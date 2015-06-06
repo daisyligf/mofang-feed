@@ -58,4 +58,9 @@ public class PostListAction extends AbstractActionExecutor
 		else
 			return logic.getThreadPostList(threadId, pageNum, pageSize, userId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

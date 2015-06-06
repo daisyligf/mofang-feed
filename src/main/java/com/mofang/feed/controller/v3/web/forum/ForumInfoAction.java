@@ -30,4 +30,9 @@ public class ForumInfoAction extends AbstractActionExecutor
 		long forumId = Long.parseLong(strForumId);	
 		return logic.getInfo(forumId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

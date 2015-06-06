@@ -17,4 +17,9 @@ public class HomeKeyWordAction extends AbstractActionExecutor
 	{
 		return logic.getKeyWord();
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

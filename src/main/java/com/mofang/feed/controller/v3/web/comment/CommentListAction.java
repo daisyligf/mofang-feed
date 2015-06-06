@@ -47,4 +47,9 @@ public class CommentListAction extends AbstractActionExecutor
 		
 		return logic.getPostCommentList(postId, pageNum, pageSize);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

@@ -45,4 +45,9 @@ public class ThreadSearchAction extends AbstractActionExecutor
 		
 		return logic.search(forumId, forumName, author, keyword, status, pageNum, pageSize);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

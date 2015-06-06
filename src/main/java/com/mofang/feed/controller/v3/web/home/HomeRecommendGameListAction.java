@@ -17,4 +17,9 @@ public class HomeRecommendGameListAction extends AbstractActionExecutor
 	{
 		return logic.getList();
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

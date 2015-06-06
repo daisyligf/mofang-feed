@@ -42,4 +42,9 @@ public class ForumTagListAction extends AbstractActionExecutor
 		
 		return logic.getTagList(forumId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

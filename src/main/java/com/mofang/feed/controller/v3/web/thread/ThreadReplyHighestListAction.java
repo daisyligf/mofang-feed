@@ -33,4 +33,9 @@ public class ThreadReplyHighestListAction extends AbstractActionExecutor
 		
 		return logic.getReplyHighestThreadList(forumId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

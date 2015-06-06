@@ -52,4 +52,9 @@ public class ForumListByLetterAction extends AbstractActionExecutor
 		result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 		return result;
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

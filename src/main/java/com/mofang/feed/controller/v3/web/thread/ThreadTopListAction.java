@@ -41,4 +41,9 @@ public class ThreadTopListAction extends AbstractActionExecutor
 		long forumId = Long.parseLong(strForumId);
 		return logic.getForumTopThreadList(forumId, userId);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }
