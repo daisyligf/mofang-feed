@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.mofang.framework.util.StringUtil;
+
 /**
  * 
  * @author zhaodx
@@ -27,7 +29,8 @@ public class SignUtil
 		for(String key : sortKey)
 			sbSign.append(key + getParam.get(key));
 		
-		sbSign.append(postParam);
+		if(!StringUtil.isNullOrEmpty(postParam))
+			sbSign.append(postParam);
 		sbSign.append(secret);
 		return getMd5(sbSign.toString().getBytes());
 	}
