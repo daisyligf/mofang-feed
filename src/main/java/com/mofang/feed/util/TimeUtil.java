@@ -1,12 +1,8 @@
 package com.mofang.feed.util;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class TimeUtil {
-
-	private static final SimpleDateFormat format = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss");
 
 	public static long getInitDelay(int hour) {
 		Calendar cl = Calendar.getInstance();

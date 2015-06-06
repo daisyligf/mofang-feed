@@ -1,6 +1,6 @@
 package com.mofang.feed.mysql;
 
-import java.util.List;
+import java.util.Set;
 
 import com.mofang.feed.model.FeedForumTag;
 
@@ -16,5 +16,5 @@ public interface FeedForumTagDao
 	
 	public void deleteByForumId(long forumId) throws Exception;
 	
-	public List<Integer> getTagIdListByForumId(long forumId) throws Exception;
+	public Set<Integer> getTagIdListByForumId(long forumId) throws Exception;
 }

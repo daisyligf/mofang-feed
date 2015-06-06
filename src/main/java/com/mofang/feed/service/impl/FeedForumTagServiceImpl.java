@@ -1,6 +1,6 @@
 package com.mofang.feed.service.impl;
 
-import java.util.List;
+import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedForumTag;
@@ -41,13 +41,13 @@ public class FeedForumTagServiceImpl implements FeedForumTagService
 	}
 
 	@Override
-	public void addBatch(long forumId, List<Integer> tagList) throws Exception
+	public void addBatch(long forumId, Set<Integer> tagSet) throws Exception
 	{
 		try
 		{
 			deleteByForumId(forumId);
 			FeedForumTag model = null;
-			for(Integer tagId : tagList)
+			for(Integer tagId : tagSet)
 			{
 				model = new FeedForumTag();
 				model.setForumId(forumId);
@@ -105,7 +105,7 @@ public class FeedForumTagServiceImpl implements FeedForumTagService
 	}
 
 	@Override
-	public List<Integer> getTagIdListByForumId(long forumId) throws Exception
+	public Set<Integer> getTagIdListByForumId(long forumId) throws Exception
 	{
 		try
 		{

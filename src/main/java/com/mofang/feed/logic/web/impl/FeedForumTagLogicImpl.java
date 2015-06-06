@@ -1,6 +1,6 @@
 package com.mofang.feed.logic.web.impl;
 
-import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,11 +40,11 @@ public class FeedForumTagLogicImpl implements FeedForumTagLogic
 		{
 			ResultValue result = new ResultValue();
 			JSONArray data = new JSONArray();
-			List<Integer> list = forumTagService.getTagIdListByForumId(forumId);
-			if(list != null)
+			Set<Integer> tagSet = forumTagService.getTagIdListByForumId(forumId);
+			if(tagSet != null)
 			{
 				JSONObject jsonTag = null;
-				for(Integer tagId : list)
+				for(Integer tagId : tagSet)
 				{
 					jsonTag = new JSONObject();
 					jsonTag.put("tag_id", tagId);

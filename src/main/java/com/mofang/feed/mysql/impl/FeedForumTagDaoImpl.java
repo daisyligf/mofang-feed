@@ -1,7 +1,8 @@
 package com.mofang.feed.mysql.impl;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedForumTag;
@@ -84,7 +85,7 @@ public class FeedForumTagDaoImpl extends AbstractMysqlSupport<FeedForumTag> impl
 	}
 
 	@Override
-	public List<Integer> getTagIdListByForumId(long forumId) throws Exception
+	public Set<Integer> getTagIdListByForumId(long forumId) throws Exception
 	{
 		Operand where = new WhereOperand();
 		Operand forumEqual = new EqualOperand("forum_id", forumId);
@@ -93,9 +94,9 @@ public class FeedForumTagDaoImpl extends AbstractMysqlSupport<FeedForumTag> impl
 		if(null == list)
 			return null;
 		
-		List<Integer> tagList = new ArrayList<Integer>();
+		Set<Integer> tagSet = new HashSet<Integer>();
 		for(FeedForumTag model : list)
-			tagList.add(model.getTagId());
-		return tagList;
+			tagSet.add(model.getTagId());
+		return tagSet;
 	}
 }

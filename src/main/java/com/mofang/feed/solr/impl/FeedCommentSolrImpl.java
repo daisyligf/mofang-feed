@@ -122,7 +122,7 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 		
 		if(strQuery.length() == 0)
 			return null;
-		String queryParam = strQuery.substring(4, strQuery.length());
+		String queryParam = strQuery.substring(5, strQuery.length());
 		queryParam = "(" + queryParam + ")";
 		
 		query.setQuery(queryParam);

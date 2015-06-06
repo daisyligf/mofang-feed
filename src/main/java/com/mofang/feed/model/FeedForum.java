@@ -1,7 +1,7 @@
 package com.mofang.feed.model;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.ForumType;
@@ -54,7 +54,7 @@ public class FeedForum
 	@ColumnName(name = "game_id")
 	private int gameId;
 	
-	private List<Integer> tags;
+	private Set<Integer> tags;
 	
 	public FeedForum()
 	{}
@@ -223,11 +223,11 @@ public class FeedForum
 		this.yestodayFollows = yestodayFollows;
 	}
 
-	public List<Integer> getTags() {
+	public Set<Integer> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<Integer> tags) {
+	public void setTags(Set<Integer> tags) {
 		this.tags = tags;
 	}
 

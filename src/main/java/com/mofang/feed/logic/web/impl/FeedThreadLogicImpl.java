@@ -850,9 +850,12 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				jsonForum.put("name", forumInfo.getName());
 			
 			FeedPost postInfo = threadInfo.getPost();
-			data.put("content", postInfo.getContentFilter());
-			data.put("html_content", postInfo.getHtmlContentFilter());
-			data.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));
+			if(null != postInfo)
+			{
+				data.put("content", postInfo.getContentFilter());
+				data.put("html_content", postInfo.getHtmlContentFilter());
+				data.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));
+			}
 			
 			jsonUser = new JSONObject();
 			jsonUser.put("user_id", threadInfo.getUserId());

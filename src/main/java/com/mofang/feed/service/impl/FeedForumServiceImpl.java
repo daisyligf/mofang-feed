@@ -193,9 +193,9 @@ public class FeedForumServiceImpl implements FeedForumService
 		try
 		{
 			FeedForum forumInfo = forumRedis.getInfo(forumId);
-			List<Integer> tagList = forumTagDao.getTagIdListByForumId(forumId);
+			Set<Integer> tagSet = forumTagDao.getTagIdListByForumId(forumId);
 			if(null != forumInfo)
-				forumInfo.setTags(tagList);
+				forumInfo.setTags(tagSet);
 			return forumInfo;
 		}
 		catch(Exception e)

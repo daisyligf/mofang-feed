@@ -1,7 +1,7 @@
 package com.mofang.feed.controller.v3.admin.forum;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -94,11 +94,11 @@ public class ForumCreateAction extends AbstractActionExecutor
 		forumInfo.setEdit(true);
 		forumInfo.setHidden(false);
 		
-		List<Integer> tagList = new ArrayList<Integer>();
+		Set<Integer> tagSet = new HashSet<Integer>();
 		for(int i=0; i<arrTags.length(); i++)
-			tagList.add(arrTags.getInt(i));
+			tagSet.add(arrTags.getInt(i));
 		
-		forumInfo.setTags(tagList);
+		forumInfo.setTags(tagSet);
 		
 		return logic.add(forumInfo, operatorId);
 	}

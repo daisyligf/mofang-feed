@@ -68,13 +68,13 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			data.put("yesterday_follows", forumInfo.getYestodayFollows());
 			data.put("create_time", forumInfo.getCreateTime());
 			
-			List<Integer> tagList = forumInfo.getTags();
+			Set<Integer> tagSet = forumInfo.getTags();
 			JSONArray arrayTags = new JSONArray();
-			if(null != tagList)
+			if(null != tagSet)
 			{
 				JSONObject jsonTag = null;
 				String tagName;
-				for(int tagId : tagList)
+				for(int tagId : tagSet)
 				{
 					tagName = tagService.getTagName(tagId);
 					if(StringUtil.isNullOrEmpty(tagName))

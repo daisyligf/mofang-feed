@@ -20,15 +20,15 @@ public class Server
 {
 	public static void main(String[] args)
 	{
-		//String configpath = "/Users/milo/document/workspace/mofang.feed/src/main/resources/config.ini";
-		
+		String configpath = "/Users/milo/document/workspace/mofang.feed/src/main/resources/config.ini";
+		/*
 		if(args.length <= 0)
 		{
 			System.out.println("usage:java -server -Xms1024m -Xmx1024m -jar mofang-chat-task.jar configpath");
 			System.exit(1);
 		}
 		String configpath = args[0];
-		
+		*/
 		try
 		{
 			///服务器初始化
