@@ -23,7 +23,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 public class ModeratorCreateAction extends AbstractActionExecutor
 {
 	private FeedSysUserRoleLogic logic = FeedSysUserRoleLogicImpl.getInstance();
-	private static int ROLE_ID = 2;   ///版主角色ID
+	private static int ROLE_ID = 1;   ///版主角色ID
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
