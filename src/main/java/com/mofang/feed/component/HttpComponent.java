@@ -22,6 +22,7 @@ import com.mofang.feed.model.external.SysMessageNotify;
 import com.mofang.feed.model.external.Task;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.model.external.Video;
+import com.mofang.feed.util.SignUtil;
 import com.mofang.framework.net.http.HttpClientSender;
 import com.mofang.framework.util.StringUtil;
 
@@ -124,7 +125,15 @@ public class HttpComponent
 	 * @return
 	 */
 	public static boolean checkGift(long gameId){
-		String requestUrl = GlobalConfig.GIFT_LIST_URL + "?game_id=" + gameId + "&limit=1";
+		String secret = "4c49d0ba2ab71d69d31a2353347fa7ac";
+		String appid = "20007";
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("game_id", String.valueOf(gameId));
+		map.put("appid", appid);
+		String sign = SignUtil.buildSign(map, null, secret);
+		StringBuilder sb = new StringBuilder();
+		sb.append("game_id=").append(gameId).append("&limit=1").append("&appid=").append(appid).append("&sign=").append(sign);
+		String requestUrl = GlobalConfig.GIFT_LIST_URL + "?" + sb.toString();
 		String result = get(GlobalObject.HTTP_CLIENT_FAHAOSERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
 			return false;
