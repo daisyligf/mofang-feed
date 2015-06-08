@@ -561,7 +561,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId());
 						if(null == arrayComments)
 							arrayComments = new JSONArray();
-						jsonPost.put("comments", arrayComments);
+						jsonPost.put("comment_list", arrayComments);
 						arrayPosts.put(jsonPost);
 					}
 					
