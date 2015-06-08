@@ -118,6 +118,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				return result;
 			}
 			
+			String icon = model.getIcon();
 			///根据gameId获取游戏信息
 			if(model.getType() != ForumType.OFFICAL)
 			{
@@ -125,10 +126,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				{
 					Game gameInfo = HttpComponent.getGameInfo(model.getGameId());
 					if(null != gameInfo)
-					{
-						String icon = gameInfo.getIcon();
-						forumInfo.setIcon(icon);
-					}
+						icon = gameInfo.getIcon();
 				}
 			}
 			
@@ -137,6 +135,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			forumInfo.setColor(model.getColor());
 			forumInfo.setType(model.getType());
 			forumInfo.setGameId(model.getGameId());
+			forumInfo.setIcon(icon);
 			forumService.edit(forumInfo);
 			
 			///保存版块标签

@@ -169,9 +169,31 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			notify.setReplyType(ReplyType.POST);
 			HttpComponent.pushPostReplyNotify(notify);
 			
+			///创建返回结果
+			JSONObject data = new JSONObject();
+			data.put("cid", commentId);
+			data.put("content", contentFilter);
+			data.put("create_time", model.getCreateTime());
+			
+			JSONObject jsonPost = new JSONObject();
+			jsonPost.put("pid", model.getPostId());
+			
+			///获取用户信息
+			JSONObject jsonUser = new JSONObject();
+			jsonUser.put("user_id", model.getUserId());
+			User userInfo = UserComponent.getInfo(model.getUserId());
+			if(null != userInfo)
+			{
+				jsonUser.put("nickname", userInfo.getNickName());
+				jsonUser.put("avatar", userInfo.getAvatar());
+			}
+			data.put("post", jsonPost);
+			data.put("user", jsonUser);
+			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
 			return result;
 		}
 		catch(Exception e)
