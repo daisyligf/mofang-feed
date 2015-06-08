@@ -18,7 +18,7 @@ public class UserInfoAction extends AbstractActionExecutor
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
-		String strUserId = context.getParameters("uid");
+		String strUserId = context.getParameters("user_id");
 		long userId = 0L;
 		
 		if(StringUtil.isLong(strUserId))
