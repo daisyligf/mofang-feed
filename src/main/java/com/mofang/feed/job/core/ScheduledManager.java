@@ -9,6 +9,7 @@ import com.mofang.feed.job.core.TaskEntity;
 import com.mofang.feed.job.core.task.TaskRefreshHotForumRankEntity;
 import com.mofang.feed.job.core.task.TaskRefreshRecommendGameRankEntity;
 import com.mofang.feed.job.core.task.TaskThreadReplyHighestListEntity;
+import com.mofang.feed.job.core.task.TaskUpdateForumYestodayThreadsEntity;
 
 /**
  * 计划任务管理器
@@ -40,6 +41,7 @@ public class ScheduledManager {
 		add(new TaskRefreshHotForumRankEntity());
 		add(new TaskRefreshRecommendGameRankEntity());
 		add(new TaskThreadReplyHighestListEntity());
+		add(new TaskUpdateForumYestodayThreadsEntity());
 	}
 
 	public void execute() {
