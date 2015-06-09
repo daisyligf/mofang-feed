@@ -9,6 +9,7 @@ public class Game
 {
 	private int gameId;
 	private String icon;
+	private String name;
 
 	public int getGameId() {
 		return gameId;
@@ -25,4 +26,14 @@ public class Game
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 }

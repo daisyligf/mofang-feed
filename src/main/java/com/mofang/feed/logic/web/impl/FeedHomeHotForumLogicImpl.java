@@ -14,6 +14,7 @@ import com.mofang.feed.logic.web.FeedHomeHotForumLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeHotForum;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.Game;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeHotForumService;
@@ -61,9 +62,13 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 				 * 1、通过该game_id判断是否有礼包
 				 * 2、如果有礼包，设置礼包地址
 				 */
-				boolean flag = HttpComponent.checkGift(forum.getGameId());
+				int gameId = forum.getGameId();
+				boolean flag = HttpComponent.checkGift(gameId);
 				if(flag){
-					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
+					Game game = HttpComponent.getGameInfo(gameId);
+					if(game != null) {
+						model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + game.getName());
+					}
 				}
 			}
 			hotForumService.edit(modelList);
