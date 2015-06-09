@@ -184,4 +184,13 @@ public interface FeedThreadDao
 	 * @throws Exception
 	 */
 	public long getForumThreadCountByCondition(long forumId, int tagId, boolean isElite) throws Exception;
+	
+	/**
+	 * 获取版块的昨天发帖数集合MAP
+	 * @param startTime 起始时间
+	 * @param endTime 截止时间
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<Long, Integer> getForumYestodayThreadsMap(long startTime, long endTime) throws Exception;
 }

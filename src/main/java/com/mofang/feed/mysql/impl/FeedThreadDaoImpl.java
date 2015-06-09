@@ -494,4 +494,22 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		List<RowData> rows = data.getQueryResult();
 		return rows.get(0).getLong(0);
 	}
+
+	@Override
+	public Map<Long, Integer> getForumYestodayThreadsMap(long startTime, long endTime) throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select forum_id, count(1) as total from feed_thread ");
+		strSql.append("where create_time >= " + startTime + " and create_time <= " + endTime + " ");
+		strSql.append("group by forum_id");
+		ResultData data = super.executeQuery(strSql.toString());
+		if(null == data || null == data.getQueryResult() || data.getQueryResult().size() == 0)
+			return null;
+		
+		List<RowData> rows = data.getQueryResult();
+		Map<Long, Integer> map = new HashMap<Long, Integer>();
+		for(RowData row : rows)
+			map.put(row.getLong(0), row.getInteger(1));
+		return map;
+	}
 }

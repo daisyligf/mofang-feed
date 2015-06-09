@@ -113,6 +113,14 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	}
 
 	@Override
+	public void updateYestodayThreads(long forumId, int threads) throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("update feed_forum set yestoday_threads = " + threads + " where forum_id=" + forumId);
+		super.execute(strSql.toString());
+	}
+
+	@Override
 	public FeedForum getInfo(long forumId) throws Exception
 	{
 		return super.getByPrimaryKey(forumId);

@@ -93,6 +93,14 @@ public interface FeedForumRedis
 	public void clearTodayThreads(long forumId) throws Exception;
 	
 	/**
+	 * 更新昨日帖子数
+	 * @param forumId 版块ID
+	 * @param threads 帖子数
+	 * @throws Exception
+	 */
+	public void updateYestodayThreads(long forumId, int threads) throws Exception;
+	
+	/**
 	 * 将Set转换成实体列表
 	 * @param set id集合
 	 * @return

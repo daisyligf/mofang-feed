@@ -207,6 +207,25 @@ public class FeedForumRedisImpl implements FeedForumRedis
 	}
 
 	@Override
+	public void updateYestodayThreads(final long forumId, final int threads) throws Exception
+	{
+		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
+		{
+			@Override
+			public Boolean execute(Jedis jedis) throws Exception
+			{
+				String key = RedisKey.buildRedisKey(RedisKey.FORUM_INFO_KEY_PREFIX, forumId);
+				if(!jedis.exists(key))
+					return false;
+				
+				jedis.hset(key, "yestoday_threads", String.valueOf(threads));
+				return true;
+			}
+		};
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
+
+	@Override
 	public List<FeedForum> convertEntityList(final Set<String> idSet) throws Exception
 	{
 		RedisWorker<List<FeedForum>> worker = new RedisWorker<List<FeedForum>>()
