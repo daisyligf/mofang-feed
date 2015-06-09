@@ -350,6 +350,8 @@ public class HomeRankServiceImpl implements HomeRankService {
 			Game game = HttpComponent.getGameInfo(gameId);
 			if(game != null) {
 				map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + game.getName());
+			}else {
+				map.put(ForumURLKey.GIFT_URL_KEY, "");
 			}
 		}
 		else{
