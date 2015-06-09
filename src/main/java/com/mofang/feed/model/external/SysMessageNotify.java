@@ -118,10 +118,8 @@ public class SysMessageNotify
 		{
 			JSONObject json = new JSONObject();
 			json.put("act", action);
-			JSONArray uidArray = new JSONArray();
 			if(null != uidList)
-				uidArray.put(uidList);
-			json.put("uid_list", uidArray);
+				json.put("uid_list", uidList);
 			JSONObject jsonMsg = new JSONObject();
 			JSONObject jsonMsgContent = new JSONObject();
 			
