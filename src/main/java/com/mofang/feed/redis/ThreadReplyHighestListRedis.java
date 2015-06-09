@@ -7,4 +7,6 @@ public interface ThreadReplyHighestListRedis {
 	public void add(long forumId, long threadId) throws Exception;
 	
 	public Set<String> getThreadIdList(long forumId) throws Exception;
+	
+	public void del(long forumId) throws Exception;
 }

@@ -46,6 +46,7 @@ public class ThreadReplyHighestListServiceImpl implements
 				List<Long> threadIdList = threadDao.getThreadIdList(forumId, startTime, endTime);
 				if(threadIdList == null)
 					continue;
+				threadReplyHighestRedis.del(forumId);
 				for(Long threadId : threadIdList){
 					threadReplyHighestRedis.add(forumId, threadId);
 				}
