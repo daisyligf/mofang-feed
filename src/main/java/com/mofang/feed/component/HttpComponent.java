@@ -33,6 +33,7 @@ import com.mofang.framework.util.StringUtil;
  */
 public class HttpComponent
 {
+	
 	/**
 	 * 发送系统消息通知
 	 * @param model
@@ -119,20 +120,21 @@ public class HttpComponent
 		}
 	}
 	
+	private static final String SECRET = "4c49d0ba2ab71d69d31a2353347fa7ac";
+	private static final String APPID = "20007";
+	
 	/***
 	 * 判断是否有礼包
 	 * @param gameId
 	 * @return
 	 */
 	public static boolean checkGift(long gameId){
-		String secret = "4c49d0ba2ab71d69d31a2353347fa7ac";
-		String appid = "20007";
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<String, String>(2);
 		map.put("game_id", String.valueOf(gameId));
-		map.put("appid", appid);
-		String sign = SignUtil.buildSign(map, null, secret);
+		map.put("appid", APPID);
+		String sign = SignUtil.buildSign(map, null, SECRET);
 		StringBuilder sb = new StringBuilder();
-		sb.append("game_id=").append(gameId).append("&appid=").append(appid).append("&sign=").append(sign);
+		sb.append("game_id=").append(gameId).append("&appid=").append(APPID).append("&sign=").append(sign);
 		String requestUrl = GlobalConfig.GIFT_LIST_URL + "?" + sb.toString();
 		String result = get(GlobalObject.HTTP_CLIENT_FAHAOSERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
@@ -178,6 +180,7 @@ public class HttpComponent
 			Game game = new Game();
 			game.setGameId(gameId);
 			game.setIcon(data.optString("icon", ""));
+			game.setName(data.optString("name", ""));
 			return game;
 		}
 		catch(Exception e)

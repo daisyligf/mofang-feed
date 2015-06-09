@@ -14,6 +14,7 @@ import com.mofang.feed.logic.web.FeedHomeRecommendGameLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeRecommendGame;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.Game;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeRecommendGameService;
@@ -53,12 +54,16 @@ public class FeedHomeRecommendGameLogicImpl implements
 					result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
 					return result;
 				}
+				int gameId = forum.getGameId();
 				//设置下载地址
-				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getGameId());
+				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + gameId);
 				//设置礼包地址
-				boolean flag = HttpComponent.checkGift(forum.getGameId());
+				boolean flag = HttpComponent.checkGift(gameId);
 				if(flag){
-					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
+					Game game = HttpComponent.getGameInfo(gameId);
+					if(game != null) {
+						model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + game.getName());
+					}
 				}
 			}
 			recommendGameService.edit(modelList);

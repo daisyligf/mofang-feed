@@ -19,6 +19,7 @@ import com.mofang.feed.model.FeedHomeHotForumRank;
 import com.mofang.feed.model.FeedHomeRecommendGameRank;
 import com.mofang.feed.model.external.FeedForumOrder;
 import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.Game;
 import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedThreadDao;
@@ -148,10 +149,14 @@ public class HomeRankServiceImpl implements HomeRankService {
 			model.setDisplayOrder(idx + 1);
 			FeedForum forum = forumService.getInfo(forumId);
 			if(forum != null){
-				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + forum.getGameId());
-				boolean flag = HttpComponent.checkGift(forum.getGameId());
+				int gameId = forum.getGameId();
+				model.setDownloadUrl(GlobalConfig.GAME_DOWNLOAD_URL + gameId);
+				boolean flag = HttpComponent.checkGift(gameId);
 				if(flag){
-					model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + forum.getName());
+					Game game = HttpComponent.getGameInfo(gameId);
+					if(game != null) {
+						model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + game.getName());
+					}
 				}
 			}
 			newModelList.add(model);
@@ -338,10 +343,14 @@ public class HomeRankServiceImpl implements HomeRankService {
 	
 	private Map<String, String> buildUrlMap(FeedForum forum){
 		Map<String,String> map = new HashMap<String, String>(3);
-		map.put(ForumURLKey.DOWNLOAD_URL_KEY, GlobalConfig.GAME_DOWNLOAD_URL + forum.getGameId());
-		boolean flag = HttpComponent.checkGift(forum.getGameId());
+		int gameId = forum.getGameId();
+		map.put(ForumURLKey.DOWNLOAD_URL_KEY, GlobalConfig.GAME_DOWNLOAD_URL + gameId);
+		boolean flag = HttpComponent.checkGift(gameId);
 		if(flag){
-			map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + forum.getName());
+			Game game = HttpComponent.getGameInfo(gameId);
+			if(game != null) {
+				map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + game.getName());
+			}
 		}
 		else{
 			map.put(ForumURLKey.GIFT_URL_KEY, "");
