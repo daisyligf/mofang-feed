@@ -131,6 +131,13 @@ public class FeedPostRedisImpl implements FeedPostRedis
 	}
 
 	@Override
+	public void decrRecommends(long postId) throws Exception
+	{
+		String key = RedisKey.buildRedisKey(RedisKey.POST_INFO_KEY_PREFIX, postId);
+		RedisFaster.hincrBy(key, "recommends", -1);
+	}
+
+	@Override
 	public FeedPost getStartPost(long threadId) throws Exception
 	{
 		String key = RedisKey.buildRedisKey(RedisKey.THREAD_POST_LIST_KEY_PREFIX, threadId);
@@ -241,6 +248,13 @@ public class FeedPostRedisImpl implements FeedPostRedis
 	{
 		String key = RedisKey.buildRedisKey(RedisKey.USER_RECOMMEND_POST_LIST_KEY_PREFIX, userId);
 		RedisFaster.sadd(key, postId);
+	}
+
+	@Override
+	public void deleteFromUserRecommendPostList(long userId, long postId) throws Exception
+	{
+		String key = RedisKey.buildRedisKey(RedisKey.USER_RECOMMEND_POST_LIST_KEY_PREFIX, userId);
+		RedisFaster.srem(key, postId);
 	}
 
 	@Override

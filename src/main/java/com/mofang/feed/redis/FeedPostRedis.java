@@ -90,6 +90,13 @@ public interface FeedPostRedis
 	public void incrRecommends(long postId) throws Exception;
 	
 	/**
+	 * 递减楼层点赞数
+	 * @param postId 楼层ID
+	 * @throws Exception
+	 */
+	public void decrRecommends(long postId) throws Exception;
+	
+	/**
 	 * 获取1楼楼层实体信息
 	 * @param threadId 主题ID
 	 * @return
@@ -204,6 +211,15 @@ public interface FeedPostRedis
 	 * @throws Exception
 	 */
 	public void addUserRecommendPostList(long userId, long postId) throws Exception;
+	
+	/**
+	 * 将楼层ID从用户点赞楼层列表中删除
+	 * @param userId 用户ID
+	 * @param postId 楼层ID
+	 * @return
+	 * @throws Exception
+	 */
+	public void deleteFromUserRecommendPostList(long userId, long postId) throws Exception;
 	
 	/**
 	 * 判断楼层是否存在用户点赞楼层列表

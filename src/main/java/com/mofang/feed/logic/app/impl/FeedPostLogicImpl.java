@@ -332,7 +332,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 			
 			///设置楼层点赞
-			postService.recommend(userId, postId);
+			postService.setRecommend(userId, postId);
 				
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);

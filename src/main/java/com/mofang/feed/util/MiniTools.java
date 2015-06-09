@@ -25,12 +25,20 @@ public class MiniTools
 			if(StringUtil.isNullOrEmpty(value))
 				return array;
 			
-			if(!value.startsWith("["))
-				value = "[" + value;
-			if(!value.endsWith("]"))
-				value = value + "]";
+			if(value.startsWith("["))
+				value = value.substring(1, value.length());
+			if(value.endsWith("]"))
+				value = value.substring(0, value.length() - 1);
 			
-			array = new JSONArray(value);
+			if(value.length() == 0)
+				return array;
+			
+			String[] items = value.split(",");
+			if(null == items || items.length == 0)
+				return array;
+			
+			for(String item : items)
+				array.put(item);
 			return array;
 		}
 		catch(Exception e)

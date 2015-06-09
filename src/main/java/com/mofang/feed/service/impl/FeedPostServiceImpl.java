@@ -328,7 +328,7 @@ public class FeedPostServiceImpl implements FeedPostService
 	}
 
 	@Override
-	public void recommend(long userId, long postId) throws Exception
+	public void setRecommend(long userId, long postId) throws Exception
 	{
 		try
 		{
@@ -349,6 +349,43 @@ public class FeedPostServiceImpl implements FeedPostService
 		catch(Exception e)
 		{
 			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.recommend throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public void cancelRecommend(long userId, long postId) throws Exception
+	{
+		try
+		{
+			/******************************redis操作******************************/
+			///楼层点赞数 -1
+			postRedis.decrRecommends(postId);
+			///将点赞的用户ID 从 楼层对应的点赞用户列表中删除
+			postRedis.deleteFromUserRecommendPostList(userId, postId);
+			/******************************数据库操作******************************/
+			///楼层点赞数 -1
+			postDao.decrRecommends(postId);
+			///将点赞的用户和楼层的对应关系从数据库中删除
+			recommendDao.delete(userId, postId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.cancelRecommend throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public boolean existsRecommend(long userId, long postId) throws Exception
+	{
+		try
+		{
+			return postRedis.existsUserRecommendPost(userId, postId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.existsRecommend throw an error.", e);
 			throw e;
 		}
 	}

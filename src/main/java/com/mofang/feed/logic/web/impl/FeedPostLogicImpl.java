@@ -406,8 +406,17 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				return result;
 			}
 			
-			///设置楼层点赞
-			postService.recommend(userId, postId);
+			boolean exists = postService.existsRecommend(userId, postId);
+			if(!exists)
+			{
+				///设置楼层点赞
+				postService.setRecommend(userId, postId);
+			}
+			else
+			{
+				///取消楼层点赞
+				postService.cancelRecommend(userId, postId);
+			}
 				
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);

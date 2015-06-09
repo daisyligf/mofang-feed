@@ -527,7 +527,7 @@ public class FeedThreadServiceImpl implements FeedThreadService
 		}
 		catch(Exception e)
 		{
-			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.hasRecommend throw an error.", e);
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.existsRecommend throw an error.", e);
 			throw e;
 		}
 	}

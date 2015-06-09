@@ -56,7 +56,24 @@ public interface FeedPostService
 	 * @param postId 楼层ID
 	 * @throws Exception
 	 */
-	public void recommend(long userId, long postId) throws Exception;
+	public void setRecommend(long userId, long postId) throws Exception;
+	
+	/**
+	 * 楼层取消点赞
+	 * @param userId 用户ID
+	 * @param postId 楼层ID
+	 * @throws Excpetion
+	 */
+	public void cancelRecommend(long userId, long postId) throws Exception;
+	
+	/**
+	 * 用户是否对该楼层点赞
+	 * @param userId 用户ID
+	 * @param postId 楼层ID
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean existsRecommend(long userId, long postId) throws Exception;
 	
 	/**
 	 * 获取用户点赞的楼层ID集合
