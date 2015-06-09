@@ -2,7 +2,6 @@ package com.mofang.feed.model.external;
 
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
