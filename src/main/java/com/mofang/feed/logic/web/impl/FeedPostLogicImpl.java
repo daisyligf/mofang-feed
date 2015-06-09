@@ -630,7 +630,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		
 		///判断是否已对该主题点赞
 		boolean isRecommend = threadService.existsRecommend(currentUserId, threadInfo.getThreadId());
-		jsonThread.put("isrecommend", isRecommend);
+		jsonThread.put("is_recommend", isRecommend);
 		
 		///判断是否已收藏该主题
 		boolean isFavorite = favoriteService.exists(currentUserId, threadInfo.getThreadId());
