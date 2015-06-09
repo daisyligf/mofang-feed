@@ -624,6 +624,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		jsonThread.put("replies", threadInfo.getReplies());
 		jsonThread.put("recommends", threadInfo.getRecommends());
 		jsonThread.put("page_view", threadInfo.getPageView());
+		jsonThread.put("create_time", threadInfo.getCreateTime());
 		jsonThread.put("is_elite", threadInfo.isElite());
 		jsonThread.put("is_top", threadInfo.isTop());
 		jsonThread.put("is_closed", threadInfo.isClosed());
