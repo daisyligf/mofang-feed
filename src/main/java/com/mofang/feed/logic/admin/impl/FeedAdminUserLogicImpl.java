@@ -221,4 +221,47 @@ public class FeedAdminUserLogicImpl implements FeedAdminUserLogic
 			throw new Exception("at FeedSysUserRoleLogicImpl.getUserList throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue searchByUserId(long userId, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			long total = 1;
+			JSONArray arrayAdmins =new JSONArray();
+			FeedAdminUser adminInfo = adminService.getInfo(userId);
+			if(null != adminInfo)
+			{
+				User userInfo = UserComponent.getInfo(userId);
+				if(null != userInfo)
+				{
+					JSONObject jsonAdmin = new JSONObject();
+					jsonAdmin.put("user_id", userId);          ///用户ID
+					jsonAdmin.put("nickname", userInfo.getNickName());
+					
+					///获取用户发帖总数
+					long threads = threadService.getUserThreadCount(userId);
+					///获取用户回帖总数
+					long replies = postService.getUserReplyCount(userId);
+					jsonAdmin.put("threads", threads);
+					jsonAdmin.put("replies", replies);
+					jsonAdmin.put("create_time", adminInfo.getCreateTime());
+					arrayAdmins.put(jsonAdmin);
+				}
+			}
+			
+			data.put("total", total);
+			data.put("list", arrayAdmins);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedSysUserRoleLogicImpl.searchByUserId throw an error.", e);
+		}
+	}
 }

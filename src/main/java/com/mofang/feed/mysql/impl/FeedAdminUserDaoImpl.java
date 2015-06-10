@@ -56,6 +56,12 @@ public class FeedAdminUserDaoImpl extends AbstractMysqlSupport<FeedAdminUser> im
 	}
 
 	@Override
+	public FeedAdminUser getInfo(long userId) throws Exception
+	{
+		return super.getByPrimaryKey(userId);
+	}
+
+	@Override
 	public List<FeedAdminUser> getList(int start, int end) throws Exception
 	{
 		OrderByEntry entry = new OrderByEntry("create_time", SortType.Desc);

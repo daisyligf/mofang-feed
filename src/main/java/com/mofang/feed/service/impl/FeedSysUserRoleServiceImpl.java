@@ -189,11 +189,30 @@ public class FeedSysUserRoleServiceImpl implements FeedSysUserRoleService
 	{
 		try 
 		{
-			return userRoleDao.getForumListByUserId(userId);
+			return userRoleDao.getListByUserId(userId, 0, 100);
 		} 
 		catch (Exception e) 
 		{
 			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.getForumListByUserId throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
+	public Page<FeedSysUserRole> searchByUserId(long userId, int pageNum, int pageSize) throws Exception
+	{
+		try 
+		{
+			long total = userRoleDao.getCountByUserId(userId);
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int size = pageNumber.getEnd();
+			List<FeedSysUserRole> list = userRoleDao.getListByUserId(userId, start, size);
+			return new Page<FeedSysUserRole>(total, list); 
+		} 
+		catch (Exception e) 
+		{
+			GlobalObject.ERROR_LOG.error("at FeedSysUserRoleServiceImpl.searchByUserId throw an error.", e);
 			throw e;
 		}
 	}

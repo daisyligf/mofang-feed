@@ -17,4 +17,6 @@ public interface FeedAdminUserLogic
 	public ResultValue delete(long userId, long operatorId) throws Exception;
 	
 	public ResultValue getUserList(int pageNum, int pageSize) throws Exception;
+	
+	public ResultValue searchByUserId(long userId, int pageNum, int pageSize) throws Exception;
 }

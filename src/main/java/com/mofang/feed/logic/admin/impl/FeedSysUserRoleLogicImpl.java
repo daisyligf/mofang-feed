@@ -256,4 +256,66 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			throw new Exception("at FeedSysUserRoleLogicImpl.getModeratorList throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue searchByUserId(long userId, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			long total = 0;
+			JSONArray arrayModerators =new JSONArray();
+			Page<FeedSysUserRole> page = userRoleService.searchByUserId(userId, pageNum, pageSize);
+			if(null != page)
+			{
+				total = page.getTotal();
+				List<FeedSysUserRole> moderators = page.getList();
+				if(null != moderators)
+				{
+					JSONObject jsonModerator = null;
+					JSONObject jsonForum = null;
+					FeedForum forumInfo = null;
+					
+					///获取用户信息
+					User userInfo = UserComponent.getInfo(userId);
+					for(FeedSysUserRole moderatorInfo : moderators)
+					{
+						jsonModerator = new JSONObject();
+						jsonModerator.put("user_id", moderatorInfo.getUserId());          ///用户ID
+						if(null != userInfo)
+							jsonModerator.put("nickname", userInfo.getNickName());
+						
+						///获取用户发帖总数
+						long threads = threadService.getUserThreadCount(moderatorInfo.getUserId());
+						///获取用户回帖总数
+						long replies = postService.getUserReplyCount(moderatorInfo.getUserId());
+						jsonModerator.put("threads", threads);
+						jsonModerator.put("replies", replies);
+						jsonModerator.put("create_time", moderatorInfo.getCreateTime());
+						
+						///获取版块信息
+						jsonForum = new JSONObject();
+						jsonForum.put("fid", moderatorInfo.getForumId());
+						forumInfo = forumService.getInfo(moderatorInfo.getForumId());
+						if(null != forumInfo)
+							jsonForum.put("name", forumInfo.getName());
+						
+						jsonModerator.put("forum", jsonForum);
+						arrayModerators.put(jsonModerator);
+					}
+				}
+			}
+			data.put("total", total);
+			data.put("list", arrayModerators);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedSysUserRoleLogicImpl.searchByUserId throw an error.", e);
+		}
+	}
 }
