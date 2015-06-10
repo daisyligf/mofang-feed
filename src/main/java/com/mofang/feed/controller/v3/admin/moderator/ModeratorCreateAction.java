@@ -1,5 +1,8 @@
 package com.mofang.feed.controller.v3.admin.moderator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -9,7 +12,6 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.admin.FeedSysUserRoleLogic;
 import com.mofang.feed.logic.admin.impl.FeedSysUserRoleLogicImpl;
-import com.mofang.feed.model.FeedSysUserRole;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -62,20 +64,10 @@ public class ModeratorCreateAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		FeedSysUserRole userRoleInfo = null;
+		Set<Long> forumIdSet = new HashSet<Long>();
 		for(int i=0; i<arrayForumIds.length(); i++)
-		{
-			userRoleInfo = new FeedSysUserRole();
-			userRoleInfo.setUserId(userId);
-			userRoleInfo.setForumId(arrayForumIds.getLong(i));
-			userRoleInfo.setRoleId(ROLE_ID);
-			result = logic.add(userRoleInfo, operatorId);
-			if(result.getCode() != ReturnCode.SUCCESS)
-				return result;
-		}
+			forumIdSet.add(arrayForumIds.getLong(i));
 		
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
+		return logic.batchAdd(userId, forumIdSet, ROLE_ID, operatorId);
 	}
 }

@@ -225,6 +225,7 @@ public class HttpComponent
 			user.setGainedExp(data.optInt("gained_exp", 0));
 			user.setBadges(data.optJSONArray("badge"));
 			user.setRegisterTime(data.optLong("register_timestamp", System.currentTimeMillis()));
+			user.setStatus(data.optInt("status", 0));
 			return user;
 		}
 		catch(Exception e)
@@ -281,6 +282,7 @@ public class HttpComponent
 				user.setGainedExp(jsonUser.optInt("gained_exp", 0));
 				user.setBadges(jsonUser.optJSONArray("badge"));
 				user.setRegisterTime(jsonUser.optLong("register_timestamp", System.currentTimeMillis()));
+				user.setStatus(jsonUser.optInt("status", 0));
 				map.put(userId, user);
 			}
 			return map;

@@ -16,5 +16,7 @@ public interface FeedAdminUserService
 	
 	public void delete(long userId) throws Exception;
 	
+	public FeedAdminUser getInfo(long userId) throws Exception;
+	
 	public Page<FeedAdminUser> getAdminList(int pageNum, int pageSize) throws Exception;
 }

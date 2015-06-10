@@ -150,11 +150,21 @@ public class FeedSysUserRoleDaoImpl extends AbstractMysqlSupport<FeedSysUserRole
 	}
 
 	@Override
-	public List<FeedSysUserRole> getForumListByUserId(long userId) throws Exception
+	public List<FeedSysUserRole> getListByUserId(long userId, int start, int end) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+		where.append(userEqual).append(limit);
+		return super.getList(where);
+	}
+
+	@Override
+	public long getCountByUserId(long userId) throws Exception
 	{
 		Operand where = new WhereOperand();
 		Operand userEqual = new EqualOperand("user_id", userId);
 		where.append(userEqual);
-		return super.getList(where);
+		return super.getCount(where);
 	}
 }

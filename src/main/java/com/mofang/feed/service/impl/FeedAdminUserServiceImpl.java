@@ -78,6 +78,20 @@ public class FeedAdminUserServiceImpl implements FeedAdminUserService
 	}
 
 	@Override
+	public FeedAdminUser getInfo(long userId) throws Exception
+	{
+		try
+		{
+			return adminDao.getInfo(userId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedAdminUserServiceImpl.getInfo throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
 	public Page<FeedAdminUser> getAdminList(int pageNum, int pageSize) throws Exception
 	{
 		try 

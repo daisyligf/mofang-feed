@@ -72,6 +72,15 @@ public class FeedAdminUserLogicImpl implements FeedAdminUserLogic
 		try
 		{
 			ResultValue result = new ResultValue();
+			///判断用户是否为真实用户
+			User userInfo = UserComponent.getInfo(model.getUserId());
+			if(null == userInfo)
+			{
+				result.setCode(ReturnCode.USER_NOT_EXISTS);
+				result.setMessage(ReturnMessage.USER_NOT_EXISTS);
+				return result;
+			}
+			
 			///判断管理员是否已存在
 			boolean isExists = adminService.exists(model.getUserId());
 			if(isExists)
@@ -219,6 +228,50 @@ public class FeedAdminUserLogicImpl implements FeedAdminUserLogic
 		catch(Exception e)
 		{
 			throw new Exception("at FeedSysUserRoleLogicImpl.getUserList throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue searchByUserId(long userId, int pageNum, int pageSize) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			long total = 0;
+			JSONArray arrayAdmins =new JSONArray();
+			FeedAdminUser adminInfo = adminService.getInfo(userId);
+			if(null != adminInfo)
+			{
+				User userInfo = UserComponent.getInfo(userId);
+				if(null != userInfo)
+				{
+					total = 1;
+					JSONObject jsonAdmin = new JSONObject();
+					jsonAdmin.put("user_id", userId);          ///用户ID
+					jsonAdmin.put("nickname", userInfo.getNickName());
+					
+					///获取用户发帖总数
+					long threads = threadService.getUserThreadCount(userId);
+					///获取用户回帖总数
+					long replies = postService.getUserReplyCount(userId);
+					jsonAdmin.put("threads", threads);
+					jsonAdmin.put("replies", replies);
+					jsonAdmin.put("create_time", adminInfo.getCreateTime());
+					arrayAdmins.put(jsonAdmin);
+				}
+			}
+			
+			data.put("total", total);
+			data.put("list", arrayAdmins);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedSysUserRoleLogicImpl.searchByUserId throw an error.", e);
 		}
 	}
 }

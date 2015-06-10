@@ -10,10 +10,12 @@ import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.logic.web.FeedUserLogic;
 import com.mofang.feed.model.FeedBlackList;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedBlackListService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
@@ -31,6 +33,7 @@ public class FeedUserLogicImpl implements FeedUserLogic
 	private FeedSysUserRoleService userRoleService = FeedSysUserRoleServiceImpl.getInstance();
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedPostService postService = FeedPostServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	
 	private FeedUserLogicImpl()
 	{}
@@ -132,6 +135,12 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			data.put("avatar", userInfo.getAvatar());
 			data.put("coin", userInfo.getCoin());
 			data.put("register_time", userInfo.getRegisterTime());
+			data.put("status", userInfo.getStatus());    ///0:正常   1:冻结
+			
+			///获取用户是否为管理员
+			boolean isAdmin = adminService.exists(userId);
+			data.put("is_admin", isAdmin);
+			
 			///获取用户发帖总数
 			long threads = threadService.getUserThreadCount(userId);
 			//精华帖子数

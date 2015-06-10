@@ -18,6 +18,8 @@ public interface FeedAdminUserDao
 	
 	public void delete(long userId) throws Exception;
 	
+	public FeedAdminUser getInfo(long userId) throws Exception;
+	
 	public List<FeedAdminUser> getList(int start, int end) throws Exception;
 	
 	public List<FeedAdminUser> getList(Operand operand) throws Exception;
