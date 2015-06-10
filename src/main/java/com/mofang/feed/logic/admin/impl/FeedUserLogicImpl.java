@@ -136,7 +136,12 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			data.put("user_id", userId);
 			data.put("nickname", userInfo.getNickName());
 			data.put("register_time", userInfo.getRegisterTime());
-			data.put("status", userInfo.getStatus());
+			data.put("status", userInfo.getStatus());  ///0:正常   1:冻结
+			
+			///获取用户是否为管理员
+			boolean isAdmin = adminService.exists(userId);
+			data.put("is_admin", isAdmin);
+			
 			///获取用户发帖总数
 			long threads = threadService.getUserThreadCount(userId);
 			//精华帖子数
