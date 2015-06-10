@@ -132,6 +132,7 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			data.put("avatar", userInfo.getAvatar());
 			data.put("coin", userInfo.getCoin());
 			data.put("register_time", userInfo.getRegisterTime());
+			data.put("status", userInfo.getStatus());
 			///获取用户发帖总数
 			long threads = threadService.getUserThreadCount(userId);
 			//精华帖子数

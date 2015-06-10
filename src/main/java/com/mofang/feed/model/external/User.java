@@ -23,6 +23,7 @@ public class User
 	private int gainedExp = 0;
 	private JSONArray badges;
 	private long registerTime = System.currentTimeMillis();
+	private int status = 0;     ///0:正常  1:冻结 
 
 	public User() 
 	{}
@@ -42,6 +43,7 @@ public class User
 			this.gainedExp = json.optInt("gained_exp", 0);
 			this.badges = json.optJSONArray("badges");
 			this.registerTime = json.optLong("register_time", System.currentTimeMillis());
+			this.status = json.optInt("status", 0);
 		} 
 		catch (Exception e)
 		{
@@ -137,6 +139,14 @@ public class User
 		this.registerTime = registerTime;
 	}
 
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	public JSONObject toJson() 
 	{
 		try
@@ -153,6 +163,7 @@ public class User
 			json.put("gained_exp", gainedExp);
 			json.put("badges", badges);
 			json.put("register_time", registerTime);
+			json.put("status", status);
 			return json;
 		}
 		catch (Exception e)
