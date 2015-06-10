@@ -117,6 +117,97 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 	}
 
 	@Override
+	public ResultValue batchAdd(long userId, Set<Long> forumIdSet, int roleId, long operatorId) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			///判断用户是否为真实用户
+			User userInfo = UserComponent.getInfo(userId);
+			if(null == userInfo)
+			{
+				result.setCode(ReturnCode.USER_NOT_EXISTS);
+				result.setMessage(ReturnMessage.USER_NOT_EXISTS);
+				return result;
+			}
+			
+			boolean forumExists = true;
+			boolean forumIsFull = false;
+			boolean moderatorExists = false;
+			FeedForum forumInfo = null;
+			for(long forumId : forumIdSet)
+			{
+				///判断版块是否为真实版块
+				forumInfo = forumService.getInfo(forumId);
+				if(null == forumInfo)
+				{
+					forumExists = false;
+					break;
+				}
+				
+				///判断版主是否满额
+				forumIsFull = userRoleService.isFull(forumId);
+				if(forumIsFull)
+					break;
+				
+				///判断是否已经存在
+				moderatorExists = userRoleService.exists(forumId, userId);
+				if(moderatorExists)
+					break;
+			}
+			
+			if(!forumExists)
+			{
+				result.setCode(ReturnCode.FORUM_NOT_EXISTS);
+				result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
+				return result;
+			}
+			
+			if(forumIsFull)
+			{
+				result.setCode(ReturnCode.FORUM_MODERATOR_IS_FULL);
+				result.setMessage(ReturnMessage.FORUM_MODERATOR_IS_FULL);
+				return result;
+			}
+			
+			if(moderatorExists)
+			{
+				result.setCode(ReturnCode.USER_ROLE_EXISTS);
+				result.setMessage(ReturnMessage.USER_ROLE_EXISTS);
+				return result;
+			}
+			
+			///权限检查
+			boolean hasPrivilege = adminService.exists(operatorId);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			FeedSysUserRole userRoleInfo = null;
+			for(long forumId : forumIdSet)
+			{
+				userRoleInfo = new FeedSysUserRole();
+				userRoleInfo.setForumId(forumId);
+				userRoleInfo.setRoleId(roleId);
+				userRoleInfo.setUserId(userId);
+				userRoleService.save(userRoleInfo);
+			}
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedSysUserRoleLogicImpl.batchAdd throw an error.", e);
+		}
+	}
+
+	@Override
 	public ResultValue delete(long forumId, long userId, long operatorId) throws Exception
 	{
 		try
