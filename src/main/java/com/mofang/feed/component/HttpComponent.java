@@ -145,7 +145,7 @@ public class HttpComponent
 			if(0 != code)
 				return false;
 			String data = json.optString("data");
-			if(StringUtil.isNullOrEmpty(data))
+			if(StringUtil.isNullOrEmpty(data) || "[]".equals(data))
 				return false;
 			return true;
 		} catch (Exception e) {
