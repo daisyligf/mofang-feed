@@ -59,6 +59,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.FORUM_FOLLOW_COUNT_BYTIME_URL = config.get("api", "forum_follow_count_bytime_url");
 		GlobalConfig.FORUM_FOLLOW_COUNT_URL = config.get("api", "forum_follow_count_url");
 		GlobalConfig.SYNC_GAME_FORUMID_URL = config.get("api", "sync_game_forumid_url");
+		GlobalConfig.UPDATE_USER_STATUS_URL = config.get("api", "update_user_status_url");
 		
 		GlobalConfig.FEED_DETAIL_URL = config.get("link", "feed_detail_url");
 		GlobalConfig.FORUM_DETAIL_URL = config.get("link", "forum_detail_url");

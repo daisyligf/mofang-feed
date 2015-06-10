@@ -294,6 +294,26 @@ public class HttpComponent
 		}
 	}
 	
+	public static boolean updateUserStatus(long userId, int status)
+	{
+		String requestUrl = GlobalConfig.UPDATE_USER_STATUS_URL + "?uid=" + userId + "&status=" + status;
+		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return false;
+		
+		try
+		{
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			return code == 0;
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at HttpComponent.updateUserStatus throw an error.", e);
+			return false;
+		}
+	}
+	
 	/**
 	 * 敏感词过滤
 	 * @param text

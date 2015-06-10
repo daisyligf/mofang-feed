@@ -9,6 +9,8 @@ import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.admin.FeedUserLogic;
 import com.mofang.feed.model.FeedBlackList;
 import com.mofang.feed.model.external.User;
+import com.mofang.feed.redis.UserRedis;
+import com.mofang.feed.redis.impl.UserRedisImpl;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedBlackListService;
 import com.mofang.feed.service.FeedPostService;
@@ -30,6 +32,7 @@ public class FeedUserLogicImpl implements FeedUserLogic
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedPostService postService = FeedPostServiceImpl.getInstance();
+	private UserRedis userRedis = UserRedisImpl.getInstance();
 	
 	private FeedUserLogicImpl()
 	{}
@@ -160,6 +163,41 @@ public class FeedUserLogicImpl implements FeedUserLogic
 		catch(Exception e)
 		{
 			throw new Exception("at FeedUserLogicImpl.getInfo throw an error.", e);
+		}
+	}
+
+	@Override
+	public ResultValue updateStatus(long userId, int status, long operatorId) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			
+			///权限检查
+			boolean hasPrivilege = adminService.exists(operatorId);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			///更新用户状态
+			boolean isSuccess = UserComponent.updateUserStatus(userId, status);
+			if(isSuccess)
+			{
+				///删除用户缓存
+				userRedis.delete(userId);
+			}
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			return result;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedUserLogicImpl.updateStatus throw an error.", e);
 		}
 	}
 }

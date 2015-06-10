@@ -81,4 +81,9 @@ public class UserComponent
 			return null;
 		}
 	}
+	
+	public static boolean updateUserStatus(long userId, int status)
+	{
+		return HttpComponent.updateUserStatus(userId, status);
+	}
 }

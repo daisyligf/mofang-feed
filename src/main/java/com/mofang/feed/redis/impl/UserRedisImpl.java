@@ -10,6 +10,7 @@ import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.redis.UserRedis;
 import com.mofang.framework.data.redis.RedisWorker;
+import com.mofang.framework.data.redis.workers.DeleteWorker;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -68,5 +69,13 @@ public class UserRedisImpl implements UserRedis
 			}
 		};
 		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
+	}
+
+	@Override
+	public void delete(long userId) throws Exception
+	{
+		String key = RedisKey.buildRedisKey(RedisKey.CACHE_USER_KEY_PREFIX, userId);
+		RedisWorker<Boolean> worker = new DeleteWorker(key);
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 }
