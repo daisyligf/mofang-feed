@@ -38,7 +38,7 @@ public class ModeratorDeleteAction extends AbstractActionExecutor
 		
 		JSONObject json = new JSONObject(postData);
 		long forumId = json.optLong("fid", 0L);
-		long userId = json.optLong("user_id", 0L);
+		long userId = json.optLong("uid", 0L);
 		if(forumId <= 0 || userId <= 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
