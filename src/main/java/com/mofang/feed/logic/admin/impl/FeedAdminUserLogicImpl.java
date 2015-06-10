@@ -229,7 +229,7 @@ public class FeedAdminUserLogicImpl implements FeedAdminUserLogic
 		{
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
-			long total = 1;
+			long total = 0;
 			JSONArray arrayAdmins =new JSONArray();
 			FeedAdminUser adminInfo = adminService.getInfo(userId);
 			if(null != adminInfo)
@@ -237,6 +237,7 @@ public class FeedAdminUserLogicImpl implements FeedAdminUserLogic
 				User userInfo = UserComponent.getInfo(userId);
 				if(null != userInfo)
 				{
+					total = 1;
 					JSONObject jsonAdmin = new JSONObject();
 					jsonAdmin.put("user_id", userId);          ///用户ID
 					jsonAdmin.put("nickname", userInfo.getNickName());
