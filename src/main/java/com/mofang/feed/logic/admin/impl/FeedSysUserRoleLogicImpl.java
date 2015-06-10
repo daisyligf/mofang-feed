@@ -58,6 +58,24 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 		try
 		{
 			ResultValue result = new ResultValue();
+			///判断用户是否为真实用户
+			User userInfo = UserComponent.getInfo(model.getUserId());
+			if(null == userInfo)
+			{
+				result.setCode(ReturnCode.USER_NOT_EXISTS);
+				result.setMessage(ReturnMessage.USER_NOT_EXISTS);
+				return result;
+			}
+			
+			///判断版块是否为真实版块
+			FeedForum forumInfo = forumService.getInfo(model.getForumId());
+			if(null == forumInfo)
+			{
+				result.setCode(ReturnCode.FORUM_NOT_EXISTS);
+				result.setMessage(ReturnMessage.FORUM_NOT_EXISTS);
+				return result;
+			}
+			
 			///判断版主是否满额
 			boolean isFull = userRoleService.isFull(model.getForumId());
 			if(isFull)

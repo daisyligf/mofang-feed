@@ -72,6 +72,15 @@ public class FeedAdminUserLogicImpl implements FeedAdminUserLogic
 		try
 		{
 			ResultValue result = new ResultValue();
+			///判断用户是否为真实用户
+			User userInfo = UserComponent.getInfo(model.getUserId());
+			if(null == userInfo)
+			{
+				result.setCode(ReturnCode.USER_NOT_EXISTS);
+				result.setMessage(ReturnMessage.USER_NOT_EXISTS);
+				return result;
+			}
+			
 			///判断管理员是否已存在
 			boolean isExists = adminService.exists(model.getUserId());
 			if(isExists)
