@@ -50,4 +50,9 @@ public class ForumListAction extends AbstractActionExecutor
 		
 		return logic.getForumList(forumIds);
 	}
+	
+	protected boolean needCheckAtom()
+	{
+		return false;
+	}
 }

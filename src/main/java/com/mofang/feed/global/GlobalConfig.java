@@ -73,6 +73,8 @@ public class GlobalConfig
 	
 	public static String SYNC_GAME_FORUMID_URL;
 	
+	public static String UPDATE_USER_STATUS_URL;
+	
 	public static String FEED_DETAIL_URL;
 	
 	public static String FORUM_DETAIL_URL;

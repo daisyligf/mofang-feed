@@ -316,6 +316,10 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 						jsonModerator.put("replies", replies);
 						jsonModerator.put("create_time", moderatorInfo.getCreateTime());
 						
+						///判断用户是否为管理员
+						boolean isAdmin = adminService.exists(moderatorInfo.getUserId());
+						jsonModerator.put("is_admin", isAdmin);
+						
 						///获取版块信息
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", moderatorInfo.getForumId());
@@ -402,6 +406,10 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 						jsonModerator.put("threads", threads);
 						jsonModerator.put("replies", replies);
 						jsonModerator.put("create_time", moderatorInfo.getCreateTime());
+						
+						///判断用户是否为管理员
+						boolean isAdmin = adminService.exists(moderatorInfo.getUserId());
+						jsonModerator.put("is_admin", isAdmin);
 						
 						///获取版块信息
 						jsonForum = new JSONObject();

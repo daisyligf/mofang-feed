@@ -11,5 +11,7 @@ public interface UserRedis
 {
 	public void save(User model) throws Exception;
 	
+	public void delete(long userId) throws Exception;
+	
 	public User getInfo(long userId) throws Exception;
 }

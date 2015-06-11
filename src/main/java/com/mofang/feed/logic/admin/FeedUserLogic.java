@@ -13,5 +13,7 @@ public interface FeedUserLogic
 	
 	public ResultValue cancelProhibit(long forumId, long userId, long operatorId) throws Exception;
 	
+	public ResultValue updateStatus(long userId, int status, long operatorId) throws Exception;
+	
 	public ResultValue getInfo(long userId) throws Exception;
 }

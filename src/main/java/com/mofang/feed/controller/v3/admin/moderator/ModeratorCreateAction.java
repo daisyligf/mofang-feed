@@ -65,8 +65,26 @@ public class ModeratorCreateAction extends AbstractActionExecutor
 		}
 		
 		Set<Long> forumIdSet = new HashSet<Long>();
+		long forumId = 0L;
+		boolean isValid = true;
 		for(int i=0; i<arrayForumIds.length(); i++)
-			forumIdSet.add(arrayForumIds.getLong(i));
+		{
+			String strForumId = arrayForumIds.getString(i);
+			if(!StringUtil.isLong(strForumId))
+			{
+				isValid = false;
+				break;
+			}
+			forumId = Long.parseLong(strForumId);
+			forumIdSet.add(forumId);
+		}
+		
+		if(!isValid)
+		{
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
 		
 		return logic.batchAdd(userId, forumIdSet, ROLE_ID, operatorId);
 	}
