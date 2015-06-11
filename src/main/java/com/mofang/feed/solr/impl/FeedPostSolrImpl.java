@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -119,7 +118,6 @@ public class FeedPostSolrImpl extends BaseSolr implements FeedPostSolr
 		query.setQuery(queryParam);
 		query.setStart(start);
 		query.setRows(size);
-		query.setSort("time", ORDER.desc);
 		SolrServer solrServer = GlobalObject.SOLR_SERVER_POST;
 		QueryResponse response = solrServer.query(query);
 		if(null == response)
@@ -194,6 +192,9 @@ public class FeedPostSolrImpl extends BaseSolr implements FeedPostSolr
 				for(FeedPost postInfo : postList)
 				{
 					SolrInputDocument solrDoc = convertToDoc(postInfo);
+					if(null == solrDoc)
+						continue;
+					
 					list.add(solrDoc);
 				}
 				GlobalObject.SOLR_SERVER_POST.add(list);

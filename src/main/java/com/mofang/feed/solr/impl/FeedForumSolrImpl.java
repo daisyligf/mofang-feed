@@ -145,6 +145,9 @@ public class FeedForumSolrImpl extends BaseSolr implements FeedForumSolr
 				for(FeedForum forumInfo : forumList)
 				{
 					SolrInputDocument solrDoc = convertToDoc(forumInfo);
+					if(null == solrDoc)
+						continue;
+					
 					list.add(solrDoc);
 				}
 				GlobalObject.SOLR_SERVER_FORUM.add(list);

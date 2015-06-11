@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -16,6 +15,7 @@ import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.model.FeedForum;
+import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.User;
@@ -99,7 +99,7 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 		if(!StringUtil.isNullOrEmpty(author))
 			strQuery.append(" AND nickname:" + author);
 		if(!StringUtil.isNullOrEmpty(keyword))
-			strQuery.append(" AND content:" + keyword);
+			strQuery.append(" AND (subject:" + keyword + " OR content:" + keyword + ")");
 		strQuery.append(" AND status:" + status);
 		
 		if(strQuery.length() == 0)
@@ -110,7 +110,6 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 		query.setQuery(queryParam);
 		query.setStart(start);
 		query.setRows(size);
-		query.setSort("time", ORDER.desc);
 		SolrServer solrServer = GlobalObject.SOLR_SERVER_THREAD;
 		QueryResponse response = solrServer.query(query);
 		if(null == response)
@@ -185,6 +184,9 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 				for(FeedThread threadInfo : threadList)
 				{
 					SolrInputDocument solrDoc = convertToDoc(threadInfo);
+					if(null == solrDoc)
+						continue;
+					
 					list.add(solrDoc);
 				}
 				GlobalObject.SOLR_SERVER_THREAD.add(list);
@@ -217,10 +219,10 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 			if(null != userInfo)
 				nickName = userInfo.getNickName();
 			
-			///构建content信息
-			String content = threadInfo.getSubject();
-			if(null != threadInfo.getPost())
-				content += "|" + threadInfo.getPost().getContentFilter();
+			String content = "";
+			FeedPost postInfo = threadInfo.getPost();
+			if(null != postInfo)
+				content = postInfo.getContentFilter();
 			
 			solrDoc.addField("id", threadInfo.getThreadId());
 			solrDoc.addField("forum_id", forumId);
@@ -229,6 +231,7 @@ public class FeedThreadSolrImpl extends BaseSolr implements FeedThreadSolr
 			solrDoc.addField("nickname", nickName);
 			solrDoc.addField("status", threadInfo.getStatus());
 			solrDoc.addField("time", threadInfo.getCreateTime());
+			solrDoc.addField("subject", threadInfo.getSubjectFilter());
 			solrDoc.addField("content", content);
 			return solrDoc;
 		}

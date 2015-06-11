@@ -28,7 +28,7 @@ import com.mofang.feed.solr.impl.FeedThreadSolrImpl;
  */
 public class FeedThreadLoad implements FeedLoad
 {
-	private final static int STEP = 50000;
+	private final static int STEP = 10000;
 	private FeedThreadDao threadDao  = FeedThreadDaoImpl.getInstance();
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
 	private WaterproofWallRedis waterproofWallRedis = WaterproofWallRedisImpl.getInstance();
@@ -59,6 +59,7 @@ public class FeedThreadLoad implements FeedLoad
 			}
 			
 			handleRedis(threadInfo);
+			
 			///添加到solr列表中
 			solrList.add(threadInfo);
 			if(total % STEP == 0 || total == list.size())

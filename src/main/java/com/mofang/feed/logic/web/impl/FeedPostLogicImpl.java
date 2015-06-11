@@ -546,7 +546,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						boolean isRecommend = false;
 						if(null != recommendPostIds)
 							isRecommend = recommendPostIds.contains(String.valueOf(postInfo.getPostId()));
-						jsonPost.put("is_recommend", isRecommend ? 1 : 0);
+						jsonPost.put("is_recommend", isRecommend);
 						
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", postInfo.getForumId());
