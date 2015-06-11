@@ -176,7 +176,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			data.put("moderators", arrayModerators);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(arrayModerators);
+			result.setData(data);
 			return result;
 		}
 		catch (Exception e) 
