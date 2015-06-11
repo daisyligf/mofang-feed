@@ -62,4 +62,9 @@ public class FeedHomeHotForumRankDaoImpl extends AbstractMysqlSupport<FeedHomeHo
 		return super.getList(none);
 	}
 
+	@Override
+	public void delete(long forumId) throws Exception {
+		super.deleteByPrimaryKey(forumId);
+	}
+
 }

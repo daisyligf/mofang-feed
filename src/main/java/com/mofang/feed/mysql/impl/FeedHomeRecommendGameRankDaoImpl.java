@@ -63,4 +63,8 @@ public class FeedHomeRecommendGameRankDaoImpl extends
 		return super.getList(none);
 	}
 
+	public void delete(long forumId) throws Exception {
+		super.deleteByPrimaryKey(forumId);
+	}
+	
 }

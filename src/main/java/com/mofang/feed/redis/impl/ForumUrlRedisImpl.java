@@ -9,6 +9,7 @@ import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.global.common.ForumURLKey;
 import com.mofang.feed.redis.ForumUrlRedis;
 import com.mofang.framework.data.redis.RedisWorker;
+import com.mofang.framework.data.redis.workers.DeleteWorker;
 
 public class ForumUrlRedisImpl implements ForumUrlRedis {
 
@@ -51,6 +52,13 @@ public class ForumUrlRedisImpl implements ForumUrlRedis {
 			}
 		};
 		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
+	}
+
+	@Override
+	public void delete(long forumId) throws Exception {
+		String key = RedisKey.buildRedisKey(RedisKey.FORUM_EXTEND_KEY_PREFIX, forumId);
+		RedisWorker<Boolean> worker = new DeleteWorker(key);
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 
 }
