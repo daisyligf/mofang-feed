@@ -120,7 +120,8 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 			ResultValue result = new ResultValue();
 			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
 			Set<Long> uids = new HashSet<Long>();
-			JSONArray data = new JSONArray();
+			JSONObject data = new JSONObject();
+			JSONArray arrayModerators = new JSONArray();
 			List<FeedSysUserRole> list = userRoleService.getUserListByForumId(forumId);
 			if(list != null)
 			{
@@ -139,7 +140,7 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 						jsonUserRole.put("nickname", userInfo.getNickName());
 						jsonUserRole.put("avatar", userInfo.getAvatar());
 					}
-					data.put(jsonUserRole);
+					arrayModerators.put(jsonUserRole);
 				}
 				
 				///填充用户信息
@@ -148,9 +149,9 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 					Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
 					if(null != userMap)
 					{
-						for(int i=0; i<data.length(); i++)
+						for(int i=0; i<arrayModerators.length(); i++)
 						{
-							jsonUserRole = data.getJSONObject(i);
+							jsonUserRole = arrayModerators.getJSONObject(i);
 							String nickName = jsonUserRole.optString("nickname", "");
 							long userId = jsonUserRole.optLong("user_id", 0L);
 							
@@ -169,9 +170,13 @@ public class FeedSysUserRoleLogicImpl implements FeedSysUserRoleLogic
 				}
 			}
 			
+			///判断版主是否满额
+			boolean isFull = userRoleService.isFull(forumId);
+			data.put("is_full", isFull);
+			data.put("moderators", arrayModerators);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
+			result.setData(arrayModerators);
 			return result;
 		}
 		catch (Exception e) 
