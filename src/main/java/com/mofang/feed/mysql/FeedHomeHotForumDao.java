@@ -8,5 +8,7 @@ public interface FeedHomeHotForumDao {
 
 	public void edit(FeedHomeHotForum model) throws Exception;
 	
+	public void delete(long forumId) throws Exception;
+	
 	public List<FeedHomeHotForum> getList() throws Exception;
 }

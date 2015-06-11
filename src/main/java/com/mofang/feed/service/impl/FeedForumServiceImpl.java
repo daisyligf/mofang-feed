@@ -15,11 +15,19 @@ import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedCommentDao;
 import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.FeedForumTagDao;
+import com.mofang.feed.mysql.FeedHomeHotForumDao;
+import com.mofang.feed.mysql.FeedHomeHotForumRankDao;
+import com.mofang.feed.mysql.FeedHomeRecommendGameDao;
+import com.mofang.feed.mysql.FeedHomeRecommendGameRankDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.feed.mysql.impl.FeedCommentDaoImpl;
 import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
 import com.mofang.feed.mysql.impl.FeedForumTagDaoImpl;
+import com.mofang.feed.mysql.impl.FeedHomeHotForumDaoImpl;
+import com.mofang.feed.mysql.impl.FeedHomeHotForumRankDaoImpl;
+import com.mofang.feed.mysql.impl.FeedHomeRecommendGameDaoImpl;
+import com.mofang.feed.mysql.impl.FeedHomeRecommendGameRankDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
@@ -60,6 +68,10 @@ public class FeedForumServiceImpl implements FeedForumService
 	private FeedCommentSolr commentSolr = FeedCommentSolrImpl.getInstance();
 	private FeedForumTagDao forumTagDao = FeedForumTagDaoImpl.getInstance();
 	private ForumUrlRedis forumUrlRedis = ForumUrlRedisImpl.getInstance();
+	private FeedHomeHotForumDao hotForumDao = FeedHomeHotForumDaoImpl.getInstance();
+	private FeedHomeHotForumRankDao hotForumRankDao = FeedHomeHotForumRankDaoImpl.getInstance();
+	private FeedHomeRecommendGameDao recommendGameDao = FeedHomeRecommendGameDaoImpl.getInstance();
+	private FeedHomeRecommendGameRankDao recommendGameRankDao = FeedHomeRecommendGameRankDaoImpl.getInstance();
 	
 	private FeedForumServiceImpl()
 	{}
@@ -146,6 +158,9 @@ public class FeedForumServiceImpl implements FeedForumService
 			///删除版块信息
 			forumRedis.delete(forumId);
 			
+			///删除板块对应url信息
+			forumUrlRedis.delete(forumId);
+			
 			///将所属该版块的主题信息(thread_info)删除
 			Set<String> threadSet = threadRedis.getForumThreadList(forumId, 0, -1);
 			if(null != threadSet && threadSet.size() > 0)
@@ -163,6 +178,15 @@ public class FeedForumServiceImpl implements FeedForumService
 			forumDao.delete(forumId);
 			///删除版块和标签的对应关系
 			forumTagDao.deleteByForumId(forumId);
+			///删除热游排行榜板块
+			hotForumRankDao.delete(forumId);
+			///删除热游列表板块
+			hotForumDao.delete(forumId);
+			///删除新游排行榜板块
+			recommendGameRankDao.delete(forumId);
+			///删除新游列表板块
+			recommendGameDao.delete(forumId);
+			
 			///将所属该版块的主题的状态值设为0(已删除)
 			threadDao.updateStatusByForumId(forumId, ThreadStatus.DELETED);
 			///将所属该版块的楼层的状态值设为0(已删除)
