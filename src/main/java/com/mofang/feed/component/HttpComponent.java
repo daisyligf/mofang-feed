@@ -413,7 +413,7 @@ public class HttpComponent
 	
 	public static Set<Long> getUserFllowForums(long userId)
 	{
-		String requestUrl = GlobalConfig.USER_FOLLOW_FORUM_URL + "?uid=" + userId + "&pagesize=20";
+		String requestUrl = GlobalConfig.USER_FOLLOW_FORUM_URL + "?uid=" + userId + "&pagesize=100";
 		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
 			return null;

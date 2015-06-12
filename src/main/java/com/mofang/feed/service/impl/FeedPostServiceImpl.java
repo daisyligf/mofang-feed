@@ -405,6 +405,20 @@ public class FeedPostServiceImpl implements FeedPostService
 	}
 
 	@Override
+	public int getRank(long threadId, long postId) throws Exception
+	{
+		try
+		{
+			return postRedis.getRank(threadId, postId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getRank throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
 	public FeedPost getInfo(long postId, DataSource source) throws Exception
 	{
 		try

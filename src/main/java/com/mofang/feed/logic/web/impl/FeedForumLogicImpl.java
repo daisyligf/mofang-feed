@@ -49,7 +49,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 		{
 			ResultValue result = new ResultValue();
 			
-			FeedForum forumInfo = forumService.getInfo(forumId);
+			FeedForum forumInfo = forumService.getInfoWithTags(forumId);
 			if(null == forumInfo)
 			{
 				result.setCode(ReturnCode.FORUM_NOT_EXISTS);

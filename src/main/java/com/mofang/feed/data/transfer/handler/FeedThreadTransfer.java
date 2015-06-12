@@ -192,6 +192,7 @@ public class FeedThreadTransfer extends BaseTransfer implements FeedTransfer
 		strSql.append("ALTER TABLE feed_thread ADD INDEX idx_user_id(user_id);");
 		strSql.append("ALTER TABLE feed_thread ADD INDEX idx_forum_id(forum_id);");
 		strSql.append("ALTER TABLE feed_thread ADD INDEX idx_status(status);");
+		strSql.append("ALTER TABLE feed_thread ADD INDEX idx_is_elite(is_elite);");
 		execute(strSql.toString());
 	}
 }

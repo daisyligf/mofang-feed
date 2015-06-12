@@ -216,6 +216,20 @@ public class FeedForumServiceImpl implements FeedForumService
 	{
 		try
 		{
+			return forumRedis.getInfo(forumId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getInfo throw an error.", e);
+			throw e;
+		}
+	}
+	
+	@Override
+	public FeedForum getInfoWithTags(long forumId) throws Exception
+	{
+		try
+		{
 			FeedForum forumInfo = forumRedis.getInfo(forumId);
 			Set<Integer> tagSet = forumTagDao.getTagIdListByForumId(forumId);
 			if(null != forumInfo)
@@ -224,7 +238,7 @@ public class FeedForumServiceImpl implements FeedForumService
 		}
 		catch(Exception e)
 		{
-			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getInfo throw an error.", e);
+			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getInfoWithTags throw an error.", e);
 			throw e;
 		}
 	}
@@ -298,5 +312,4 @@ public class FeedForumServiceImpl implements FeedForumService
 			throw e;
 		}
 	}
-	
 }
