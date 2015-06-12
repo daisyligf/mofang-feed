@@ -843,13 +843,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			JSONArray arrayThreads = new JSONArray();
 			
 			long start = System.currentTimeMillis();
-			
 			Set<Long> forumIds = HttpComponent.getUserFllowForums(userId);
-			/*
-			Set<Long> forumIds = new HashSet<Long>();
-			forumIds.add(12L);
-			forumIds.add(185L);
-			*/
 			long end = System.currentTimeMillis();
 			System.out.println("get user follow forum cost time:" + (end - start));
 			if(null != forumIds && forumIds.size() > 0)
