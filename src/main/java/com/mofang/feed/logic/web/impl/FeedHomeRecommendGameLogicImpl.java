@@ -63,8 +63,6 @@ public class FeedHomeRecommendGameLogicImpl implements
 					Game game = HttpComponent.getGameInfo(gameId);
 					if(game != null) {
 						model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + game.getName());
-					}else {
-						model.setGiftUrl("");
 					}
 				}
 			}
