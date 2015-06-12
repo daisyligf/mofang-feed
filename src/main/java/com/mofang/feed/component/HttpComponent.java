@@ -110,8 +110,8 @@ public class HttpComponent
 			int code = json.optInt("code", -1);
 			if(0 != code)
 				return null;
-			String data = json.optString("data");
-			if(StringUtil.isNullOrEmpty(data))
+			String data = json.optString("data", "");
+			if(StringUtil.isNullOrEmpty(data) || data.equals("null"))
 				return null;
 			return data;
 		} catch (Exception e) {

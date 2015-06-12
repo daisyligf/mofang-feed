@@ -21,6 +21,7 @@ import com.mofang.feed.service.FeedHomeHotForumService;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedHomeHotForumServiceImpl;
+import com.mofang.framework.util.StringUtil;
 
 public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 
@@ -56,7 +57,9 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 				}
 				//设置专区地址
 				String prefectureUrl = HttpComponent.getPrefectureUrl(forumId);
-				model.setPrefectureUrl(prefectureUrl);
+				if(!StringUtil.isNullOrEmpty(prefectureUrl)) {
+					model.setPrefectureUrl(prefectureUrl);
+				}
 				/*
 				 * 设置礼包地址
 				 * 1、通过该game_id判断是否有礼包
@@ -68,6 +71,8 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 					Game game = HttpComponent.getGameInfo(gameId);
 					if(game != null) {
 						model.setGiftUrl(GlobalConfig.GIFT_INFO_URL + game.getName());
+					}else{
+						model.setGiftUrl("");
 					}
 				}
 			}
