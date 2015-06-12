@@ -93,6 +93,7 @@ public class FeedHomeTitleLogicImpl implements FeedHomeTitleLogic {
 					objTitle.put("content", content);
 					objTitle.put("display_order", displayOrder);
 					objTitle.put("link_url", linkUrl);
+					objTitle.put("forum_id", forum.getForumId());
 					data.put(objTitle);
 				}
 			}
