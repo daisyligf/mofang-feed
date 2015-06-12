@@ -104,19 +104,19 @@ public class HttpComponent
 		String requestUrl = GlobalConfig.FORUM_PARTITION_URL + "?forum_id=" + forumId;
 		String result = get(GlobalObject.HTTP_CLIENT_GAMESERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
-			return null;
+			return "";
 		try {
 			JSONObject json = new JSONObject(result);
 			int code = json.optInt("code", -1);
 			if(0 != code)
-				return null;
+				return "";
 			String data = json.optString("data");
 			if(StringUtil.isNullOrEmpty(data))
-				return null;
+				return "";
 			return data;
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at HttpComponent.getPrefectureUrl throw an error.", e);
-			return null;
+			return "";
 		}
 	}
 	
