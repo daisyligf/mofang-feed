@@ -39,6 +39,7 @@ import com.mofang.feed.service.FeedHomeHotForumRankService;
 import com.mofang.feed.service.FeedHomeRecommendGameRankService;
 import com.mofang.feed.service.HomeRankService;
 import com.mofang.feed.util.TimeUtil;
+import com.mofang.framework.util.StringUtil;
 
 /***
  * 
@@ -346,19 +347,21 @@ public class HomeRankServiceImpl implements HomeRankService {
 		int gameId = forum.getGameId();
 		map.put(ForumURLKey.DOWNLOAD_URL_KEY, GlobalConfig.GAME_DOWNLOAD_URL + gameId);
 		boolean flag = HttpComponent.checkGift(gameId);
-		if(flag){
+		if(flag) {
 			Game game = HttpComponent.getGameInfo(gameId);
 			if(game != null) {
 				map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + game.getName());
 			}else {
 				map.put(ForumURLKey.GIFT_URL_KEY, "");
 			}
-		}
-		else{
+		} else{
 			map.put(ForumURLKey.GIFT_URL_KEY, "");
 		}
 		String prefectureUrl = HttpComponent.getPrefectureUrl(forum.getForumId());
-		map.put(ForumURLKey.PREFECTURE_URL_KEY, prefectureUrl == null ? "":prefectureUrl);
+		if(StringUtil.isNullOrEmpty(prefectureUrl)) {
+			prefectureUrl = "";
+		}
+		map.put(ForumURLKey.PREFECTURE_URL_KEY, prefectureUrl);
 		return map;
 	}
 	
