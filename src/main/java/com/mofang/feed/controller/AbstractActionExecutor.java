@@ -125,7 +125,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor
 	
 	protected boolean needCheckAtom()
 	{
-		return true;
+		return false;
 	}
 	
 	protected boolean needCheckSign()

@@ -442,6 +442,10 @@ public class FeedPostServiceImpl implements FeedPostService
 	{
 		try
 		{	
+			///记录主题浏览数
+			threadDao.incrPageView(threadId);
+			threadRedis.incrPageView(threadId);
+			
 			long total = postDao.getPostCount(threadId, status);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();

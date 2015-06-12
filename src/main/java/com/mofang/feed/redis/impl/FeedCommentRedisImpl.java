@@ -111,7 +111,7 @@ public class FeedCommentRedisImpl implements FeedCommentRedis
 	public Set<String> getPostCommentList(long postId, int start, int end) throws Exception
 	{
 		String key = RedisKey.buildRedisKey(RedisKey.POST_COMMENT_LIST_KEY_PREFIX, postId);
-		return RedisFaster.zrevrange(key, start, end);
+		return RedisFaster.zrange(key, start, end);
 	}
 
 	@Override
