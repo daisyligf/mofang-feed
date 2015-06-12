@@ -789,8 +789,16 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
+			
+			long mStart = System.currentTimeMillis();
 			List<Long> idList = threadDao.getForumEliteThreadList(forumIds, start, end);
-			return convertEntityList(total, idList);
+			long mEnd = System.currentTimeMillis();
+			System.out.println("get mysql forum thread cost time:" + (mEnd - mStart));
+			mStart = System.currentTimeMillis();
+			Page<FeedThread> page = convertEntityList(total, idList);
+			mEnd = System.currentTimeMillis();
+			System.out.println("get redis forum thread cost time:" + (mEnd - mStart));
+			return page;
 		}
 		catch(Exception e)
 		{

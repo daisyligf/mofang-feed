@@ -19,6 +19,7 @@ import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.OperateBehavior;
 import com.mofang.feed.global.common.OperateSourceType;
+import com.mofang.feed.global.common.RecommendType;
 import com.mofang.feed.global.common.ReplyType;
 import com.mofang.feed.global.common.RequestFrom;
 import com.mofang.feed.global.common.ThreadTag;
@@ -31,6 +32,7 @@ import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedPostAndComment;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.FeedRecommendNotify;
 import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
@@ -331,8 +333,36 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				return result;
 			}
 			
-			///设置楼层点赞
-			postService.setRecommend(userId, postId);
+			boolean exists = postService.existsRecommend(userId, postId);
+			if(!exists)
+			{
+				///设置楼层点赞
+				postService.setRecommend(userId, postId);
+				
+				/******************************点赞通知******************************/
+				FeedThread threadInfo = threadService.getInfo(postInfo.getThreadId(), DataSource.REDIS);
+				if(null != threadInfo)
+				{
+					FeedRecommendNotify notify = new FeedRecommendNotify();
+					notify.setUserId(threadInfo.getUserId());
+					notify.setThreadId(postInfo.getThreadId());
+					notify.setSubject(threadInfo.getSubjectFilter());
+					notify.setRecommendType(RecommendType.POST);
+					notify.setRecommendUserId(userId);
+					notify.setPostId(postId);
+					notify.setPosition(postService.getRank(postInfo.getThreadId(), postId));
+					notify.setForumId(threadInfo.getForumId());
+					FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+					if(null != forumInfo)
+						notify.setForumName(forumInfo.getName());
+					HttpComponent.pushFeedRecommendNotify(notify);
+				}
+			}
+			else
+			{
+				///取消楼层点赞
+				postService.cancelRecommend(userId, postId);
+			}
 				
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);

@@ -28,6 +28,8 @@ public interface FeedForumService
 	
 	public FeedForum getInfo(long forumId) throws Exception;
 	
+	public FeedForum getInfoWithTags(long forumId) throws Exception;
+	
 	public Page<FeedForum> getForumList(int type, int pageNum, int pageSize) throws Exception;
 	
 	public List<FeedForum> getForumList(Set<Long> forumIds) throws Exception;

@@ -2,6 +2,7 @@ package com.mofang.feed.logic.app.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.OperateBehavior;
 import com.mofang.feed.global.common.OperateSourceType;
+import com.mofang.feed.global.common.RecommendType;
 import com.mofang.feed.global.common.ThreadTag;
 import com.mofang.feed.global.common.ThreadType;
 import com.mofang.feed.logic.app.FeedThreadLogic;
@@ -30,6 +32,7 @@ import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.FeedRecommendNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.record.StatForumViewHistoryRecorder;
@@ -540,6 +543,19 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				///设置主题点赞
 				long recommends = threadService.setRecommend(userId, threadId);
 				
+				/******************************点赞通知******************************/
+				FeedRecommendNotify notify = new FeedRecommendNotify();
+				notify.setUserId(threadInfo.getUserId());
+				notify.setThreadId(threadId);
+				notify.setSubject(threadInfo.getSubjectFilter());
+				notify.setRecommendType(RecommendType.THREAD);
+				notify.setRecommendUserId(userId);
+				notify.setForumId(threadInfo.getForumId());
+				FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+				if(null != forumInfo)
+					notify.setForumName(forumInfo.getName());
+				HttpComponent.pushFeedRecommendNotify(notify);
+				
 				/******************************执行任务******************************/
 				TaskComponent.recommendThread(userId);
 				
@@ -550,7 +566,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				long now = System.currentTimeMillis();
 				if(recommends == GlobalConfig.COLLECT_RECOMMEND_COUNT &&
 				   createTime >= startTime && createTime <= now)
-					TaskComponent.collectRecommends(userId);
+					TaskComponent.collectRecommends(threadInfo.getUserId());
 			}
 			else
 			{
@@ -826,10 +842,32 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			long total = 0;
 			JSONArray arrayThreads = new JSONArray();
 			
+			long start = System.currentTimeMillis();
+			
 			Set<Long> forumIds = HttpComponent.getUserFllowForums(userId);
+			/*
+			Set<Long> forumIds = new HashSet<Long>();
+			forumIds.add(12L);
+			forumIds.add(185L);
+			*/
+			long end = System.currentTimeMillis();
+			System.out.println("get user follow forum cost time:" + (end - start));
 			if(null != forumIds && forumIds.size() > 0)
 			{
+				///获取版块信息
+				Map<Long, FeedForum> forumMap = new HashMap<Long, FeedForum>();
+				for(long forumId : forumIds)
+				{
+					FeedForum forumInfo = forumService.getInfo(forumId);
+					if(null != forumInfo)
+						forumMap.put(forumId, forumInfo);
+				}
+				
+				start = System.currentTimeMillis();
 				Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
+				end = System.currentTimeMillis();
+				System.out.println("get forum thread cost time:" + (end - start));
+				
 				JSONObject jsonThread = null;
 				if(null != page)
 				{
@@ -837,6 +875,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 					List<FeedThread> threads = page.getList();
 					if(null != threads)
 					{
+						start = System.currentTimeMillis();
 						for(FeedThread threadInfo : threads)
 						{
 							jsonThread = new JSONObject();
@@ -844,15 +883,19 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 							jsonThread.put("subject", threadInfo.getSubjectFilter());
 							JSONObject jsonForum = new JSONObject();
 							jsonForum.put("fid", threadInfo.getForumId());
-							FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
-							if(null != forumInfo)
+							if(forumMap.containsKey(threadInfo.getForumId()))
+							{
+								FeedForum forumInfo = forumMap.get(threadInfo.getForumId());
 								jsonForum.put("name", forumInfo.getName());
+							}
 							jsonThread.put("forum", jsonForum);
 							jsonThread.put("create_time", threadInfo.getCreateTime());
 							jsonThread.put("reply_cnt", threadInfo.getReplies());
 							jsonThread.put("page_view", threadInfo.getPageView());
 							arrayThreads.put(jsonThread);
 						}
+						end = System.currentTimeMillis();
+						System.out.println("build json data cost time:" + (end - start));
 					}
 				}
 			}

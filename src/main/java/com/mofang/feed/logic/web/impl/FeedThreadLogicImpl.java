@@ -22,12 +22,14 @@ import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.FeedPrivilege;
 import com.mofang.feed.global.common.OperateBehavior;
 import com.mofang.feed.global.common.OperateSourceType;
+import com.mofang.feed.global.common.RecommendType;
 import com.mofang.feed.logic.web.FeedThreadLogic;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.FeedRecommendNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.record.StatForumViewHistoryRecorder;
@@ -780,6 +782,19 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				///设置主题点赞
 				long recommends = threadService.setRecommend(userId, threadId);
 				
+				/******************************点赞通知******************************/
+				FeedRecommendNotify notify = new FeedRecommendNotify();
+				notify.setUserId(threadInfo.getUserId());
+				notify.setThreadId(threadId);
+				notify.setSubject(threadInfo.getSubjectFilter());
+				notify.setRecommendType(RecommendType.THREAD);
+				notify.setRecommendUserId(userId);
+				notify.setForumId(threadInfo.getForumId());
+				FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+				if(null != forumInfo)
+					notify.setForumName(forumInfo.getName());
+				HttpComponent.pushFeedRecommendNotify(notify);
+				
 				/******************************执行任务******************************/
 				TaskComponent.recommendThread(userId);
 				
@@ -790,7 +805,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				long now = System.currentTimeMillis();
 				if(recommends == GlobalConfig.COLLECT_RECOMMEND_COUNT &&
 				   createTime >= startTime && createTime <= now)
-					TaskComponent.collectRecommends(userId);
+					TaskComponent.collectRecommends(threadInfo.getUserId());
 			}
 			else
 			{
