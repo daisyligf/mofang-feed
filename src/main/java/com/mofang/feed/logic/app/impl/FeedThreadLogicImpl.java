@@ -821,34 +821,38 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 	{
 		try
 		{
-			Set<Long> forumIds = HttpComponent.getUserFllowForums(userId);
-			Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
 			long total = 0;
 			JSONArray arrayThreads = new JSONArray();
-			JSONObject jsonThread = null;
-			if(null != page)
+			
+			Set<Long> forumIds = HttpComponent.getUserFllowForums(userId);
+			if(null != forumIds && forumIds.size() > 0)
 			{
-				total = page.getTotal();
-				List<FeedThread> threads = page.getList();
-				if(null != threads)
+				Page<FeedThread> page = threadService.getForumEliteThreadList(forumIds, pageNum, pageSize);
+				JSONObject jsonThread = null;
+				if(null != page)
 				{
-					for(FeedThread threadInfo : threads)
+					total = page.getTotal();
+					List<FeedThread> threads = page.getList();
+					if(null != threads)
 					{
-						jsonThread = new JSONObject();
-						jsonThread.put("tid", threadInfo.getThreadId());
-						jsonThread.put("subject", threadInfo.getSubjectFilter());
-						JSONObject jsonForum = new JSONObject();
-						jsonForum.put("fid", threadInfo.getForumId());
-						FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
-						if(null != forumInfo)
-							jsonForum.put("name", forumInfo.getName());
-						jsonThread.put("forum", jsonForum);
-						jsonThread.put("create_time", threadInfo.getCreateTime());
-						jsonThread.put("reply_cnt", threadInfo.getReplies());
-						jsonThread.put("page_view", threadInfo.getPageView());
-						arrayThreads.put(jsonThread);
+						for(FeedThread threadInfo : threads)
+						{
+							jsonThread = new JSONObject();
+							jsonThread.put("tid", threadInfo.getThreadId());
+							jsonThread.put("subject", threadInfo.getSubjectFilter());
+							JSONObject jsonForum = new JSONObject();
+							jsonForum.put("fid", threadInfo.getForumId());
+							FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+							if(null != forumInfo)
+								jsonForum.put("name", forumInfo.getName());
+							jsonThread.put("forum", jsonForum);
+							jsonThread.put("create_time", threadInfo.getCreateTime());
+							jsonThread.put("reply_cnt", threadInfo.getReplies());
+							jsonThread.put("page_view", threadInfo.getPageView());
+							arrayThreads.put(jsonThread);
+						}
 					}
 				}
 			}
