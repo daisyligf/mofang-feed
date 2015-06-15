@@ -455,11 +455,7 @@ public class FeedPostServiceImpl implements FeedPostService
 	public Page<FeedPost> getPostList(long threadId, int status, int pageNum, int pageSize) throws Exception
 	{
 		try
-		{	
-			///记录主题浏览数
-			threadDao.incrPageView(threadId);
-			threadRedis.incrPageView(threadId);
-			
+		{
 			long total = postDao.getPostCount(threadId, status);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
@@ -478,7 +474,11 @@ public class FeedPostServiceImpl implements FeedPostService
 	public Page<FeedPost> getThreadPostList(long threadId, int pageNum, int pageSize) throws Exception
 	{
 		try
-		{	
+		{		
+			///记录主题浏览数
+			threadDao.incrPageView(threadId);
+			threadRedis.incrPageView(threadId);
+			
 			long total = postRedis.getThreadPostCount(threadId);
 			RedisPageNumber pageNumber = new RedisPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
@@ -498,6 +498,10 @@ public class FeedPostServiceImpl implements FeedPostService
 	{
 		try
 		{	
+			///记录主题浏览数
+			threadDao.incrPageView(threadId);
+			threadRedis.incrPageView(threadId);
+			
 			long total = postRedis.getHostPostCount(threadId);
 			RedisPageNumber pageNumber = new RedisPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
