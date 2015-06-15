@@ -234,7 +234,6 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 			execute(sql);
 	}
 	
-	
 	private void initForumGameMap()
 	{
 		String requrl = "http://game.mofang.com/api/game/listfromforumids?type=1&ids=";

@@ -37,16 +37,6 @@ public class RedisKey
 	public final static String ROLE_INCREMENT_ID_KEY = "role_increment_id";
 	
 	/**
-	 *  广场模块自增ID
-	 */
-	public final static String MODULE_INCREMENT_ID_KEY = "module_increment_id";
-	
-	/**
-	 * 模块条目自增ID
-	 */
-	public final static String MODULE_ITEM_INCREMENT_ID_KEY = "module_item_increment_id";
-	
-	/**
 	 * 板块标签自增ID
 	 */
 	public final static String TAG_INCREMENT_ID_KEY = "tag_increment_id";

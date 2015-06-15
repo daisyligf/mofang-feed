@@ -2,10 +2,13 @@ package com.mofang.feed.data.transfer;
 
 import com.mofang.feed.data.transfer.handler.FeedBlackListTransfer;
 import com.mofang.feed.data.transfer.handler.FeedCommentTransfer;
+import com.mofang.feed.data.transfer.handler.FeedForumThreadsUpdateTransfer;
 import com.mofang.feed.data.transfer.handler.FeedForumTransfer;
+import com.mofang.feed.data.transfer.handler.FeedPostCommentsUpdateTransfer;
 import com.mofang.feed.data.transfer.handler.FeedPostRecommendTransfer;
 import com.mofang.feed.data.transfer.handler.FeedPostTransfer;
 import com.mofang.feed.data.transfer.handler.FeedThreadRecommendTransfer;
+import com.mofang.feed.data.transfer.handler.FeedThreadReplyUpdateTransfer;
 import com.mofang.feed.data.transfer.handler.FeedThreadTransfer;
 import com.mofang.feed.data.transfer.handler.FeedUserFavoriteTransfer;
 
@@ -70,6 +73,24 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("black list data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
+		
+		itemStart = System.currentTimeMillis();
+		transfer = new FeedForumThreadsUpdateTransfer();
+		transfer.exec();
+		itemEnd = System.currentTimeMillis();
+		System.out.println("forum threads update completed. cost time: " + (itemEnd - itemStart) + " ms.");
+		
+		itemStart = System.currentTimeMillis();
+		transfer = new FeedThreadReplyUpdateTransfer();
+		transfer.exec();
+		itemEnd = System.currentTimeMillis();
+		System.out.println("thread replies update completed. cost time: " + (itemEnd - itemStart) + " ms.");
+		
+		itemStart = System.currentTimeMillis();
+		transfer = new FeedPostCommentsUpdateTransfer();
+		transfer.exec();
+		itemEnd = System.currentTimeMillis();
+		System.out.println("post comments update completed. cost time: " + (itemEnd - itemStart) + " ms.");
 		
 		long end = System.currentTimeMillis();
 		System.out.println("data transfer completed. cost time: " + (end - start) + " ms.");
