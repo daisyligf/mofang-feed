@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * 用户冻结/解冻
  *
  */
-@Action(url = "feed/v2/backend/user/updatestatus")
+@Action(url = "feed/v3/backend/user/updatestatus")
 public class UserUpdateStatusAction extends AbstractActionExecutor
 {
 	private FeedUserLogic logic = FeedUserLogicImpl.getInstance();

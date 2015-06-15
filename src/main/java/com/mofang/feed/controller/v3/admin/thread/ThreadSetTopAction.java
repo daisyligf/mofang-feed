@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/thread/settop")
+@Action(url = "feed/v3/backend/thread/settop")
 public class ThreadSetTopAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();

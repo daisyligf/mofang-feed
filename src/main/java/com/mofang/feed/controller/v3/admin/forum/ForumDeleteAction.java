@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/forum/delete")
+@Action(url = "feed/v3/backend/forum/delete")
 public class ForumDeleteAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();

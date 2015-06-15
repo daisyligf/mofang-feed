@@ -7,7 +7,7 @@ import com.mofang.feed.logic.web.impl.FeedHomeTitleLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/backend/home/subject/get")
+@Action(url = "feed/v3/backend/home/subject/get")
 public class HomeTitleListAction extends AbstractActionExecutor {
 	
 	private FeedHomeTitleLogic logic = FeedHomeTitleLogicImpl.getInstance();

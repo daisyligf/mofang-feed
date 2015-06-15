@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v2/web/forum/search")
+@Action(url="feed/v3/web/forum/search")
 public class ForumSearchAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();

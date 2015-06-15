@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * 当用户取消关注版块时调用
  *
  */
-@Action(url = "feed/v2/external/moderator/delete")
+@Action(url = "feed/v3/external/moderator/delete")
 public class ModeratorDeleteAction extends AbstractActionExecutor
 {
 	private FeedSysUserRoleLogic logic = FeedSysUserRoleLogicImpl.getInstance();

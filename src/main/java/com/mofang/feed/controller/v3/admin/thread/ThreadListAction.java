@@ -13,7 +13,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/thread/list")
+@Action(url = "feed/v3/backend/thread/list")
 public class ThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();

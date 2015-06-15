@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/external/user/roleinfo")
+@Action(url = "feed/v3/external/user/roleinfo")
 public class UserRoleInfoAction extends AbstractActionExecutor
 {
 	private FeedSysUserRoleLogic logic = FeedSysUserRoleLogicImpl.getInstance();

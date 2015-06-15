@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/admin/add")
+@Action(url = "feed/v3/backend/admin/add")
 public class AdminAddAction extends AbstractActionExecutor
 {
 	private FeedAdminUserLogic logic = FeedAdminUserLogicImpl.getInstance();

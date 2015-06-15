@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v2/forumdisplay")
+@Action(url="feed/v3/forumdisplay")
 public class ThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();

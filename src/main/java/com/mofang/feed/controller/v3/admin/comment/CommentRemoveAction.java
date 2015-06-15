@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/comment/remove")
+@Action(url = "feed/v3/backend/comment/remove")
 public class CommentRemoveAction extends AbstractActionExecutor
 {
 	private FeedCommentLogic logic = FeedCommentLogicImpl.getInstance();

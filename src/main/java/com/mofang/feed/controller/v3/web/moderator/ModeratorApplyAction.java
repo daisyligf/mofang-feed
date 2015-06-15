@@ -13,7 +13,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/web/moderator/apply")
+@Action(url = "feed/v3/web/moderator/apply")
 public class ModeratorApplyAction extends AbstractActionExecutor
 {
 	private FeedModeratorApplyLogic logic = FeedModeratorApplyLogicImpl.getInstance();

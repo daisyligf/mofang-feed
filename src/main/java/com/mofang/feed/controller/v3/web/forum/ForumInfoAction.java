@@ -10,7 +10,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url="feed/v2/web/forum/info")
+@Action(url="feed/v3/web/forum/info")
 public class ForumInfoAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();

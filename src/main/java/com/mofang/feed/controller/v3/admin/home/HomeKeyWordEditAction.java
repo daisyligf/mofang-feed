@@ -13,7 +13,7 @@ import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 import com.mysql.jdbc.StringUtils;
 
-@Action(url = "feed/v2/backend/home/search/keyword/edit")
+@Action(url = "feed/v3/backend/home/search/keyword/edit")
 public class HomeKeyWordEditAction extends AbstractActionExecutor {
 
 	private FeedHomeKeyWordLogic logic = FeedHomeKeyWordLogicImpl.getInstance();

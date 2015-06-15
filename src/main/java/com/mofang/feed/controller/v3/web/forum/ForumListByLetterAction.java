@@ -13,7 +13,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/web/forum/listbyletter")
+@Action(url = "feed/v3/web/forum/listbyletter")
 public class ForumListByLetterAction extends AbstractActionExecutor
 {
 	private FeedHomeHotForumLogic hotForumLogic = FeedHomeHotForumLogicImpl .getInstance();

@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/user/cancelprohibit")
+@Action(url = "feed/v3/backend/user/cancelprohibit")
 public class UserCancelProhibitAction extends AbstractActionExecutor
 {
 	private FeedUserLogic logic = FeedUserLogicImpl.getInstance();

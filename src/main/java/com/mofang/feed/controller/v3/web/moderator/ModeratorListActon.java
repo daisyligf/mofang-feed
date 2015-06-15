@@ -10,7 +10,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url="feed/v2/web/moderator/list")
+@Action(url="feed/v3/web/moderator/list")
 public class ModeratorListActon extends AbstractActionExecutor {
 
 	private FeedSysUserRoleLogic logic = FeedSysUserRoleLogicImpl.getInstance();

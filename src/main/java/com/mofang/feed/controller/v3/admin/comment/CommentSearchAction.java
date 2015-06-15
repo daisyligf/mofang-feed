@@ -16,7 +16,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/comment/search")
+@Action(url = "feed/v3/backend/comment/search")
 public class CommentSearchAction extends AbstractActionExecutor
 {
 	private FeedCommentLogic logic = FeedCommentLogicImpl.getInstance();

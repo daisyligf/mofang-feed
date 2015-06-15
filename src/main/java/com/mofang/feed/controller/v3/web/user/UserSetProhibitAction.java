@@ -12,7 +12,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/web/user/prohibit")
+@Action(url = "feed/v3/web/user/prohibit")
 public class UserSetProhibitAction extends AbstractActionExecutor
 {
 	private FeedUserLogic logic = FeedUserLogicImpl.getInstance();

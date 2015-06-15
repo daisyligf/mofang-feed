@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/web/moderator/check")
+@Action(url = "feed/v3/web/moderator/check")
 public class ModeratorCheckAction extends AbstractActionExecutor
 {
 	private FeedModeratorApplyLogic logic = FeedModeratorApplyLogicImpl.getInstance();

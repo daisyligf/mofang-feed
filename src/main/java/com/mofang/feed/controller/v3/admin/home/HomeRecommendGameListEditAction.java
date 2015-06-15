@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 import com.mysql.jdbc.StringUtils;
 
-@Action(url = "feed/v2/backend/home/list/recommendgame/edit")
+@Action(url = "feed/v3/backend/home/list/recommendgame/edit")
 public class HomeRecommendGameListEditAction extends AbstractActionExecutor {
 
 	private FeedHomeRecommendGameLogic logic = FeedHomeRecommendGameLogicImpl

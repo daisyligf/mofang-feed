@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/admin/batchdelete")
+@Action(url = "feed/v3/backend/admin/batchdelete")
 public class AdminBatchDeleteAction extends AbstractActionExecutor 
 {
 	private FeedAdminUserLogic logic = FeedAdminUserLogicImpl.getInstance();

@@ -21,7 +21,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/moderator/create")
+@Action(url = "feed/v3/backend/moderator/create")
 public class ModeratorCreateAction extends AbstractActionExecutor
 {
 	private FeedSysUserRoleLogic logic = FeedSysUserRoleLogicImpl.getInstance();

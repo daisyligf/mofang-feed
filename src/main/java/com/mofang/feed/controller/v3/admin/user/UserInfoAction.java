@@ -13,7 +13,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v2/backend/user/info")
+@Action(url = "feed/v3/backend/user/info")
 public class UserInfoAction extends AbstractActionExecutor
 {
 	private FeedUserLogic logic = FeedUserLogicImpl.getInstance();

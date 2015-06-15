@@ -17,7 +17,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/backend/home/ticker/edit")
+@Action(url = "feed/v3/backend/home/ticker/edit")
 public class HomeTickerEditAction extends AbstractActionExecutor {
 
 	private FeedHomeTickerLogic logic = FeedHomeTickerLogicImpl

@@ -31,7 +31,7 @@ public class HtmlTagFilter
 	 */
 	public static String filterOptionHtmlTag(String text)
 	{
-		String strRegex = "<(?!font|/font|b\\W|/b\\W|i\\W|/i\\W|u\\W|/u\\W|a\\W|/a\\W|img|/img|br\\W)[^>]+>";
+		String strRegex = "<(?!font|/font|b\\W|/b\\W|i\\W|/i\\W|u\\W|/u\\W|p\\W|/p\\W|div\\W|/div\\W|embed\\W|/embed\\W|a\\W|/a\\W|img|/img|br\\W)[^>]+>";
 		Pattern pattern = Pattern.compile(strRegex, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(text);
 		text = matcher.replaceAll(""); // 过滤html标签

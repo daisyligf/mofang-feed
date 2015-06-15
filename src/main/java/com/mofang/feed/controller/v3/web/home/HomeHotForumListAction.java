@@ -7,7 +7,7 @@ import com.mofang.feed.logic.web.impl.FeedHomeHotForumLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/web/home/hotForumList")
+@Action(url = "feed/v3/web/home/hotForumList")
 public class HomeHotForumListAction extends AbstractActionExecutor
 {
 	private FeedHomeHotForumLogic logic = FeedHomeHotForumLogicImpl.getInstance();

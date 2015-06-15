@@ -16,7 +16,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/backend/tag/delete")
+@Action(url = "feed/v3/backend/tag/delete")
 public class TagDeleteAction extends AbstractActionExecutor {
 
 	private FeedTagLogic logic = FeedTagLogicImpl.getInstance();

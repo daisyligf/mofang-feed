@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v2/favthread")
+@Action(url="feed/v3/favthread")
 public class ThreadFavoriteAddAction extends AbstractActionExecutor
 {
 	private FeedUserFavoriteLogic logic = FeedUserFavoriteLogicImpl.getInstance();

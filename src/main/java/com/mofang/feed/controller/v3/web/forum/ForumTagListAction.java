@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v2/web/forum/taglist")
+@Action(url="feed/v3/web/forum/taglist")
 public class ForumTagListAction extends AbstractActionExecutor
 {
 	private FeedForumTagLogic logic = FeedForumTagLogicImpl.getInstance();

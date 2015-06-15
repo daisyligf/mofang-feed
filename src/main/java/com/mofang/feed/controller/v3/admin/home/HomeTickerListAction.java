@@ -7,7 +7,7 @@ import com.mofang.feed.logic.web.impl.FeedHomeTickerLogicImpl;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v2/backend/home/ticker/get")
+@Action(url = "feed/v3/backend/home/ticker/get")
 public class HomeTickerListAction extends AbstractActionExecutor{
 
 	private FeedHomeTickerLogic logic = FeedHomeTickerLogicImpl.getInstance();
