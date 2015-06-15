@@ -122,7 +122,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 				long forumId = order.getForumId();
 				model.setForumId(forumId);
 				int index = idx + 1;
-				model.setForumId(order.getForumId());
+				model.setForumId(forumId);
 				model.setUpDown(upOrDown(oldModelList, forumId, index));
 				model.setDisplayOrder(index);
 				newModelList.add(model);
@@ -168,7 +168,6 @@ public class HomeRankServiceImpl implements HomeRankService {
 	@Override
 	public void refresh(int type) throws Exception {
 		try {
-			System.out.println("-------------刷新排行榜任务");
 			long startTime = System.currentTimeMillis();
 			List<FeedForumOrder> forumOrderList = forumDao.getForumOrderList(type);
 			if(forumOrderList == null){
@@ -202,12 +201,15 @@ public class HomeRankServiceImpl implements HomeRankService {
 					list.add(forumOrderList.get(jdx).getForumId());
 				}
 				Map<Long, ForumCount> map = HttpComponent.getForumFollowCountByTime(list, yesterdayStartTime/1000, yesterdayEndTime/1000);
-				followMap.putAll(map);
+				if(map != null) {
+					followMap.putAll(map);
+				}
 				step += 100;
 			}
 			/********************************************************************************/
 			//Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			
+			/********************************取点赞数好蛋疼********************************/
 			Map<Long, ForumCount> postRecommendMap = forumDao.getPostRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> threadRecommendMap = forumDao.getThreadRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> recommendMap = null;
@@ -215,14 +217,26 @@ public class HomeRankServiceImpl implements HomeRankService {
 				int postRecommendSize = postRecommendMap.size();
 				int threadRecommendSize = threadRecommendMap.size();
 				if(postRecommendSize >= threadRecommendSize){
-					recommendMap = new HashMap<Long, ForumCount>(postRecommendSize);
-					for(Map.Entry<Long, ForumCount> entry : postRecommendMap.entrySet()){
-						recommendMap.put(entry.getKey(), entry.getValue());
+					recommendMap = postRecommendMap;
+					for(Map.Entry<Long, ForumCount> entry : threadRecommendMap.entrySet()){
+						long key = entry.getKey();
+						ForumCount forumCount = recommendMap.get(key);
+						if(forumCount != null) {
+							forumCount.count = forumCount.count + entry.getValue().count;
+						}else {
+							recommendMap.put(key, forumCount);
+						}
 					}
 				}else{
-					recommendMap = new HashMap<Long, ForumCount>(threadRecommendSize);
-					for(Map.Entry<Long, ForumCount> entry : threadRecommendMap.entrySet()){
-						recommendMap.put(entry.getKey(), entry.getValue());
+					recommendMap = threadRecommendMap;
+					for(Map.Entry<Long, ForumCount> entry : postRecommendMap.entrySet()){
+						long key = entry.getKey();
+						ForumCount forumCount = recommendMap.get(key);
+						if(forumCount != null) {
+							forumCount.count = forumCount.count + entry.getValue().count;
+						}else {
+							recommendMap.put(key, forumCount);
+						}
 					}
 				}
 			}else if(postRecommendMap == null && threadRecommendMap != null){
@@ -230,6 +244,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			}else if(threadRecommendMap == null && postRecommendMap != null){
 				recommendMap = postRecommendMap;
 			}
+			/********************************************************************************/
 			
 			for(FeedForumOrder forumOrder : forumOrderList){
 				long forumId = forumOrder.getForumId();
