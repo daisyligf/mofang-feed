@@ -40,4 +40,10 @@ public class HotForumListRedisImpl implements HotForumListRedis {
 		return RedisFaster.zcard(key);
 	}
 
+	@Override
+	public void delete(String key, long forumId) throws Exception {
+		key = RedisKey.buildRedisKey(RedisKey.HOT_FORUM_LIST_KEY_PREFIX, key);
+		RedisFaster.zrem(key, forumId);
+	}
+
 }

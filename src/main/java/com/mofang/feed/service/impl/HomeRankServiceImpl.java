@@ -38,6 +38,7 @@ import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeHotForumRankService;
 import com.mofang.feed.service.FeedHomeRecommendGameRankService;
 import com.mofang.feed.service.HomeRankService;
+import com.mofang.feed.util.RankHelper;
 import com.mofang.feed.util.TimeUtil;
 import com.mofang.framework.util.StringUtil;
 
@@ -277,43 +278,6 @@ public class HomeRankServiceImpl implements HomeRankService {
 		}
 	}
 
-	private static final String ABCDE = "ABCDE";
-	private static final String FGHIJ = "FGHIJ";
-	private static final String KLMNO = "KLMNO";
-	private static final String PQRST = "PQRST";
-	private static final String WXYZ = "WXYZ";
-	private static final String OTHER = "OTHER";
-	
-	private static String math(String nameSp){
-		char p = nameSp.charAt(0);
-		int idx;
-		for(idx = 0; idx < ABCDE.length(); idx ++){
-			if(p == (ABCDE.charAt(idx))){
-				return ABCDE;
-			}
-		}
-		for(idx = 0; idx < FGHIJ.length(); idx ++){
-			if(p == (FGHIJ.charAt(idx))){
-				return FGHIJ;
-			}
-		}
-		for(idx = 0; idx < KLMNO.length(); idx ++){
-			if(p == (KLMNO.charAt(idx))){
-				return KLMNO;
-			}
-		}
-		for(idx = 0; idx < PQRST.length(); idx ++){
-			if(p == (PQRST.charAt(idx))){
-				return PQRST;
-			}
-		}
-		for(idx = 0; idx < WXYZ.length(); idx ++){
-			if(p == (WXYZ.charAt(idx))){
-				return WXYZ;
-			}
-		}
-		return OTHER;
-	}
 	
 	/**
 	 * 缓存 热门游戏 列表数据
@@ -327,7 +291,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = math(nameSpell);
+				String key = RankHelper.math(nameSpell);
 				if(key==null)
 					continue;
 				hotForumListRedis.addHotForumList(key, forumId, model.getCreateTime());
@@ -348,7 +312,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = math(nameSpell);
+				String key = RankHelper.math(nameSpell);
 				if(key==null)
 					continue;
 				recommendGameListRedis.addRecommendGameList(key, forumId, model.getCreateTime());

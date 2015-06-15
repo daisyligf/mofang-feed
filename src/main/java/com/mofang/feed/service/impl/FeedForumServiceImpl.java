@@ -8,6 +8,7 @@ import java.util.Set;
 import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.CommentStatus;
+import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.model.FeedForum;
@@ -33,9 +34,13 @@ import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.ForumUrlRedis;
+import com.mofang.feed.redis.HotForumListRedis;
+import com.mofang.feed.redis.RecommendGameListRedis;
 import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
 import com.mofang.feed.redis.impl.ForumUrlRedisImpl;
+import com.mofang.feed.redis.impl.HotForumListRedisImpl;
+import com.mofang.feed.redis.impl.RecommendGameListRedisImpl;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.solr.FeedCommentSolr;
 import com.mofang.feed.solr.FeedForumSolr;
@@ -46,7 +51,9 @@ import com.mofang.feed.solr.impl.FeedForumSolrImpl;
 import com.mofang.feed.solr.impl.FeedPostSolrImpl;
 import com.mofang.feed.solr.impl.FeedThreadSolrImpl;
 import com.mofang.feed.util.MysqlPageNumber;
+import com.mofang.feed.util.RankHelper;
 import com.mofang.framework.util.ChineseSpellUtil;
+import com.mofang.framework.util.StringUtil;
 
 /**
  * 
@@ -72,6 +79,8 @@ public class FeedForumServiceImpl implements FeedForumService
 	private FeedHomeHotForumRankDao hotForumRankDao = FeedHomeHotForumRankDaoImpl.getInstance();
 	private FeedHomeRecommendGameDao recommendGameDao = FeedHomeRecommendGameDaoImpl.getInstance();
 	private FeedHomeRecommendGameRankDao recommendGameRankDao = FeedHomeRecommendGameRankDaoImpl.getInstance();
+	private RecommendGameListRedis recommendGameListRedis = RecommendGameListRedisImpl.getInstance();
+	private HotForumListRedis hotForumListRedis = HotForumListRedisImpl.getInstance();
 	
 	private FeedForumServiceImpl()
 	{}
@@ -155,6 +164,22 @@ public class FeedForumServiceImpl implements FeedForumService
 		try
 		{
 			/******************************redis操作******************************/
+			FeedForum forum = forumRedis.getInfo(forumId);
+			/// 删除新游更多列表或者热游更多列表 版块信息
+			if(forum != null) 
+			{
+				int type = forum.getType();
+				String nameSpell = forum.getNameSpell();
+				if(!StringUtil.isNullOrEmpty(nameSpell)) 
+				{
+					String nameKey = RankHelper.math(nameSpell);
+					if(type == ForumType.HOT_FORUM) 
+						hotForumListRedis.delete(nameKey, forumId);
+					else if(type == ForumType.RECOMMEND_GAME) 
+						recommendGameListRedis.delete(nameKey, forumId);
+				}
+			}
+			
 			///删除版块信息
 			forumRedis.delete(forumId);
 			

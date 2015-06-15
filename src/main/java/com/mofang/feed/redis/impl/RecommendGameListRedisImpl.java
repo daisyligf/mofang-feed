@@ -40,4 +40,10 @@ public class RecommendGameListRedisImpl implements RecommendGameListRedis {
 		return RedisFaster.zcard(key);
 	}
 
+	@Override
+	public void delete(String key, long forumId) throws Exception {
+		key = RedisKey.buildRedisKey(RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX, key);
+		RedisFaster.zrem(key, forumId);
+	}
+
 }
