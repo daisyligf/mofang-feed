@@ -2,9 +2,12 @@ package com.mofang.feed.redis.impl;
 
 import java.util.Set;
 
+import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.RedisFaster;
 import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.redis.HotForumListRedis;
+import com.mofang.framework.data.redis.RedisWorker;
+import com.mofang.framework.data.redis.workers.DeleteWorker;
 
 /***
  * 
@@ -44,6 +47,13 @@ public class HotForumListRedisImpl implements HotForumListRedis {
 	public void delete(String key, long forumId) throws Exception {
 		key = RedisKey.buildRedisKey(RedisKey.HOT_FORUM_LIST_KEY_PREFIX, key);
 		RedisFaster.zrem(key, forumId);
+	}
+
+	@Override
+	public void delete(String key) throws Exception {
+		key = RedisKey.buildRedisKey(RedisKey.HOT_FORUM_LIST_KEY_PREFIX, key);
+		RedisWorker<Boolean> worker = new DeleteWorker(key);
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 
 }

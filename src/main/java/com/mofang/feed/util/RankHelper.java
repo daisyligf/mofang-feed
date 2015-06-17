@@ -2,14 +2,14 @@ package com.mofang.feed.util;
 
 public class RankHelper {
 
-	private static final String ABCDE = "ABCDE";
-	private static final String FGHIJ = "FGHIJ";
-	private static final String KLMNO = "KLMNO";
-	private static final String PQRST = "PQRST";
-	private static final String WXYZ = "WXYZ";
-	private static final String OTHER = "OTHER";
+	public static final String ABCDE = "ABCDE";
+	public static final String FGHIJ = "FGHIJ";
+	public static final String KLMNO = "KLMNO";
+	public static final String PQRST = "PQRST";
+	public static final String WXYZ = "WXYZ";
+	public static final String OTHER = "OTHER";
 	
-	public static String math(String nameSp){
+	public static String match(String nameSp){
 		char p = nameSp.charAt(0);
 		int idx;
 		for(idx = 0; idx < ABCDE.length(); idx ++){

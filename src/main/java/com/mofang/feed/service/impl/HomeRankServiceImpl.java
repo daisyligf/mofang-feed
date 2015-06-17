@@ -261,10 +261,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 			Collections.sort(forumOrderList);
 			if(type == ForumType.HOT_FORUM){
 				doRefreshHotForumRank(forumOrderList);
+				delHotForumListRedis();
 				addHotForumListRedis(forumOrderList);
 			}
 			else if(type == ForumType.RECOMMEND_GAME){
 				doRefreshRecommendGameRank(forumOrderList);
+				delRecommendGameListRedis();
 				addRecommendGameListRedis(forumOrderList);
 			}
 			long endTime = System.currentTimeMillis();
@@ -277,7 +279,24 @@ public class HomeRankServiceImpl implements HomeRankService {
 			throw e;
 		}
 	}
-
+	
+	private void delHotForumListRedis() throws Exception {
+		hotForumListRedis.delete(RankHelper.ABCDE);
+		hotForumListRedis.delete(RankHelper.FGHIJ);
+		hotForumListRedis.delete(RankHelper.KLMNO);
+		hotForumListRedis.delete(RankHelper.PQRST);
+		hotForumListRedis.delete(RankHelper.WXYZ);
+		hotForumListRedis.delete(RankHelper.OTHER);
+	}
+	
+	private void delRecommendGameListRedis() throws Exception {
+		recommendGameListRedis.delete(RankHelper.ABCDE);
+		recommendGameListRedis.delete(RankHelper.FGHIJ);
+		recommendGameListRedis.delete(RankHelper.KLMNO);
+		recommendGameListRedis.delete(RankHelper.PQRST);
+		recommendGameListRedis.delete(RankHelper.WXYZ);
+		recommendGameListRedis.delete(RankHelper.OTHER);
+	}
 	
 	/**
 	 * 缓存 热门游戏 列表数据
@@ -291,7 +310,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = RankHelper.math(nameSpell);
+				String key = RankHelper.match(nameSpell);
 				if(key==null)
 					continue;
 				hotForumListRedis.addHotForumList(key, forumId, model.getCreateTime());
@@ -312,7 +331,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = RankHelper.math(nameSpell);
+				String key = RankHelper.match(nameSpell);
 				if(key==null)
 					continue;
 				recommendGameListRedis.addRecommendGameList(key, forumId, model.getCreateTime());

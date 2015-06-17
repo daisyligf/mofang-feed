@@ -25,4 +25,6 @@ public interface RecommendGameListRedis {
 	public long getForumCount(String key) throws Exception;
 	
 	public void delete(String key, long forumId) throws Exception;
+	
+	public void delete(String key) throws Exception;
 }

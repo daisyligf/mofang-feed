@@ -172,7 +172,7 @@ public class FeedForumServiceImpl implements FeedForumService
 				String nameSpell = forum.getNameSpell();
 				if(!StringUtil.isNullOrEmpty(nameSpell)) 
 				{
-					String nameKey = RankHelper.math(nameSpell);
+					String nameKey = RankHelper.match(nameSpell);
 					if(type == ForumType.HOT_FORUM) 
 						hotForumListRedis.delete(nameKey, forumId);
 					else if(type == ForumType.RECOMMEND_GAME) 
