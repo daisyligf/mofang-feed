@@ -181,7 +181,7 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 		StringBuilder strSql = new StringBuilder();
 		strSql.append(SQL_PREFIX);
 		strSql.append("(" + ForumChangeUtil.BbsActivityForumId + ", 0, '社区活动', 'SQHD', '', '', " + ForumType.OFFICAL + ", false, false, " + bbsActivityThreads + ", " +  now + ", " + now + "),");
-		strSql.append("(" + ForumChangeUtil.RecommendForumId + ", 0, '魔方推荐', 'MFTJ', '', '', " + ForumType.OFFICAL + ", false, false, " + recommendThreads + ", " +  now + ", " + now + "),");
+		strSql.append("(" + ForumChangeUtil.RecommendForumId + ", 0, '魔方推游', 'MFTJ', '', '', " + ForumType.OFFICAL + ", false, false, " + recommendThreads + ", " +  now + ", " + now + "),");
 		strSql.append("(" + ForumChangeUtil.ChatForumId + ", 0, '灌水闲聊', 'GSXL', '', '', " + ForumType.OFFICAL + ", false, false, " + ChatThreads + ", " +  now + ", " + now + "),");
 		strSql.append("(" + ForumChangeUtil.FeedBackForumId + ", 0, '问题反馈', 'WTFK', '', '', " + ForumType.OFFICAL + ", false, false, " + FeedBackThreads + ", " +  now + ", " + now + ")");
 		execute(strSql.toString());
