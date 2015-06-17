@@ -83,11 +83,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 	private int upOrDown(List<FeedHomeHotForumRank> list, long forumId, int index){
 		for(int idx = 0; idx < list.size(); idx ++){
 			FeedHomeHotForumRank model = list.get(idx);
-			if(model.getForumId() ==  forumId && idx == index){
+			int oldIndex = model.getDisplayOrder();
+			if(model.getForumId() ==  forumId && oldIndex == index){
 				return UpDownStatus.EQUAL;
-			}else if(model.getForumId() == forumId && idx < index){
+			}else if(model.getForumId() == forumId && oldIndex < index){
 				return UpDownStatus.DOWN;
-			}else if(model.getForumId() == forumId && idx > index){
+			}else if(model.getForumId() == forumId && oldIndex > index){
 				return UpDownStatus.UP;
 			}
 		}
