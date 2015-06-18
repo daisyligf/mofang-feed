@@ -10,6 +10,7 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
+import com.mofang.feed.global.common.UpDownStatus;
 import com.mofang.feed.logic.web.FeedHomeHotForumRankLogic;
 import com.mofang.feed.logic.web.impl.FeedHomeHotForumRankLogicImpl;
 import com.mofang.feed.model.FeedHomeHotForumRank;
@@ -56,6 +57,7 @@ public class HomeHotForumRankEditAction extends AbstractActionExecutor {
 			FeedHomeHotForumRank model = new FeedHomeHotForumRank();
 			model.setForumId(forumId);
 			model.setDisplayOrder(displayOrder);
+			model.setUpDown(UpDownStatus.UP);
 			modelList.add(model);
 		}
 		return logic.edit(modelList, operatorId);
