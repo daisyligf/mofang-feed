@@ -18,6 +18,7 @@ import com.mofang.feed.redis.impl.RecommendGameListRedisImpl;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.util.ForumHelper;
+import com.mofang.framework.util.StringUtil;
 
 /**
  * 字母分组板块信息
@@ -45,6 +46,8 @@ public class FeedForumLetteyGroupLoad implements FeedLoad {
 				if(forum.getType() != ForumType.HOT_FORUM)
 					continue;
 				String nameSpell  = forum.getNameSpell();
+				if(StringUtil.isNullOrEmpty(nameSpell))
+					continue;
 				nameSpell = nameSpell.substring(0,1);
 				String key = ForumHelper.match(nameSpell);
 				hotForumListRedis.addHotForumList(key, forumId, model.getCreateTime());
@@ -66,6 +69,8 @@ public class FeedForumLetteyGroupLoad implements FeedLoad {
 				if(forum.getType() != ForumType.RECOMMEND_GAME)
 					continue;
 				String nameSpell  = forum.getNameSpell();
+				if(StringUtil.isNullOrEmpty(nameSpell))
+					continue;
 				nameSpell = nameSpell.substring(0,1);
 				String key = ForumHelper.match(nameSpell);
 				recommendGameListRedis.addRecommendGameList(key, forumId, model.getCreateTime());
