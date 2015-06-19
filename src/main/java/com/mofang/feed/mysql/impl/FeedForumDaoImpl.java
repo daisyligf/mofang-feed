@@ -151,7 +151,11 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	public List<FeedForumOrder> getForumOrderList(long type) throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select forum_id,create_time from feed_forum ");
-		strSql.append("where type = "+ type);
+		
+		if(type != 0) {
+			strSql.append("where type = "+ type);
+		}
+		
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
 			return null;
