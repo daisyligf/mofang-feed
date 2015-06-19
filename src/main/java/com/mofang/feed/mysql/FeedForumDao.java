@@ -33,6 +33,8 @@ public interface FeedForumDao
 	
 	public void updateYestodayThreads(long forumId, int threads) throws Exception;
 	
+	public void clearTodayThreads() throws Exception;
+	
 	public FeedForum getInfo(long forumId) throws Exception;
 	
 	public List<FeedForum> getList(Operand operand) throws Exception;
