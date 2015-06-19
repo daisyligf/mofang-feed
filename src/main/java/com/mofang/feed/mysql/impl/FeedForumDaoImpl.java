@@ -121,6 +121,14 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	}
 
 	@Override
+	public void clearTodayThreads() throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("update feed_forum set today_threads = 0");
+		super.execute(strSql.toString());
+	}
+	
+	@Override
 	public FeedForum getInfo(long forumId) throws Exception
 	{
 		return super.getByPrimaryKey(forumId);
@@ -243,5 +251,4 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		}
 		return list;
 	}
-	
 }
