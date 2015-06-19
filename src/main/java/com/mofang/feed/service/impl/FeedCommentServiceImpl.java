@@ -9,15 +9,19 @@ import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedCommentDao;
+import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.feed.mysql.impl.FeedCommentDaoImpl;
+import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.redis.FeedCommentRedis;
+import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.FeedPostRedis;
 import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.impl.FeedCommentRedisImpl;
+import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.redis.impl.FeedPostRedisImpl;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
 import com.mofang.feed.service.FeedCommentService;
@@ -41,6 +45,8 @@ public class FeedCommentServiceImpl implements FeedCommentService
 	private FeedPostDao postDao = FeedPostDaoImpl.getInstance();
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
 	private FeedThreadDao threadDao = FeedThreadDaoImpl.getInstance();
+	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
+	private FeedForumDao forumDao = FeedForumDaoImpl.getInstance();
 	
 	private FeedCommentServiceImpl()
 	{}
@@ -76,6 +82,8 @@ public class FeedCommentServiceImpl implements FeedCommentService
 			threadRedis.updateLastPost(threadId, userId, postTime);
 			///更新版块主题列表中该主题的score
 			threadRedis.addForumThreadList(forumId, threadId, postTime);
+			///版块今日发帖数 +1
+			forumRedis.incrTodayThreads(forumId);
 			
 			/******************************数据库操作******************************/
 			///保存评论信息
@@ -86,6 +94,8 @@ public class FeedCommentServiceImpl implements FeedCommentService
 			threadDao.incrReplies(threadId);
 			///更新主题最后回复用户ID和最后回复时间
 			threadDao.updateLastPost(threadId, userId, postTime);
+			///版块主题数 +1
+			forumDao.incrThreads(forumId);
 			
 			/******************************Solr操作******************************/
 			///保存到solr

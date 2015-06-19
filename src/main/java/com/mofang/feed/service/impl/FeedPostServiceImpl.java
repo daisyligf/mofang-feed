@@ -20,10 +20,12 @@ import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.Video;
 import com.mofang.feed.mysql.FeedCommentDao;
+import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedPostRecommendDao;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.feed.mysql.impl.FeedCommentDaoImpl;
+import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostRecommendDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
@@ -61,6 +63,7 @@ public class FeedPostServiceImpl implements FeedPostService
 	private FeedCommentSolr commentSolr = FeedCommentSolrImpl.getInstance();
 	private FeedPostRecommendDao recommendDao = FeedPostRecommendDaoImpl.getInstance();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
+	private FeedForumDao forumDao = FeedForumDaoImpl.getInstance();
 	
 	private FeedPostServiceImpl()
 	{}
@@ -122,6 +125,8 @@ public class FeedPostServiceImpl implements FeedPostService
 			threadRedis.updateLastPost(threadId, userId, postTime);
 			///更新版块主题列表中该主题的score
 			threadRedis.addForumThreadList(forumId, threadId, postTime);
+			///版块今日发帖数 +1
+			forumRedis.incrTodayThreads(forumId);
 			
 			/******************************数据库操作******************************/
 			///保存楼层信息
@@ -131,6 +136,8 @@ public class FeedPostServiceImpl implements FeedPostService
 				threadDao.incrReplies(threadId);
 			///更新主题最后回复用户ID和最后回复时间
 			threadDao.updateLastPost(threadId, userId, postTime);
+			///版块主题数 +1
+			forumDao.incrThreads(forumId);
 			
 			/******************************Solr操作******************************/
 			if(!forumIsHidden) ///隐藏版块的楼层不进入solr(一般是cms的文章)
