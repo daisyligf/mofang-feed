@@ -40,12 +40,17 @@ public class ThreadReplyHighestListServiceImpl implements
 			if(forumIdList == null){
 				return;
 			}
-			long startTime = TimeUtil.getYesterdyStartTime();
+			long startTime = TimeUtil.getLastSevenDayStartTime();
 			long endTime = TimeUtil.getYesterdyEndTime();
 			for(Long forumId : forumIdList){
 				List<Long> threadIdList = threadDao.getThreadIdList(forumId, startTime, endTime);
 				if(threadIdList == null)
 					continue;
+				
+				if(threadIdList.size() < 7) {
+					threadIdList.clear();
+					threadIdList = threadDao.getThreadIdList(forumId, 0, 0);
+				}
 				threadReplyHighestRedis.del(forumId);
 				for(Long threadId : threadIdList){
 					threadReplyHighestRedis.add(forumId, threadId);

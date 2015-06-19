@@ -38,6 +38,7 @@ import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeHotForumRankService;
 import com.mofang.feed.service.FeedHomeRecommendGameRankService;
 import com.mofang.feed.service.HomeRankService;
+import com.mofang.feed.util.RankHelper;
 import com.mofang.feed.util.TimeUtil;
 import com.mofang.framework.util.StringUtil;
 
@@ -82,11 +83,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 	private int upOrDown(List<FeedHomeHotForumRank> list, long forumId, int index){
 		for(int idx = 0; idx < list.size(); idx ++){
 			FeedHomeHotForumRank model = list.get(idx);
-			if(model.getForumId() ==  forumId && idx == index){
+			int oldIndex = model.getDisplayOrder();
+			if(model.getForumId() ==  forumId && oldIndex == index){
 				return UpDownStatus.EQUAL;
-			}else if(model.getForumId() == forumId && idx < index){
+			}else if(model.getForumId() == forumId && oldIndex < index){
 				return UpDownStatus.DOWN;
-			}else if(model.getForumId() == forumId && idx > index){
+			}else if(model.getForumId() == forumId && oldIndex > index){
 				return UpDownStatus.UP;
 			}
 		}
@@ -260,10 +262,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 			Collections.sort(forumOrderList);
 			if(type == ForumType.HOT_FORUM){
 				doRefreshHotForumRank(forumOrderList);
+				delHotForumListRedis();
 				addHotForumListRedis(forumOrderList);
 			}
 			else if(type == ForumType.RECOMMEND_GAME){
 				doRefreshRecommendGameRank(forumOrderList);
+				delRecommendGameListRedis();
 				addRecommendGameListRedis(forumOrderList);
 			}
 			long endTime = System.currentTimeMillis();
@@ -276,43 +280,23 @@ public class HomeRankServiceImpl implements HomeRankService {
 			throw e;
 		}
 	}
-
-	private static final String ABCDE = "ABCDE";
-	private static final String FGHIJ = "FGHIJ";
-	private static final String KLMNO = "KLMNO";
-	private static final String PQRST = "PQRST";
-	private static final String WXYZ = "WXYZ";
-	private static final String OTHER = "OTHER";
 	
-	private static String math(String nameSp){
-		char p = nameSp.charAt(0);
-		int idx;
-		for(idx = 0; idx < ABCDE.length(); idx ++){
-			if(p == (ABCDE.charAt(idx))){
-				return ABCDE;
-			}
-		}
-		for(idx = 0; idx < FGHIJ.length(); idx ++){
-			if(p == (FGHIJ.charAt(idx))){
-				return FGHIJ;
-			}
-		}
-		for(idx = 0; idx < KLMNO.length(); idx ++){
-			if(p == (KLMNO.charAt(idx))){
-				return KLMNO;
-			}
-		}
-		for(idx = 0; idx < PQRST.length(); idx ++){
-			if(p == (PQRST.charAt(idx))){
-				return PQRST;
-			}
-		}
-		for(idx = 0; idx < WXYZ.length(); idx ++){
-			if(p == (WXYZ.charAt(idx))){
-				return WXYZ;
-			}
-		}
-		return OTHER;
+	private void delHotForumListRedis() throws Exception {
+		hotForumListRedis.delete(RankHelper.ABCDE);
+		hotForumListRedis.delete(RankHelper.FGHIJ);
+		hotForumListRedis.delete(RankHelper.KLMNO);
+		hotForumListRedis.delete(RankHelper.PQRST);
+		hotForumListRedis.delete(RankHelper.WXYZ);
+		hotForumListRedis.delete(RankHelper.OTHER);
+	}
+	
+	private void delRecommendGameListRedis() throws Exception {
+		recommendGameListRedis.delete(RankHelper.ABCDE);
+		recommendGameListRedis.delete(RankHelper.FGHIJ);
+		recommendGameListRedis.delete(RankHelper.KLMNO);
+		recommendGameListRedis.delete(RankHelper.PQRST);
+		recommendGameListRedis.delete(RankHelper.WXYZ);
+		recommendGameListRedis.delete(RankHelper.OTHER);
 	}
 	
 	/**
@@ -327,7 +311,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = math(nameSpell);
+				String key = RankHelper.match(nameSpell);
 				if(key==null)
 					continue;
 				hotForumListRedis.addHotForumList(key, forumId, model.getCreateTime());
@@ -348,7 +332,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			if(forum != null){
 				String nameSpell  = forum.getNameSpell();
 				nameSpell = nameSpell.substring(0,1);
-				String key = math(nameSpell);
+				String key = RankHelper.match(nameSpell);
 				if(key==null)
 					continue;
 				recommendGameListRedis.addRecommendGameList(key, forumId, model.getCreateTime());

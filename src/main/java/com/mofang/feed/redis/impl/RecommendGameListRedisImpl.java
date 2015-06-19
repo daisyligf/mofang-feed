@@ -2,9 +2,12 @@ package com.mofang.feed.redis.impl;
 
 import java.util.Set;
 
+import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.RedisFaster;
 import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.redis.RecommendGameListRedis;
+import com.mofang.framework.data.redis.RedisWorker;
+import com.mofang.framework.data.redis.workers.DeleteWorker;
 
 /***
  * 
@@ -38,6 +41,19 @@ public class RecommendGameListRedisImpl implements RecommendGameListRedis {
 	public long getForumCount(String key) throws Exception {
 		key = RedisKey.buildRedisKey(RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX, key);
 		return RedisFaster.zcard(key);
+	}
+
+	@Override
+	public void delete(String key, long forumId) throws Exception {
+		key = RedisKey.buildRedisKey(RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX, key);
+		RedisFaster.zrem(key, forumId);
+	}
+
+	@Override
+	public void delete(String key) throws Exception {
+		key = RedisKey.buildRedisKey(RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX, key);
+		RedisWorker<Boolean> worker = new DeleteWorker(key);
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
 
 }
