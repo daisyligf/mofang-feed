@@ -120,24 +120,28 @@ public class FeedPostServiceImpl implements FeedPostService
 			}
 			///主题回复数 +1
 			if(position > 1)
+			{
 				threadRedis.incrReplies(threadId);
+				///版块今日发帖数 +1
+				forumRedis.incrTodayThreads(forumId);
+			}
 			///更新主题最后回复用户ID和最后回复时间
 			threadRedis.updateLastPost(threadId, userId, postTime);
 			///更新版块主题列表中该主题的score
 			threadRedis.addForumThreadList(forumId, threadId, postTime);
-			///版块今日发帖数 +1
-			forumRedis.incrTodayThreads(forumId);
 			
 			/******************************数据库操作******************************/
 			///保存楼层信息
 			postDao.add(model);
 			///主题回复数 +1
 			if(position > 1)
+			{
 				threadDao.incrReplies(threadId);
+				///版块主题数 +1
+				forumDao.incrThreads(forumId);
+			}
 			///更新主题最后回复用户ID和最后回复时间
 			threadDao.updateLastPost(threadId, userId, postTime);
-			///版块主题数 +1
-			forumDao.incrThreads(forumId);
 			
 			/******************************Solr操作******************************/
 			if(!forumIsHidden) ///隐藏版块的楼层不进入solr(一般是cms的文章)
