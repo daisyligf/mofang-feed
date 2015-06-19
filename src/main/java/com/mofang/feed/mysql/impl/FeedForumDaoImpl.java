@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.external.FeedForumOrder;
 import com.mofang.feed.model.external.ForumCount;
@@ -160,7 +161,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select forum_id,create_time from feed_forum ");
 		
-		if(type != 0) {
+		if(type != ForumType.ALL) {
 			strSql.append("where type = "+ type);
 		}
 		
@@ -186,7 +187,13 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select count(1) as recommend_count, b.forum_id from ");
 		strSql.append("(select post_id,a.forum_id from feed_post right join ");
-		strSql.append("(select forum_id from feed_forum where type = " + type);
+		
+		if(type != ForumType.ALL) {
+			strSql.append("(select forum_id from feed_forum where type = " + type);
+		}else {
+			strSql.append("(select forum_id from feed_forum");
+		}
+		
 		strSql.append(" ) a on a.forum_id = feed_post.forum_id) b left join ");
 		strSql.append("(select post_id from feed_post_recommend where ");
 		strSql.append("create_time >= " + startTime + " and create_time <= " + endTime +") c ");
@@ -214,7 +221,13 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select count(1) as recommend_count, b.forum_id from ");
 		strSql.append("(select thread_id,a.forum_id from feed_thread right join ");
-		strSql.append("(select forum_id from feed_forum where type = " + type);
+		
+		if(type != ForumType.ALL) {
+			strSql.append("(select forum_id from feed_forum where type = " + type);
+		}else {
+			strSql.append("(select forum_id from feed_forum");
+		}
+		
 		strSql.append(" ) a on a.forum_id = feed_thread.forum_id) b left join ");
 		strSql.append("(select thread_id from feed_thread_recommend where ");
 		strSql.append("create_time >= " + startTime + " and create_time <= " + endTime +") c ");

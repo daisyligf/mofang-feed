@@ -260,19 +260,19 @@ public class HomeRankServiceImpl implements HomeRankService {
 				forumOrder.setOrderValue(orderValue);
 			}
 			Collections.sort(forumOrderList);
-			if(type == ForumType.HOT_FORUM){
+			if(type == ForumType.ALL){
 				doRefreshHotForumRank(forumOrderList);
-				delHotForumListRedis();
-				addHotForumListRedis(forumOrderList);
+				//delHotForumListRedis();
+				//addHotForumListRedis(forumOrderList);
 			}
 			else if(type == ForumType.RECOMMEND_GAME){
 				doRefreshRecommendGameRank(forumOrderList);
-				delRecommendGameListRedis();
-				addRecommendGameListRedis(forumOrderList);
+				//delRecommendGameListRedis();
+				//addRecommendGameListRedis(forumOrderList);
 			}
 			long endTime = System.currentTimeMillis();
-			if(type == ForumType.HOT_FORUM)
-				GlobalObject.INFO_LOG.info("at HomeRankServiceImpl.refresh,刷新热游排行榜，耗时:" + (endTime - startTime) + "毫秒");
+			if(type == ForumType.ALL)
+				GlobalObject.INFO_LOG.info("at HomeRankServiceImpl.refresh,刷新热门板块排行榜，耗时:" + (endTime - startTime) + "毫秒");
 			else if(type == ForumType.RECOMMEND_GAME)
 				GlobalObject.INFO_LOG.info("at HomeRankServiceImpl.refresh,刷新新游排行榜，耗时:" + (endTime - startTime) + "毫秒");
 		} catch (Exception e) {

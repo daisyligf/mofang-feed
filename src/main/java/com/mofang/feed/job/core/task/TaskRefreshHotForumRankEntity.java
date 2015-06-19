@@ -17,7 +17,7 @@ public class TaskRefreshHotForumRankEntity extends TaskEntity {
 		@Override
 		public void run() {
 			try {
-				//从数据库根据 type=热门游戏 获得板块列表
+				//从数据库根据 type=all 获得板块列表
 				
 				// uv+发帖*10+回复*3+关注*5+赞*2 排序列表
 				
@@ -26,7 +26,7 @@ public class TaskRefreshHotForumRankEntity extends TaskEntity {
 				//排序列表 存入 热门游戏redis结构
 
 				//板块的url列表数据 存入 redis结构
-				HomeRankServiceImpl.getInstance().refresh(ForumType.HOT_FORUM);
+				HomeRankServiceImpl.getInstance().refresh(ForumType.ALL);
 
 			} catch (Exception e) {
 				GlobalObject.ERROR_LOG

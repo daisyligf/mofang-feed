@@ -99,10 +99,22 @@ public class FeedForumServiceImpl implements FeedForumService
 			String nameSpell = ChineseSpellUtil.GetChineseSpell(model.getName());
 			model.setForumId(forumId);
 			model.setNameSpell(nameSpell);
+			int type = model.getType();
 			
 			/******************************redis操作******************************/
 			///保存版块信息
 			forumRedis.save(model);
+			///保存字母分组板块信息
+			if(!StringUtil.isNullOrEmpty(nameSpell)) 
+			{
+				nameSpell = nameSpell.substring(0, 1);
+				String nameKey = RankHelper.match(nameSpell);
+				long createTime = model.getCreateTime();
+				if(type == ForumType.HOT_FORUM) 
+					hotForumListRedis.addHotForumList(nameKey, forumId, createTime);
+				else if(type == ForumType.RECOMMEND_GAME) 
+					recommendGameListRedis.addRecommendGameList(nameKey, forumId, createTime);
+			}
 			
 			/******************************数据库操作******************************/
 			///保存版块信息
@@ -172,6 +184,7 @@ public class FeedForumServiceImpl implements FeedForumService
 				String nameSpell = forum.getNameSpell();
 				if(!StringUtil.isNullOrEmpty(nameSpell)) 
 				{
+					nameSpell = nameSpell.substring(0, 1);
 					String nameKey = RankHelper.match(nameSpell);
 					if(type == ForumType.HOT_FORUM) 
 						hotForumListRedis.delete(nameKey, forumId);

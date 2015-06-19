@@ -8,6 +8,11 @@ package com.mofang.feed.global.common;
 public class ForumType
 {
 	/**
+	 * 所有板块
+	 */
+	public final static int ALL = -1;
+	
+	/**
 	 * 热游版块
 	 */
 	public final static int HOT_FORUM = 1;
