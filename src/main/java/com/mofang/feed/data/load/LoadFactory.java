@@ -3,6 +3,7 @@ package com.mofang.feed.data.load;
 import com.mofang.feed.data.load.impl.FeedAdminUserLoad;
 import com.mofang.feed.data.load.impl.FeedBlackListLoad;
 import com.mofang.feed.data.load.impl.FeedCommentLoad;
+import com.mofang.feed.data.load.impl.FeedForumLetteyGroupLoad;
 import com.mofang.feed.data.load.impl.FeedForumLoad;
 import com.mofang.feed.data.load.impl.FeedPostLoad;
 import com.mofang.feed.data.load.impl.FeedPostRecommendLoad;
@@ -49,6 +50,8 @@ public class LoadFactory
 			load = new FeedTagLoad();
 		else if("admin".equals(loadName))
 			load = new FeedAdminUserLoad();
+		else if("letter".equals(loadName))
+			load = new FeedForumLetteyGroupLoad();
 		
 		return load;
 	}

@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.mofang.feed.data.load.FeedLoad;
 import com.mofang.feed.global.GlobalObject;
-import com.mofang.feed.global.RedisFaster;
-import com.mofang.feed.global.RedisKey;
 import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.external.FeedForumOrder;
@@ -79,13 +77,6 @@ public class FeedForumLetteyGroupLoad implements FeedLoad {
 	@Override
 	public void exec() {		
 		try {
-			//暂时判断第一个分组
-			String hotFourmKey = RedisKey.HOT_FORUM_LIST_KEY_PREFIX + ForumHelper.ABCDE;
-			String recommendFourmKey = RedisKey.RECOMMEND_GAME_LIST_KEY_PREFIX + ForumHelper.ABCDE;
-			
-			if(!RedisFaster.exists(hotFourmKey) || !RedisFaster.exists(recommendFourmKey)) {
-				return;
-			}
 			
 			List<FeedForumOrder> forumOrderList = forumDao.getForumOrderList(ForumType.ALL);
 			if(forumOrderList == null){
