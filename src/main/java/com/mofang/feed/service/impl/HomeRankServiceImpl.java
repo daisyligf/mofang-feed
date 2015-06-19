@@ -12,7 +12,6 @@ import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.ForumType;
-import com.mofang.feed.global.common.ForumURLKey;
 import com.mofang.feed.global.common.UpDownStatus;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeHotForumRank;
@@ -28,19 +27,11 @@ import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
 import com.mofang.feed.mysql.impl.StatForumViewHistoryDaoImpl;
-import com.mofang.feed.redis.ForumUrlRedis;
-import com.mofang.feed.redis.HotForumListRedis;
-import com.mofang.feed.redis.RecommendGameListRedis;
-import com.mofang.feed.redis.impl.ForumUrlRedisImpl;
-import com.mofang.feed.redis.impl.HotForumListRedisImpl;
-import com.mofang.feed.redis.impl.RecommendGameListRedisImpl;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedHomeHotForumRankService;
 import com.mofang.feed.service.FeedHomeRecommendGameRankService;
 import com.mofang.feed.service.HomeRankService;
-import com.mofang.feed.util.RankHelper;
 import com.mofang.feed.util.TimeUtil;
-import com.mofang.framework.util.StringUtil;
 
 /***
  * 
@@ -57,9 +48,6 @@ public class HomeRankServiceImpl implements HomeRankService {
 	private FeedHomeHotForumRankService hotForumRankService = FeedHomeHotForumRankServiceImpl.getInstance();
 	private FeedHomeRecommendGameRankService recommendGameRankService = FeedHomeRecommendGameRankServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
-	private HotForumListRedis hotForumListRedis = HotForumListRedisImpl.getInstance();
-	private RecommendGameListRedis recommendGameListRedis = RecommendGameListRedisImpl.getInstance();
-	private ForumUrlRedis forumUrlRedis = ForumUrlRedisImpl.getInstance();
 	
 	private HomeRankServiceImpl(){}
 	
@@ -281,87 +269,23 @@ public class HomeRankServiceImpl implements HomeRankService {
 		}
 	}
 	
-	private void delHotForumListRedis() throws Exception {
-		hotForumListRedis.delete(RankHelper.ABCDE);
-		hotForumListRedis.delete(RankHelper.FGHIJ);
-		hotForumListRedis.delete(RankHelper.KLMNO);
-		hotForumListRedis.delete(RankHelper.PQRST);
-		hotForumListRedis.delete(RankHelper.WXYZ);
-		hotForumListRedis.delete(RankHelper.OTHER);
-	}
+//	private void delHotForumListRedis() throws Exception {
+//		hotForumListRedis.delete(ForumHelper.ABCDE);
+//		hotForumListRedis.delete(ForumHelper.FGHIJ);
+//		hotForumListRedis.delete(ForumHelper.KLMNO);
+//		hotForumListRedis.delete(ForumHelper.PQRST);
+//		hotForumListRedis.delete(ForumHelper.WXYZ);
+//		hotForumListRedis.delete(ForumHelper.OTHER);
+//	}
+//	
+//	private void delRecommendGameListRedis() throws Exception {
+//		recommendGameListRedis.delete(ForumHelper.ABCDE);
+//		recommendGameListRedis.delete(ForumHelper.FGHIJ);
+//		recommendGameListRedis.delete(ForumHelper.KLMNO);
+//		recommendGameListRedis.delete(ForumHelper.PQRST);
+//		recommendGameListRedis.delete(ForumHelper.WXYZ);
+//		recommendGameListRedis.delete(ForumHelper.OTHER);
+//	}
 	
-	private void delRecommendGameListRedis() throws Exception {
-		recommendGameListRedis.delete(RankHelper.ABCDE);
-		recommendGameListRedis.delete(RankHelper.FGHIJ);
-		recommendGameListRedis.delete(RankHelper.KLMNO);
-		recommendGameListRedis.delete(RankHelper.PQRST);
-		recommendGameListRedis.delete(RankHelper.WXYZ);
-		recommendGameListRedis.delete(RankHelper.OTHER);
-	}
-	
-	/**
-	 * 缓存 热门游戏 列表数据
-	 * @param list
-	 * @throws Exception
-	 */
-	private void addHotForumListRedis(List<FeedForumOrder> list) throws Exception{
-		for(FeedForumOrder model : list){
-			long forumId = model.getForumId();
-			FeedForum forum = forumService.getInfo(forumId);
-			if(forum != null){
-				String nameSpell  = forum.getNameSpell();
-				nameSpell = nameSpell.substring(0,1);
-				String key = RankHelper.match(nameSpell);
-				if(key==null)
-					continue;
-				hotForumListRedis.addHotForumList(key, forumId, model.getCreateTime());
-				forumUrlRedis.setUrl(forumId, buildUrlMap(forum));
-			}
-		}
-	}
-	
-	/**
-	 * 缓存 新游推荐 列表数据 
-	 * @param list
-	 * @throws Exception
-	 */
-	private void addRecommendGameListRedis(List<FeedForumOrder> list) throws Exception{
-		for(FeedForumOrder model : list){
-			long forumId = model.getForumId();
-			FeedForum forum = forumService.getInfo(forumId);
-			if(forum != null){
-				String nameSpell  = forum.getNameSpell();
-				nameSpell = nameSpell.substring(0,1);
-				String key = RankHelper.match(nameSpell);
-				if(key==null)
-					continue;
-				recommendGameListRedis.addRecommendGameList(key, forumId, model.getCreateTime());
-				forumUrlRedis.setUrl(forumId, buildUrlMap(forum));
-			}
-		}
-	}
-	
-	private Map<String, String> buildUrlMap(FeedForum forum){
-		Map<String,String> map = new HashMap<String, String>(3);
-		int gameId = forum.getGameId();
-		map.put(ForumURLKey.DOWNLOAD_URL_KEY, GlobalConfig.GAME_DOWNLOAD_URL + gameId);
-		boolean flag = HttpComponent.checkGift(gameId);
-		if(flag) {
-			Game game = HttpComponent.getGameInfo(gameId);
-			if(game != null) {
-				map.put(ForumURLKey.GIFT_URL_KEY, GlobalConfig.GIFT_INFO_URL + game.getName());
-			}else {
-				map.put(ForumURLKey.GIFT_URL_KEY, "");
-			}
-		} else{
-			map.put(ForumURLKey.GIFT_URL_KEY, "");
-		}
-		String prefectureUrl = HttpComponent.getPrefectureUrl(forum.getForumId());
-		if(StringUtil.isNullOrEmpty(prefectureUrl)) {
-			prefectureUrl = "";
-		}
-		map.put(ForumURLKey.PREFECTURE_URL_KEY, prefectureUrl);
-		return map;
-	}
 	
 }

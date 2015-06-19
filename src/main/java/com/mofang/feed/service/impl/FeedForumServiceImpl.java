@@ -51,7 +51,7 @@ import com.mofang.feed.solr.impl.FeedForumSolrImpl;
 import com.mofang.feed.solr.impl.FeedPostSolrImpl;
 import com.mofang.feed.solr.impl.FeedThreadSolrImpl;
 import com.mofang.feed.util.MysqlPageNumber;
-import com.mofang.feed.util.RankHelper;
+import com.mofang.feed.util.ForumHelper;
 import com.mofang.framework.util.ChineseSpellUtil;
 import com.mofang.framework.util.StringUtil;
 
@@ -108,13 +108,15 @@ public class FeedForumServiceImpl implements FeedForumService
 			if(!StringUtil.isNullOrEmpty(nameSpell)) 
 			{
 				nameSpell = nameSpell.substring(0, 1);
-				String nameKey = RankHelper.match(nameSpell);
+				String nameKey = ForumHelper.match(nameSpell);
 				long createTime = model.getCreateTime();
 				if(type == ForumType.HOT_FORUM) 
 					hotForumListRedis.addHotForumList(nameKey, forumId, createTime);
 				else if(type == ForumType.RECOMMEND_GAME) 
 					recommendGameListRedis.addRecommendGameList(nameKey, forumId, createTime);
 			}
+			///保存板块url信息
+			forumUrlRedis.setUrl(forumId, ForumHelper.buildUrlMap(model));
 			
 			/******************************数据库操作******************************/
 			///保存版块信息
@@ -185,7 +187,7 @@ public class FeedForumServiceImpl implements FeedForumService
 				if(!StringUtil.isNullOrEmpty(nameSpell)) 
 				{
 					nameSpell = nameSpell.substring(0, 1);
-					String nameKey = RankHelper.match(nameSpell);
+					String nameKey = ForumHelper.match(nameSpell);
 					if(type == ForumType.HOT_FORUM) 
 						hotForumListRedis.delete(nameKey, forumId);
 					else if(type == ForumType.RECOMMEND_GAME) 
