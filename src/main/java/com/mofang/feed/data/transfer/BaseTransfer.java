@@ -19,8 +19,10 @@ public abstract class BaseTransfer
 		try
 		{
 			Class.forName(Driver);
-			String url="jdbc:mysql://192.168.1.61:3306/feed_ol?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-			Connection conn = DriverManager.getConnection(url);
+			//String url="jdbc:mysql://192.168.1.61:3306/feed_ol?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			//String url="jdbc:mysql://10.6.16.194:3306/feed?user=feedbbs&password=UcCCTzAe&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			//Connection conn = DriverManager.getConnection(url);
+			Connection conn = MysqlConnectionProvider.ORIGINAL_CONN;
 			PreparedStatement pstmt = conn.prepareStatement(strSql);
 			ResultSet rs = pstmt.executeQuery();
 			return rs;
@@ -38,14 +40,14 @@ public abstract class BaseTransfer
 		{
 			Class.forName(Driver);
 			//String url="jdbc:mysql://192.168.1.61:3306/feed?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-			String url="jdbc:mysql://127.0.0.1:3306/feed?user=root&password=root&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-			Connection conn = DriverManager.getConnection(url);
+			//String url="jdbc:mysql://10.6.16.194:3306/feed_v3?user=mofang&password=UcCCTzAe&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			//Connection conn = DriverManager.getConnection(url);
+			Connection conn = MysqlConnectionProvider.NEW_CONN;
 			PreparedStatement pstmt = conn.prepareStatement(strSql);
 			pstmt.execute();
 		}
 		catch(Exception e)
 		{
-			System.out.println(strSql);
 			e.printStackTrace();
 		}
 	}
@@ -56,8 +58,9 @@ public abstract class BaseTransfer
 		{
 			Class.forName(Driver);
 			//String url="jdbc:mysql://192.168.1.61:3306/feed?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-			String url="jdbc:mysql://127.0.0.1:3306/feed?user=root&password=root&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-			Connection conn = DriverManager.getConnection(url);
+			//String url="jdbc:mysql://10.6.16.194:3306/feed_v3?user=mofang&password=UcCCTzAe&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			//Connection conn = DriverManager.getConnection(url);
+			Connection conn = MysqlConnectionProvider.NEW_CONN;
 			PreparedStatement pstmt = conn.prepareStatement(strSql);
 			return pstmt.executeQuery();
 		}

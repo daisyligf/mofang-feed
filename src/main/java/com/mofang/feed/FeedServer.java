@@ -16,7 +16,7 @@ import com.mofang.framework.web.server.reactor.parse.PostDataParserType;
  * @author zhaodx
  *
  */
-public class Server
+public class FeedServer
 {
 	public static void main(String[] args)
 	{

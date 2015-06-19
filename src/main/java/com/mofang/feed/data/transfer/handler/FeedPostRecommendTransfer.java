@@ -35,6 +35,8 @@ public class FeedPostRecommendTransfer extends BaseTransfer implements FeedTrans
 		System.out.println("prepare handle post_recommend data......");
 		handle(rs);
 		System.out.println("post_recommend data transfer completed!");
+		
+		System.gc();
 	}
 	
 	private ResultSet getData()
@@ -66,6 +68,8 @@ public class FeedPostRecommendTransfer extends BaseTransfer implements FeedTrans
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

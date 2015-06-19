@@ -36,6 +36,8 @@ public class FeedThreadRecommendTransfer extends BaseTransfer implements FeedTra
 		System.out.println("prepare handle thread_recommend data......");
 		handle(rs);
 		System.out.println("thread_recommend data transfer completed!");
+		
+		System.gc();
 	}
 	
 	private ResultSet getData()
@@ -72,6 +74,8 @@ public class FeedThreadRecommendTransfer extends BaseTransfer implements FeedTra
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

@@ -4,6 +4,15 @@ public class TransferMain
 {
 	public static void main(String[] args) 
 	{
-		TransferManager.exec();
+		try
+		{
+			//MysqlPoolProvider.initMysql();
+			MysqlConnectionProvider.init();
+			TransferManager.exec();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

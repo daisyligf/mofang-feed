@@ -48,8 +48,10 @@ public class FeedThreadTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("thread data transfer completed!");
 		
 		System.out.println("prepare add thread index......");
-		addIndex();
+		//addIndex();
 		System.out.println("add thread index completed!");
+		
+		System.gc();
 	}
 	
 	private ResultSet getData()
@@ -83,6 +85,8 @@ public class FeedThreadTransfer extends BaseTransfer implements FeedTransfer
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

@@ -35,6 +35,8 @@ public class FeedBlackListTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("prepare handle black_list data......");
 		handle(rs);
 		System.out.println("black_list data transfer completed!");
+		
+		System.gc();
 	}
 	
 	private ResultSet getData()
@@ -66,6 +68,8 @@ public class FeedBlackListTransfer extends BaseTransfer implements FeedTransfer
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

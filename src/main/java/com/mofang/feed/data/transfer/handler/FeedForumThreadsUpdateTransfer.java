@@ -36,6 +36,8 @@ public class FeedForumThreadsUpdateTransfer extends BaseTransfer implements Feed
 		System.out.println("prepare handle update forum threads......");
 		handle(rs);
 		System.out.println("forum threads update completed!");
+		
+		System.gc();
 	}
 	
 	private void handle(ResultSet rs)
@@ -60,6 +62,8 @@ public class FeedForumThreadsUpdateTransfer extends BaseTransfer implements Feed
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

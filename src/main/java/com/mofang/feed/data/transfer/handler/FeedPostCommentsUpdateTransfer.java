@@ -36,6 +36,8 @@ public class FeedPostCommentsUpdateTransfer extends BaseTransfer implements Feed
 		System.out.println("prepare update post comments......");
 		handle(rs);
 		System.out.println("post comments update completed!");
+		
+		System.gc();
 	}
 	
 	private void handle(ResultSet rs)
@@ -60,6 +62,8 @@ public class FeedPostCommentsUpdateTransfer extends BaseTransfer implements Feed
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

@@ -42,6 +42,8 @@ public class FeedThreadReplyUpdateTransfer extends BaseTransfer implements FeedT
 		System.out.println("prepare handle update forum threads......");
 		handle(postsMap, commentsMap);
 		System.out.println("forum threads update completed!");
+		
+		System.gc();
 	}
 	
 	private void handle(Map<Long, Integer> threadPostsMap, Map<Long, Integer> threadCommentsMap)
@@ -133,6 +135,8 @@ public class FeedThreadReplyUpdateTransfer extends BaseTransfer implements FeedT
 				posts = rs.getInt(2);
 				map.put(threadId, posts);
 			}
+			rs.close();
+			rs = null;
 			return map;
 		}
 		catch(Exception e)
@@ -160,6 +164,8 @@ public class FeedThreadReplyUpdateTransfer extends BaseTransfer implements FeedT
 				comments = rs.getInt(2);
 				map.put(threadId, comments);
 			}
+			rs.close();
+			rs = null;
 			return map;
 		}
 		catch(Exception e)

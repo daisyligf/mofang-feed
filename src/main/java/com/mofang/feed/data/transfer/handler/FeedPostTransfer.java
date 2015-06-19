@@ -17,6 +17,7 @@ import com.mofang.framework.util.StringUtil;
 public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 {
 	private final static int BATCH_EXEC_STEP = 1000;
+	private final static int BATCH_RECORDS = 200000;
 	private final static String SQL_PREFIX = "insert into feed_post(post_id, forum_id, thread_id, user_id, content, content_filter, content_mark, html_content, html_content_filter, html_content_mark, pictures, video_id, thumbnail, duration, position, comments, recommends, status, create_time, update_time) values ";
 	private List<String> sqlList = new ArrayList<String>();
 	
@@ -26,19 +27,27 @@ public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 		
 		///获取楼层数据
 		System.out.println("get post data......");
-		ResultSet rs = getData();
-		if(null == rs)
-		{
-			System.out.println("feed_post data is null.");
-			return;
-		}
 		
-		System.out.println("prepare handle post data......");
-		handle(rs);
+		int total = getCount();
+		int loopCount = total / BATCH_RECORDS + 1;
+		int start = 0;
+		for(int i=0; i<loopCount; i++)
+		{
+			ResultSet rs = getData(start, BATCH_RECORDS);
+			if(null == rs)
+			{
+				System.out.println("feed_post data is null.");
+				return;
+			}
+			
+			System.out.println("prepare handle post data......");
+			handle(rs);
+			start += BATCH_RECORDS;
+		}
 		
 		///获取fid=0的楼层数据
 		System.out.println("get post data......");
-		rs = getDataWithNonFid();
+		ResultSet rs = getDataWithNonFid();
 		if(null == rs)
 		{
 			System.out.println("feed_post data is null.");
@@ -50,17 +59,44 @@ public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("post data transfer completed!");
 		
 		System.out.println("prepare add post index......");
-		addIndex();
+		//addIndex();
 		System.out.println("add post index completed!");
+		
+		System.gc();
 	}
 	
-	private ResultSet getData()
+	private ResultSet getData(int start, int limit)
 	{
 		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select pid, fid, tid, user_id, post_time, message, original_message, position, comments, pic, status, recommends, video_id, thumbnail, duration, html_message, original_html_message ");
 		strSql.append("from feed_post where cpid = 0 and fid in(" + forumIds + ") ");
+		strSql.append("order by pid limit " + start + ", " + limit);
 		return getData(strSql.toString());
+	}
+	
+	private int getCount()
+	{
+		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select count(1) as total ");
+		strSql.append("from feed_post where cpid = 0 and fid in(" + forumIds + ") ");
+		ResultSet rs = getData(strSql.toString());
+		if(null == rs)
+			return 0;
+		
+		try
+		{
+			if(!rs.next())
+				return 0;
+			
+			return rs.getInt(1);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	private ResultSet getDataWithNonFid()
@@ -94,6 +130,8 @@ public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

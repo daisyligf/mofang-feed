@@ -61,8 +61,10 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("add new forum data completed!");
 		
 		System.out.println("prepare add forum index......");
-		addIndex();
+		//addIndex();
 		System.out.println("add forum index completed!");
+		
+		System.gc();
 	}
 	
 	private ResultSet getData()
@@ -96,6 +98,8 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

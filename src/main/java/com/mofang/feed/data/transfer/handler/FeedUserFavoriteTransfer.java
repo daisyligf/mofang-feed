@@ -38,8 +38,10 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 		System.out.println("user_favorite data transfer completed!");
 		
 		System.out.println("prepare add user_favorite index......");
-		addIndex();
+		//addIndex();
 		System.out.println("add user_favorite index completed!");
+		
+		System.gc();
 	}
 	
 	private ResultSet getData()
@@ -76,6 +78,8 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 			}
 			
 			batchExec();
+			rs.close();
+			rs = null;
 		}
 		catch(Exception e)
 		{

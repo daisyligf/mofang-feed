@@ -25,7 +25,7 @@ public class TransferManager
 		long start = System.currentTimeMillis();
 		long itemStart = 0L;
 		long itemEnd = 0L;
-		
+		/*
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedForumTransfer();
 		transfer.exec();
@@ -49,7 +49,7 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("comment data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		*/
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedThreadRecommendTransfer();
 		transfer.exec();

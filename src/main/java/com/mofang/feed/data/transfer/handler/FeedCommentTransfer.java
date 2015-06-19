@@ -38,8 +38,10 @@ public class FeedCommentTransfer extends BaseTransfer implements FeedTransfer
 		System.out.println("comment data transfer completed!");
 		
 		System.out.println("prepare add comment index......");
-		addIndex();
+		//addIndex();
 		System.out.println("add comment index completed!");
+		
+		System.gc();
 	}
 	
 	private ResultSet getData()
@@ -73,6 +75,8 @@ public class FeedCommentTransfer extends BaseTransfer implements FeedTransfer
 			}
 			
 			batchExec();
+			rs.close();
+			rs =null;
 		}
 		catch(Exception e)
 		{
