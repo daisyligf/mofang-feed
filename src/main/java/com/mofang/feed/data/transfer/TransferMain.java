@@ -6,7 +6,12 @@ public class TransferMain
 	{
 		try
 		{
-			//MysqlPoolProvider.initMysql();
+			/*
+			thread_id : 938054
+			post_id : 6193654
+			comment_id : 6193666
+			 */
+			
 			MysqlConnectionProvider.init();
 			TransferManager.exec();
 		}

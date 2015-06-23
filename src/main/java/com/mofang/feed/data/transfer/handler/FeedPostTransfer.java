@@ -18,7 +18,7 @@ public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 {
 	private final static int BATCH_EXEC_STEP = 1000;
 	private final static int BATCH_RECORDS = 200000;
-	private final static String SQL_PREFIX = "insert into feed_post(post_id, forum_id, thread_id, user_id, content, content_filter, content_mark, html_content, html_content_filter, html_content_mark, pictures, video_id, thumbnail, duration, position, comments, recommends, status, create_time, update_time) values ";
+	private final static String SQL_PREFIX = "insert into feed_post_new(post_id, forum_id, thread_id, user_id, content, content_filter, content_mark, html_content, html_content_filter, html_content_mark, pictures, video_id, thumbnail, duration, position, comments, recommends, status, create_time, update_time) values ";
 	private List<String> sqlList = new ArrayList<String>();
 	
 	public void exec()
@@ -202,7 +202,7 @@ public class FeedPostTransfer extends BaseTransfer implements FeedTransfer
 	
 	private void truncate()
 	{
-		String strSql = "truncate table feed_post";
+		String strSql = "truncate table feed_post_new";
 		execute(strSql);
 	}
 

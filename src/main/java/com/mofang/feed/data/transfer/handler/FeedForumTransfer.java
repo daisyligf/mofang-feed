@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -240,36 +241,52 @@ public class FeedForumTransfer extends BaseTransfer implements FeedTransfer
 	
 	private void initForumGameMap()
 	{
-		String requrl = "http://game.mofang.com/api/game/listfromforumids?type=1&ids=";
-		String param = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
-		requrl += param;
-		HttpRequester request = new HttpRequester(requrl);
-		String response = request.execute(3);
-		if(!StringUtil.isNullOrEmpty(response))
+		Set<Long> forumIdSet = ForumChangeUtil.RetainForumSet;
+		int step = 50;
+		int start = 1;
+		int total = forumIdSet.size();
+		StringBuilder strRetainForum = new StringBuilder();
+		for(Long forumId : forumIdSet)
 		{
-			try
+			strRetainForum.append(forumId + ",");
+			if(start % step == 0 || start == total)
 			{
-				JSONObject json = new JSONObject(response);
-				JSONObject data = json.optJSONObject("data");
-				if(null != data)
+				String requrl = "http://game.mofang.com/api/game/listfromforumids?type=1&ids=";
+				requrl += strRetainForum.substring(0, strRetainForum.length() - 1);
+				strRetainForum = new StringBuilder();
+				HttpRequester request = new HttpRequester(requrl);
+				String response = request.execute(3);
+				System.out.println("request url : " + requrl + "    response: " + response);
+				if(!StringUtil.isNullOrEmpty(response))
 				{
-					@SuppressWarnings("unchecked")
-					Iterator<String> iterator = data.keys();
-					JSONObject jsonItem = null;
-					while(iterator.hasNext())
+					try
 					{
-						String key = iterator.next();
-						if(StringUtil.isLong(key))
+						JSONObject json = new JSONObject(response);
+						JSONObject data = json.optJSONObject("data");
+						if(null != data)
 						{
-							jsonItem = data.optJSONObject(key);
-							int gameId = jsonItem.optInt("id");
-							forumGameMap.put(Long.parseLong(key), gameId);
+							@SuppressWarnings("unchecked")
+							Iterator<String> iterator = data.keys();
+							JSONObject jsonItem = null;
+							while(iterator.hasNext())
+							{
+								String key = iterator.next();
+								if(StringUtil.isLong(key))
+								{
+									jsonItem = data.optJSONObject(key);
+									int gameId = jsonItem.optInt("id");
+									forumGameMap.put(Long.parseLong(key), gameId);
+								}
+							}
 						}
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
 					}
 				}
 			}
-			catch(Exception e)
-			{}
+			start++;
 		}
 	}
 	

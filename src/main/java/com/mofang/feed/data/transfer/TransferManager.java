@@ -25,13 +25,13 @@ public class TransferManager
 		long start = System.currentTimeMillis();
 		long itemStart = 0L;
 		long itemEnd = 0L;
-		/*
+		
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedForumTransfer();
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("forum data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		/*
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedThreadTransfer();
 		transfer.exec();
@@ -49,7 +49,7 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("comment data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		*/
+		
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedThreadRecommendTransfer();
 		transfer.exec();
@@ -73,13 +73,13 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("black list data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		*/
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedForumThreadsUpdateTransfer();
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("forum threads update completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		/*
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedThreadReplyUpdateTransfer();
 		transfer.exec();
@@ -91,7 +91,7 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("post comments update completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		*/
 		long end = System.currentTimeMillis();
 		System.out.println("data transfer completed. cost time: " + (end - start) + " ms.");
 	}
