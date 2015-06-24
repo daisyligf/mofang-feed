@@ -177,6 +177,10 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			
 			JSONObject jsonPost = new JSONObject();
 			jsonPost.put("pid", model.getPostId());
+			///获取楼层评论数
+			postInfo = postService.getInfo(model.getPostId(), DataSource.REDIS);
+			if(null != postInfo)
+				jsonPost.put("comments", postInfo.getComments());
 			
 			///获取用户信息
 			JSONObject jsonUser = new JSONObject();
