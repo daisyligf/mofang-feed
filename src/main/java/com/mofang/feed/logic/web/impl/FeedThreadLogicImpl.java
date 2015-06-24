@@ -1055,8 +1055,8 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 						{
 							jsonThread = arrayThreads.getJSONObject(i);
 							jsonUser = jsonThread.optJSONObject("user");
-							String nickName = jsonThread.optString("nickname", "");
-							long userId = jsonThread.optLong("uid", 0L);
+							String nickName = jsonUser.optString("nickname", "");
+							long userId = jsonUser.optLong("user_id", 0L);
 							
 							///填充发帖用户信息
 							if(StringUtil.isNullOrEmpty(nickName))

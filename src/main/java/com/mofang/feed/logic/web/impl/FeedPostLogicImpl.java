@@ -763,6 +763,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				{
 					userInfo = userMap.get(userId);
 					jsonUser.put("nickname", userInfo.getNickName());
+					jsonUser.put("avatar", userInfo.getAvatar());
 				}
 			}
 		}
