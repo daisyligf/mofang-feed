@@ -172,8 +172,11 @@ public class HomeRankServiceImpl implements HomeRankService {
 			long yesterdayEndTime = TimeUtil.getYesterdyEndTime();
 			
 			Map<Long, ForumCount> uvMap = viewHistoryDao.getUV(forumIds, yesterdayStartTime, yesterdayEndTime);
+			//GlobalObject.INFO_LOG.info(logOut(uvMap, 1));
 			Map<Long, ForumCount> threadMap = threadDao.getThreadCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			//GlobalObject.INFO_LOG.info(logOut(threadMap, 2));
 			Map<Long, ForumCount> replyMap = postDao.getReplyCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			//GlobalObject.INFO_LOG.info(logOut(replyMap, 3));
 			
 			/********************获取板块用户关注数 暂时请求http*************************/
 			Map<Long, ForumCount> followMap = new HashMap<Long, ForumCount>(size);
@@ -196,12 +199,13 @@ public class HomeRankServiceImpl implements HomeRankService {
 				}
 				step += 100;
 			}
+			//GlobalObject.INFO_LOG.info(logOut(followMap, 4));
 			/********************************************************************************/
 			//Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			
 			/********************************取点赞数好蛋疼********************************/
-			Map<Long, ForumCount> postRecommendMap = forumDao.getPostRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
-			Map<Long, ForumCount> threadRecommendMap = forumDao.getThreadRecommendCount(type, yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCount> postRecommendMap = forumDao.getPostRecommendCount(yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCount> threadRecommendMap = forumDao.getThreadRecommendCount(yesterdayStartTime, yesterdayEndTime);
 			Map<Long, ForumCount> recommendMap = null;
 			if(postRecommendMap != null && threadRecommendMap != null ){
 				int postRecommendSize = postRecommendMap.size();
@@ -234,6 +238,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 			}else if(threadRecommendMap == null && postRecommendMap != null){
 				recommendMap = postRecommendMap;
 			}
+			//GlobalObject.INFO_LOG.info(logOut(recommendMap, 5));
 			/********************************************************************************/
 			
 			for(FeedForumOrder forumOrder : forumOrderList){
@@ -246,8 +251,16 @@ public class HomeRankServiceImpl implements HomeRankService {
 				
 				long orderValue = calculate(uv, threadCount, replyCount, followCount, recommendCount);
 				forumOrder.setOrderValue(orderValue);
+				
 			}
 			Collections.sort(forumOrderList);
+			
+//			StringBuilder sb = new StringBuilder();
+//			for(FeedForumOrder forumOrder : forumOrderList){
+//				sb.append(forumOrder.getForumId()).append("=").append(forumOrder.getOrderValue()).append("||");
+//			}
+//			GlobalObject.INFO_LOG.info("order map log------------------: " + sb.toString());
+
 			if(type == ForumType.ALL){
 				doRefreshHotForumRank(forumOrderList);
 				//delHotForumListRedis();
@@ -269,6 +282,28 @@ public class HomeRankServiceImpl implements HomeRankService {
 		}
 	}
 	
+//	private String logOut(Map<Long, ForumCount> map, int type) {
+//		if(map == null) {
+//			return "";
+//		}
+//		StringBuilder sb = new StringBuilder();
+//		if(type == 1) {
+//			sb.append("uv-----------------------:");
+//		} else if(type == 2) {
+//			sb.append("thread-----------------------:");
+//		} else if(type == 3) {
+//			sb.append("reply-----------------------:");
+//		} else if(type == 4) {
+//			sb.append("follow-----------------------:");
+//		} else if(type == 5) {
+//			sb.append("recommend-----------------------:");
+//		}
+//		for(Map.Entry<Long, ForumCount> entry : map.entrySet()) {
+//			sb.append(entry.getKey()).append("=").append(entry.getValue().count).append("||");
+//		}
+//		return sb.toString();
+//	}
+	
 //	private void delHotForumListRedis() throws Exception {
 //		hotForumListRedis.delete(ForumHelper.ABCDE);
 //		hotForumListRedis.delete(ForumHelper.FGHIJ);
@@ -286,6 +321,5 @@ public class HomeRankServiceImpl implements HomeRankService {
 //		recommendGameListRedis.delete(ForumHelper.WXYZ);
 //		recommendGameListRedis.delete(ForumHelper.OTHER);
 //	}
-	
 	
 }
