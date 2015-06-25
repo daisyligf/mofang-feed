@@ -252,13 +252,17 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			{
 				///保存主题信息
 				threadRedis.save(model);
-				///保存到版块对应的帖子列表
-				threadRedis.addForumThreadList(forumId, threadId, createTime);
+				
 				///如果是置顶帖
 				if(model.isTop())
 				{
 					///保存到版块置顶主题列表
 					threadRedis.addForumTopThreadList(forumId, threadId, topTime);
+				}
+				else
+				{
+					///保存到版块对应的帖子列表
+					threadRedis.addForumThreadList(forumId, threadId, createTime);
 				}
 				///版块主题数+1
 				forumRedis.incrThreads(forumId);

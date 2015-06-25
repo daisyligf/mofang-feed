@@ -90,8 +90,7 @@ public class FeedThreadLoad implements FeedLoad
 			{
 				///保存主题信息
 				threadRedis.save(threadInfo);
-				///保存到版块对应的帖子列表
-				threadRedis.addForumThreadList(forumId, threadId, createTime);
+				
 				///更新用户最后发帖时间
 				waterproofWallRedis.updateUserLastPostTime(userId, createTime);
 				///如果是置顶帖
@@ -99,6 +98,11 @@ public class FeedThreadLoad implements FeedLoad
 				{
 					///保存到版块置顶主题列表
 					threadRedis.addForumTopThreadList(forumId, threadId, topTime);
+				}
+				else
+				{
+					///保存到版块对应的帖子列表
+					threadRedis.addForumThreadList(forumId, threadId, createTime);
 				}
 			}
 		}

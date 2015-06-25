@@ -7,6 +7,7 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.CommentStatus;
 import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.model.FeedComment;
+import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.mysql.FeedCommentDao;
 import com.mofang.feed.mysql.FeedForumDao;
@@ -75,13 +76,21 @@ public class FeedCommentServiceImpl implements FeedCommentService
 			commentRedis.addPostCommentList(postId, commentId, postTime);
 			///楼层评论数 +1
 			postRedis.incrComments(postId);
-			///主题回复数 +1
-			threadRedis.incrReplies(threadId);
 			
-			///更新主题最后回复用户ID和最后回复时间
-			threadRedis.updateLastPost(threadId, userId, postTime);
-			///更新版块主题列表中该主题的score
-			threadRedis.addForumThreadList(forumId, threadId, postTime);
+			FeedThread threadInfo = threadRedis.getInfo(threadId);
+			if(null != threadInfo)
+			{
+				///主题回复数 +1
+				threadRedis.incrReplies(threadId);
+				
+				///更新主题最后回复用户ID和最后回复时间
+				threadRedis.updateLastPost(threadId, userId, postTime);
+				
+				///更新版块主题列表中该主题的score(只需要更新非置顶帖的score)
+				if(!threadInfo.isTop())
+					threadRedis.addForumThreadList(forumId, threadId, postTime);
+			}
+			
 			///版块今日发帖数 +1
 			forumRedis.incrTodayThreads(forumId);
 			
@@ -165,10 +174,16 @@ public class FeedCommentServiceImpl implements FeedCommentService
 			commentRedis.addPostCommentList(postId, commentId, postTime);
 			///楼层评论数 +1
 			postRedis.incrComments(postId);
-			///主题回复数 +1
-			threadRedis.incrReplies(threadId);
-			///更新版块主题列表中该主题的score
-			threadRedis.addForumThreadList(forumId, threadId, postTime);
+			
+			FeedThread threadInfo = threadRedis.getInfo(threadId);
+			if(null != threadInfo)
+			{
+				///主题回复数 +1
+				threadRedis.incrReplies(threadId);
+				///更新版块主题列表中该主题的score(只需要更新非置顶帖的score)
+				if(!threadInfo.isTop())
+					threadRedis.addForumThreadList(forumId, threadId, postTime);
+			}
 			/******************************数据库操作******************************/
 			///更新评论信息状态值为1 (正常)
 			commentDao.updateStatus(commentId, CommentStatus.NORMAL);

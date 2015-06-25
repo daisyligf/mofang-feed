@@ -117,6 +117,12 @@ public class FeedPostServiceImpl implements FeedPostService
 				{
 					postRedis.addHostPostList(threadId, postId, position);
 				}
+				
+				///更新主题最后回复用户ID和最后回复时间
+				threadRedis.updateLastPost(threadId, userId, postTime);
+				///更新版块主题列表中该主题的score(只需要更新非置顶帖的score)
+				if(!threadInfo.isTop())
+					threadRedis.addForumThreadList(forumId, threadId, postTime);
 			}
 			///主题回复数 +1
 			if(position > 1)
@@ -125,10 +131,6 @@ public class FeedPostServiceImpl implements FeedPostService
 				///版块今日发帖数 +1
 				forumRedis.incrTodayThreads(forumId);
 			}
-			///更新主题最后回复用户ID和最后回复时间
-			threadRedis.updateLastPost(threadId, userId, postTime);
-			///更新版块主题列表中该主题的score
-			threadRedis.addForumThreadList(forumId, threadId, postTime);
 			
 			/******************************数据库操作******************************/
 			///保存楼层信息
@@ -269,12 +271,16 @@ public class FeedPostServiceImpl implements FeedPostService
 				{
 					postRedis.addHostPostList(threadId, postId, position);
 				}
+				
+				///主题回复数 +1
+				if(position > 1)
+					threadRedis.incrReplies(threadId);
+				
+				///更新版块主题列表中该主题的score(只需要更新非置顶帖的score)
+				if(!threadInfo.isTop())
+					threadRedis.addForumThreadList(forumId, threadId, postTime);
 			}
-			///主题回复数 +1
-			if(position > 1)
-				threadRedis.incrReplies(threadId);
-			///更新版块主题列表中该主题的score
-			threadRedis.addForumThreadList(forumId, threadId, postTime);
+			
 			/******************************数据库操作******************************/
 			///更新楼层信息状态值为1 (正常)
 			postDao.updateStatus(postId, PostStatus.NORMAL);
