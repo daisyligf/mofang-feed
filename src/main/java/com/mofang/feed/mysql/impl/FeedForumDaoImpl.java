@@ -182,22 +182,12 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	}
 
 	@Override
-	public Map<Long,ForumCount> getPostRecommendCount(int type,
-			long startTime, long endTime) throws Exception {
+	public Map<Long,ForumCount> getPostRecommendCount(long startTime, long endTime) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select count(1) as recommend_count, b.forum_id from ");
-		strSql.append("(select post_id,a.forum_id from feed_post right join ");
-		
-		if(type != ForumType.ALL) {
-			strSql.append("(select forum_id from feed_forum where type = " + type);
-		}else {
-			strSql.append("(select forum_id from feed_forum");
-		}
-		
-		strSql.append(" ) a on a.forum_id = feed_post.forum_id) b left join ");
-		strSql.append("(select post_id from feed_post_recommend where ");
-		strSql.append("create_time >= " + startTime + " and create_time <= " + endTime +") c ");
-		strSql.append("on b.post_id = c.post_id group by b.forum_id");
+		strSql.append("select  count(1),a.forum_id from (");
+		strSql.append("select post_id, count(1) from feed_post_recommend");
+		strSql.append(" where create_time >= " + startTime+" and create_time <= " + endTime + " group by post_id)");
+		strSql.append(" b inner join feed_post a on b.post_id = a.post_id group by a.forum_id");
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
 			return null;
@@ -216,22 +206,12 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 
 
 	@Override
-	public Map<Long, ForumCount> getThreadRecommendCount(int type,
-			long startTime, long endTime) throws Exception {
+	public Map<Long, ForumCount> getThreadRecommendCount(long startTime, long endTime) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select count(1) as recommend_count, b.forum_id from ");
-		strSql.append("(select thread_id,a.forum_id from feed_thread right join ");
-		
-		if(type != ForumType.ALL) {
-			strSql.append("(select forum_id from feed_forum where type = " + type);
-		}else {
-			strSql.append("(select forum_id from feed_forum");
-		}
-		
-		strSql.append(" ) a on a.forum_id = feed_thread.forum_id) b left join ");
-		strSql.append("(select thread_id from feed_thread_recommend where ");
-		strSql.append("create_time >= " + startTime + " and create_time <= " + endTime +") c ");
-		strSql.append("on b.thread_id = c.thread_id group by b.forum_id");
+		strSql.append("select  count(1),a.forum_id from (");
+		strSql.append("select thread_id, count(1) from feed_thread_recommend");
+		strSql.append(" where create_time >= " + startTime+" and create_time <= " + endTime + " group by thread_id)");
+		strSql.append(" b inner join feed_thread a on b.thread_id = a.thread_id group by a.forum_id");
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
 			return null;
