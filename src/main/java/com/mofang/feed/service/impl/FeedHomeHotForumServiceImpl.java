@@ -39,8 +39,9 @@ public class FeedHomeHotForumServiceImpl implements FeedHomeHotForumService {
 	@Override
 	public void edit(List<FeedHomeHotForum> modelList) throws Exception {
 		try {
+			hotForumDao.deleteAll();
 			for(FeedHomeHotForum model : modelList){
-				hotForumDao.edit(model);
+				hotForumDao.add(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedHomeHotForumServiceImpl.update throw an error.", e);

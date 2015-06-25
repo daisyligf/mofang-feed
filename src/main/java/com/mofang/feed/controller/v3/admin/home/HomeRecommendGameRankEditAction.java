@@ -1,6 +1,7 @@
 package com.mofang.feed.controller.v3.admin.home;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -48,11 +49,17 @@ public class HomeRecommendGameRankEditAction extends AbstractActionExecutor {
 			return result;
 		}
 		int length = jsonArr.length();
+		//排重
+		LinkedHashSet<Long> forumIdSet = new LinkedHashSet<Long>(length);
+		for(int idx = 0; idx < length; idx ++) {
+			long forumId = jsonArr.optLong(idx);
+			forumIdSet.add(forumId);
+		}
 		List<FeedHomeRecommendGameRank> modelList = new ArrayList<FeedHomeRecommendGameRank>(
 				length);
-		for (int idx = 0; idx < length; idx++) {
-			int displayOrder = idx + 1;
-			long forumId = jsonArr.optLong(idx);
+		int displayOrder = 0;
+		for (Long forumId : forumIdSet) {
+			displayOrder++;
 			FeedHomeRecommendGameRank model = new FeedHomeRecommendGameRank();
 			model.setForumId(forumId);
 			model.setDisplayOrder(displayOrder);

@@ -1,7 +1,9 @@
 package com.mofang.feed.controller.v3.admin.home;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,18 +49,22 @@ public class HomeTitleEditAction extends AbstractActionExecutor {
 			return result;
 		}
 		int length = jsonArr.length();
-		List<FeedHomeTitle> modelList = new ArrayList<FeedHomeTitle>(length);
-		for (int idx = 0; idx < length; idx++) {
+		//排重
+		LinkedHashMap<Long, String> map = new LinkedHashMap<Long, String>(length);
+		for(int idx = 0; idx < length; idx ++) {
 			JSONObject jsonObj = jsonArr.getJSONObject(idx);
-
-			int displayOrder = idx + 1;
 			long threadId = jsonObj.optLong("thread_id", 0l);
 			String subject = jsonObj.optString("subject", "");
+			map.put(threadId, subject);
+		}
+		List<FeedHomeTitle> modelList = new ArrayList<FeedHomeTitle>(length);
+		int displayOrder = 0;
+		for (Map.Entry<Long, String> entry : map.entrySet()) {
+			displayOrder++;
 			FeedHomeTitle model = new FeedHomeTitle();
 			model.setDisplayOrder(displayOrder);
-			model.setThreadId(threadId);
-			model.setSubject(subject);
-
+			model.setThreadId(entry.getKey());
+			model.setSubject(entry.getValue());
 			modelList.add(model);
 		}
 		return logic.edit(modelList, operatorId);

@@ -6,11 +6,9 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedHomeRecommendGame;
 import com.mofang.feed.mysql.FeedHomeRecommendGameDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
-import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
-import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 
 public class FeedHomeRecommendGameDaoImpl extends
@@ -31,23 +29,8 @@ public class FeedHomeRecommendGameDaoImpl extends
 	}
 	
 	@Override
-	public void edit(FeedHomeRecommendGame model) throws Exception {
-		long forumId = model.getForumId();
-		FeedHomeRecommendGame oldModel = super.getByPrimaryKey(forumId);
-		if(oldModel != null){
-			super.deleteByPrimaryKey(forumId);
-			if(!super.updateByPrimaryKey(model)){
-				super.insert(model);
-			}
-		}else{
-			Operand where = new WhereOperand();
-			Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
-			where.append(equal);
-			if(!super.updateByWhere(model, where)){
-				super.insert(model);
-			}
-		}
-
+	public void add(FeedHomeRecommendGame model) throws Exception {
+		super.insert(model);
 	}
 
 	@Override
@@ -68,5 +51,14 @@ public class FeedHomeRecommendGameDaoImpl extends
 	public void delete(long forumId) throws Exception {
 		super.deleteByPrimaryKey(forumId);
 	}
+
+	@Override
+	public void deleteAll() throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("delete from feed_home_recommend_game_list");
+		super.execute(strSql.toString());
+	}
+	
+	
 
 }

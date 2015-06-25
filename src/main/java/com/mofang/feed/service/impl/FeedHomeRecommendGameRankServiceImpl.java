@@ -30,8 +30,9 @@ public class FeedHomeRecommendGameRankServiceImpl implements
 	public void edit(List<FeedHomeRecommendGameRank> modelList)
 			throws Exception {
 		try {
+			recommendGameRankDao.deleteAll();
 			for(FeedHomeRecommendGameRank model : modelList){
-				recommendGameRankDao.edit(model);
+				recommendGameRankDao.add(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedHomeRecommendGameRankServiceImpl.update throw an error.", e);

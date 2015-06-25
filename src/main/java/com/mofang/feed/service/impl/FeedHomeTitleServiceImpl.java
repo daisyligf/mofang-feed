@@ -38,8 +38,9 @@ public class FeedHomeTitleServiceImpl implements FeedHomeTitleService {
 	@Override
 	public void edit(List<FeedHomeTitle> modelList) throws Exception {
 		try {
+			homeTitleDao.deleteAll();
 			for(FeedHomeTitle model : modelList){
-				homeTitleDao.edit(model);
+				homeTitleDao.add(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error(
