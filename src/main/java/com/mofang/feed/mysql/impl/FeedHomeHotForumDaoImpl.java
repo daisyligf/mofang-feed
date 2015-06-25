@@ -6,11 +6,9 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedHomeHotForum;
 import com.mofang.feed.mysql.FeedHomeHotForumDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
-import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
-import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 
 public class FeedHomeHotForumDaoImpl extends
@@ -30,23 +28,10 @@ public class FeedHomeHotForumDaoImpl extends
 	}
 	
 	@Override
-	public void edit(FeedHomeHotForum model) throws Exception {
-		long forumId = model.getForumId();
-		FeedHomeHotForum oldModel = super.getByPrimaryKey(forumId);
-		if(oldModel != null){
-			super.deleteByPrimaryKey(forumId);
-			if(!super.updateByPrimaryKey(model)){
-				super.insert(model);
-			}
-		}else{
-			Operand where = new WhereOperand();
-			Operand equal = new EqualOperand("display_order", model.getDisplayOrder());
-			where.append(equal);
-			if(!super.updateByWhere(model, where)){
-				super.insert(model);
-			}
-		}
+	public void add(FeedHomeHotForum model) throws Exception {
+		super.insert(model);
 	}
+	
 
 	@Override
 	public List<FeedHomeHotForum> getList() throws Exception {
@@ -60,6 +45,13 @@ public class FeedHomeHotForumDaoImpl extends
 		Operand orderby = new OrderByOperand(entry);
 		none.append(orderby);
 		return super.getList(none);
+	}
+
+	@Override
+	public void deleteAll() throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("delete from feed_home_hot_forum_list");
+		super.execute(strSql.toString());
 	}
 
 	@Override

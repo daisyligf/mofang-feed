@@ -51,9 +51,9 @@ public class FeedHomeHotForumRankServiceImpl implements FeedHomeHotForumRankServ
 					model.setUpDown(upOrDown(oldModelList, model.getForumId(), idx + 1));
 				}
 			}
-			
+			forumRankDao.deleteAll();
 			for(FeedHomeHotForumRank model : modelList){
-				forumRankDao.edit(model);
+				forumRankDao.add(model);
 			}
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedHomeForumRankServiceImpl.update throw an error.", e);

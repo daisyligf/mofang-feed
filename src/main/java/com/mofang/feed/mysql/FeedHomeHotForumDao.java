@@ -6,7 +6,9 @@ import com.mofang.feed.model.FeedHomeHotForum;
 
 public interface FeedHomeHotForumDao {
 
-	public void edit(FeedHomeHotForum model) throws Exception;
+	public void add(FeedHomeHotForum model) throws Exception;
+	
+	public void deleteAll() throws Exception;
 	
 	public void delete(long forumId) throws Exception;
 	
