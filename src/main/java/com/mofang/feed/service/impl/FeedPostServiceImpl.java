@@ -20,12 +20,10 @@ import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.Video;
 import com.mofang.feed.mysql.FeedCommentDao;
-import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedPostRecommendDao;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.feed.mysql.impl.FeedCommentDaoImpl;
-import com.mofang.feed.mysql.impl.FeedForumDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedPostRecommendDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
@@ -63,7 +61,6 @@ public class FeedPostServiceImpl implements FeedPostService
 	private FeedCommentSolr commentSolr = FeedCommentSolrImpl.getInstance();
 	private FeedPostRecommendDao recommendDao = FeedPostRecommendDaoImpl.getInstance();
 	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
-	private FeedForumDao forumDao = FeedForumDaoImpl.getInstance();
 	
 	private FeedPostServiceImpl()
 	{}
@@ -139,8 +136,6 @@ public class FeedPostServiceImpl implements FeedPostService
 			if(position > 1)
 			{
 				threadDao.incrReplies(threadId);
-				///版块主题数 +1
-				forumDao.incrThreads(forumId);
 			}
 			///更新主题最后回复用户ID和最后回复时间
 			threadDao.updateLastPost(threadId, userId, postTime);
