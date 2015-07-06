@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/commentdisplay")
+@Action(url="feed/v3/app/comment/list")
 public class CommentListAction extends AbstractActionExecutor
 {
 	private FeedCommentLogic logic = FeedCommentLogicImpl.getInstance();
@@ -24,9 +24,9 @@ public class CommentListAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String strPostId = context.getParamMap().get("postid");
-		String strPageNum = context.getParameters("p");
-		String strPageSize = context.getParameters("pagesize");
+		String strPostId = context.getParamMap().get("pid");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		///参数检查
 		if(!StringUtil.isLong(strPostId))

@@ -19,7 +19,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/sendcomment")
+@Action(url="feed/v3/app/comment/add")
 public class CommentAddAction extends AbstractActionExecutor
 {
 	private FeedCommentLogic logic = FeedCommentLogicImpl.getInstance();
@@ -46,7 +46,7 @@ public class CommentAddAction extends AbstractActionExecutor
 		
 		long userId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
-		long postId = json.optLong("postid", 0L);
+		long postId = json.optLong("pid", 0L);
 		String content = json.optString("content", "");
 		
 		///参数检查

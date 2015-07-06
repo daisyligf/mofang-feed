@@ -15,6 +15,4 @@ public interface FeedCommentLogic
 	public ResultValue delete(long commentId, long operatorId, String reason) throws Exception;
 	
 	public ResultValue getPostCommentList(long postId, int pageNum, int pageSize) throws Exception;
-	
-	public ResultValue getUserCommentList(long userId, int pageNum, int pageSize) throws Exception;
 }
