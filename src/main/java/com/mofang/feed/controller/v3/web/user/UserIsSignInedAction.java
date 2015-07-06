@@ -10,7 +10,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v3/user/isSignIned")
+@Action(url = "feed/v3/web/user/isSignIned")
 public class UserIsSignInedAction extends AbstractActionExecutor {
 
 	private FeedUserSignInLogic logic = FeedUserSignInLogicImpl.getInstance();
