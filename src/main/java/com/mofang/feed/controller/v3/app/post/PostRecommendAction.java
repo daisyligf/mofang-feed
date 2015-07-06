@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/hotreply_add")
+@Action(url="feed/v3/app/post/recommend")
 public class PostRecommendAction extends AbstractActionExecutor
 {
 	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();

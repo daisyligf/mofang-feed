@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/threaddetail")
+@Action(url="feed/v3/app/post/info")
 public class PostInfoAction extends AbstractActionExecutor
 {
 	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();

@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v3/floor/del")
+@Action(url = "feed/v3/app/post/delete")
 public class PostDeleteAction extends AbstractActionExecutor
 {
 	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();
@@ -45,7 +45,6 @@ public class PostDeleteAction extends AbstractActionExecutor
 		long operatorId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
 		long postId = json.optLong("pid", 0L);
-		String reason = json.optString("reason", "");
 		
 		///参数检查
 		if(postId <= 0)
@@ -54,6 +53,6 @@ public class PostDeleteAction extends AbstractActionExecutor
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-		return logic.delete(postId, operatorId, reason);
+		return logic.delete(postId, operatorId, null);
 	}
 }

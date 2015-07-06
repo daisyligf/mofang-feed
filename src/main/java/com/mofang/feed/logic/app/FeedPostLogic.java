@@ -22,7 +22,5 @@ public interface FeedPostLogic
 	
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception;
 	
-	public ResultValue getUserPostList(long userId, int pageNum, int pageSize) throws Exception;
-	
 	public ResultValue getUserReplyList(long userId, int pageNum, int pageSize) throws Exception;
 }

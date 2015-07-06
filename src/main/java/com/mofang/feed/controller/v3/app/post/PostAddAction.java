@@ -1,5 +1,6 @@
 package com.mofang.feed.controller.v3.app.post;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
@@ -19,7 +20,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/sendreply")
+@Action(url="feed/v3/app/post/add")
 public class PostAddAction extends AbstractActionExecutor
 {
 	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();
@@ -49,7 +50,15 @@ public class PostAddAction extends AbstractActionExecutor
 		long threadId = json.optLong("tid", 0L);
 		String content = json.optString("content", "");
 		String htmlContent = content;
-		String pics = json.optString("pic", "");
+		JSONArray arrayPic = json.optJSONArray("pic");
+		String pics = "";
+		if(null != arrayPic)
+		{
+			for(int i=0; i<arrayPic.length(); i++)
+				pics += arrayPic.getString(i) + ",";
+		}
+		if(pics.length() > 0)
+			pics = pics.substring(0, pics.length() - 1);
 		
 		///参数检查
 		if(threadId <= 0 || StringUtil.isNullOrEmpty(content)

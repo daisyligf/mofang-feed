@@ -21,15 +21,13 @@ import com.mofang.feed.global.common.OperateBehavior;
 import com.mofang.feed.global.common.OperateSourceType;
 import com.mofang.feed.global.common.RecommendType;
 import com.mofang.feed.global.common.ReplyType;
-import com.mofang.feed.global.common.RequestFrom;
-import com.mofang.feed.global.common.ThreadTag;
-import com.mofang.feed.global.common.ThreadType;
 import com.mofang.feed.logic.app.FeedPostLogic;
 import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedPostAndComment;
+import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.FeedRecommendNotify;
@@ -45,6 +43,7 @@ import com.mofang.feed.service.FeedCommentService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
+import com.mofang.feed.service.FeedSysRoleService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.FeedUserFavoriteService;
@@ -54,6 +53,7 @@ import com.mofang.feed.service.impl.FeedCommentServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
+import com.mofang.feed.service.impl.FeedSysRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.feed.service.impl.FeedUserFavoriteServiceImpl;
@@ -79,6 +79,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private FeedUserFavoriteService favoriteService = FeedUserFavoriteServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
+	private FeedSysRoleService roleService = FeedSysRoleServiceImpl.getInstance();
 	
 	private FeedPostLogicImpl()
 	{}
@@ -191,56 +192,8 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			notify.setReplyType(ReplyType.THREAD);
 			HttpComponent.pushPostReplyNotify(notify);
 			
-			///构建返回结果
-			JSONObject data = new JSONObject();
-			data.put("tid", threadId);
-			data.put("pid", postId);
-			data.put("uid", userId);
-			data.put("replys", new JSONArray());
-			data.put("pic", MiniTools.StringToJSONArray(model.getPictures()));
-			data.put("ctime", model.getCreateTime());
-			data.put("content", model.getContentFilter());
-			data.put("html_content", model.getHtmlContentFilter());
-			data.put("floor", model.getPosition());
-			data.put("replycnt", model.getComments());
-			
-			///老版本一些属性
-//			data.put("voice", "");
-//			data.put("duration", "");
-			data.put("userId", 0);
-			
-			///获取用户信息
-			User userInfo = UserComponent.getInfo(userId);
-			if(null != userInfo)
-			{
-				data.put("nickname", userInfo.getNickName());
-				data.put("avatar", userInfo.getAvatar());
-				data.put("level", userInfo.getLevel());
-				data.put("coin", userInfo.getCoin());
-				data.put("diamond", userInfo.getDiamond());
-				data.put("exp", userInfo.getExp());
-				data.put("upgrade_exp", userInfo.getUpgradeExp());
-				data.put("gained_exp", userInfo.getGainedExp());
-				data.put("badge", userInfo.getBadges());
-				
-				JSONObject jsonUser = new JSONObject();
-				jsonUser.put("nickname", userInfo.getNickName());
-				jsonUser.put("avatar", userInfo.getAvatar());
-				jsonUser.put("level", userInfo.getLevel());
-				jsonUser.put("coin", userInfo.getCoin());
-				jsonUser.put("diamond", userInfo.getDiamond());
-				jsonUser.put("exp", userInfo.getExp());
-				jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-				jsonUser.put("gained_exp", userInfo.getGainedExp());
-				jsonUser.put("badge", userInfo.getBadges());
-				data.put("user", jsonUser);
-			}
-			
 			///返回结果
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
-			return result;
+			return getInfo(postId);
 		}
 		catch(Exception e)
 		{
@@ -390,29 +343,29 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 			
 			JSONObject data = new JSONObject();
-			data.put("fid", postInfo.getForumId());        ///所属版块ID
-			data.put("tid", postInfo.getThreadId());       ///主题ID
 			data.put("pid", postInfo.getPostId());          ///楼层ID
-			data.put("uid", postInfo.getUserId());         ///发布楼层的用户ID
 			data.put("content", postInfo.getContentFilter());      ///楼层内容
 			data.put("html_content", postInfo.getHtmlContentFilter());    ///楼层HTML内容
 			data.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));     ///楼层图片
-			data.put("floor", postInfo.getPosition());     ///楼层数
-			data.put("ctime", postInfo.getCreateTime());      ///创建时间
+			data.put("position", postInfo.getPosition());     ///楼层数
+			data.put("create_time", postInfo.getCreateTime());      ///创建时间
 			
-			///获取用户信息
+			///版块信息
+			JSONObject jsonForum = new JSONObject();
+			jsonForum.put("fid", postInfo.getForumId());
+			
+			///主题信息
+			JSONObject jsonThread = new JSONObject();
+			jsonThread.put("tid", postInfo.getThreadId());
+			
+			///用户信息
+			JSONObject jsonUser = new JSONObject();
+			jsonUser.put("user_id", postInfo.getUserId());
 			User userInfo = UserComponent.getInfo(postInfo.getUserId());
 			if(null != userInfo)
 			{
-				data.put("nickname", userInfo.getNickName());
-				data.put("avatar", userInfo.getAvatar());
-				data.put("level", userInfo.getLevel());
-				data.put("coin", userInfo.getCoin());
-				data.put("diamond", userInfo.getDiamond());
-				data.put("exp", userInfo.getExp());
-				data.put("upgrade_exp", userInfo.getUpgradeExp());
-				data.put("gained_exp", userInfo.getGainedExp());
-				data.put("badge", userInfo.getBadges());
+				jsonUser.put("nickname", userInfo.getNickName());
+				jsonUser.put("avatar", userInfo.getAvatar());
 			}
 			
 			///返回结果
@@ -432,8 +385,9 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	{
 		/*********记录用户浏览数**********/
 		StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
-		ResultValue resultValue = getThreadPostListByApp(threadId, pageNum, pageSize, currentUserId);
-		return resultValue;
+		
+		Page<FeedPost> page = postService.getThreadPostList(threadId, pageNum, pageSize);
+		return getPostList(page, threadId, currentUserId);
 	}
 
 	@Override
@@ -442,114 +396,8 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		/*********记录用户浏览数**********/
 		StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
 
-		ResultValue resultValue = getHostPostListByApp(threadId, pageNum, pageSize, currentUserId);
-		return resultValue;
-	}
-
-	@Override
-	public ResultValue getUserPostList(long userId, int pageNum, int pageSize) throws Exception
-	{
-		try
-		{
-			ResultValue result = new ResultValue();
-			JSONObject data = new JSONObject();
-			JSONArray arrayItems = new JSONArray();
-			JSONObject jsonItem = null;
-			long total = 0;
-			Page<FeedPost> page = postService.getUserPostList(userId, pageNum, pageSize);
-			if(null != page)
-			{
-				total = page.getTotal();
-				List<FeedPost> posts = page.getList();
-				if(null != posts)
-				{
-					JSONObject jsonPost = null;
-					JSONObject jsonThread = null;
-					User userInfo = null;
-					for(FeedPost postInfo : posts)
-					{
-						jsonItem = new JSONObject();
-						jsonPost = new JSONObject();
-						jsonPost.put("fid", postInfo.getForumId());
-						jsonPost.put("pid", postInfo.getPostId());
-						jsonPost.put("user_id", userId);
-						jsonPost.put("start", (postInfo.getPosition() == 1 ? 1 : 0));
-						jsonPost.put("message", postInfo.getContentFilter());
-						jsonPost.put("html_content", postInfo.getHtmlContentFilter());
-						jsonPost.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));
-						jsonPost.put("post_time", postInfo.getCreateTime() / 1000);
-						
-						jsonThread = new JSONObject();
-						FeedThread threadInfo = threadService.getFullInfo(postInfo.getThreadId());
-						if(null != threadInfo)
-						{
-							jsonThread.put("fid", threadInfo.getForumId());
-							jsonThread.put("tid", threadInfo.getThreadId());
-							jsonThread.put("user_id", threadInfo.getUserId());
-							jsonThread.put("subject", threadInfo.getSubjectFilter());
-							jsonThread.put("recommends", threadInfo.getRecommends());
-							jsonThread.put("page_view", threadInfo.getPageView());
-							jsonThread.put("replies", threadInfo.getReplies());
-							jsonThread.put("share_times", threadInfo.getShareTimes());
-							jsonThread.put("is_closed", threadInfo.isClosed() ? 1 : 0);
-							jsonThread.put("end_post_time", threadInfo.getLastPostTime() / 1000);
-							jsonThread.put("type", "0");
-							jsonThread.put("last_poster_id", threadInfo.getLastPostUid());
-							jsonThread.put("create_time", threadInfo.getCreateTime() / 1000);
-							jsonThread.put("display_order", 0);
-							
-							///获取用户信息
-							userInfo = UserComponent.getInfo(threadInfo.getUserId());
-							if(null != userInfo)
-								jsonThread.put("nickname", userInfo.getNickName());
-							
-							///构建tag信息(老版本中主题的状态是用标签来实现的, 新版中已经改用字段, 但接口需要支持老版本)
-							String tags = "";
-							if(threadInfo.isElite())
-								tags += "," + ThreadTag.ELITE;
-							if(threadInfo.isVideo())
-								tags += "," + ThreadTag.VIDEO;
-							if(threadInfo.isMark())
-								tags += "," + ThreadTag.MARK;
-							if(threadInfo.getType() == ThreadType.QUESTION)
-								tags += "," + ThreadTag.QUESTION;
-							if(tags.length() > 0)
-								tags = tags.substring(1);
-							jsonThread.put("tags", tags);
-							
-							if(null != threadInfo.getPost())
-							{
-								if(threadInfo.isVideo())
-								{
-									jsonThread.put("video_id", threadInfo.getPost().getVideoId());
-									jsonThread.put("duration", threadInfo.getPost().getDuration());
-									jsonThread.put("thumbnail", threadInfo.getPost().getThumbnail());
-								}
-								
-								jsonThread.put("pic", MiniTools.StringToJSONArray(threadInfo.getPost().getPictures()));
-								jsonThread.put("content", threadInfo.getPost().getContentFilter());
-								jsonThread.put("html_content", threadInfo.getPost().getHtmlContentFilter());
-							}
-						}
-						
-						jsonItem.put("floor", postInfo);
-						jsonItem.put("thread", threadInfo);
-						arrayItems.put(jsonItem);
-					}
-				}
-			}
-
-			data.put("total", total);
-			data.put("list", arrayItems);
-			result.setCode(ReturnCode.SUCCESS);
-			result.setMessage(ReturnMessage.SUCCESS);
-			result.setData(data);
-			return result;
-		}
-		catch(Exception e)
-		{
-			throw new Exception("at FeedPostLogicImpl.getUserPostList throw an error.", e);
-		}
+		Page<FeedPost> page = postService.getHostPostList(threadId, pageNum, pageSize);
+		return getPostList(page, threadId, currentUserId);
 	}
 
 	@Override
@@ -606,19 +454,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		}
 	}
 
-	private ResultValue getThreadPostListByApp(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
-	{
-		Page<FeedPost> page = postService.getThreadPostList(threadId, pageNum, pageSize);
-		return getPostListByApp(page, threadId, pageNum, pageSize, currentUserId);
-	}
-	
-	private ResultValue getHostPostListByApp(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
-	{
-		Page<FeedPost> page = postService.getHostPostList(threadId, pageNum, pageSize);
-		return getPostListByApp(page, threadId, pageNum, pageSize, currentUserId);
-	}
-	
-	private ResultValue getPostListByApp(Page<FeedPost> page, long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
+	private ResultValue getPostList(Page<FeedPost> page, long threadId, long currentUserId) throws Exception
 	{
 		try
 		{
@@ -626,22 +462,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			JSONObject data = new JSONObject();
 			long total = 0;
 			JSONArray arrayPosts = new JSONArray();
-			JSONArray arrayHotPosts = new JSONArray();
-			
-			///获取主题
-			FeedThread threadInfo = threadService.getFullInfo(threadId);
-			JSONObject jsonThread = buildThreadJSONObject(threadInfo, currentUserId);
-			if(null == jsonThread)
-			{
-				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
-				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
-			}
-			
-			jsonThread.put("total", total);
-			///获取主题相关视频列表
-			JSONArray arrayRelationVideoes = new JSONArray();
-			jsonThread.put("related_videos", arrayRelationVideoes);
-			
+			JSONObject jsonThread = new JSONObject();
 			if(null != page)
 			{
 				total = page.getTotal();
@@ -653,73 +474,53 @@ public class FeedPostLogicImpl implements FeedPostLogic
 					///存储缓存中没有数据的用户ID, 用于批量获取用户信息
 					Set<Long> uids = new HashSet<Long>();
 					JSONObject jsonPost = null;
+					JSONObject jsonForum = null;
+					JSONObject jsonUser = null;
 					User userInfo = null;
 					long userId = 0L;
 					for(FeedPost postInfo : posts)
 					{
 						userId = postInfo.getUserId();
 						jsonPost = new JSONObject();
-						jsonPost.put("fid", postInfo.getForumId());
 						jsonPost.put("pid", postInfo.getPostId());
-						jsonPost.put("uid", userId);
 						jsonPost.put("content", postInfo.getContentFilter());
 						jsonPost.put("html_content", postInfo.getHtmlContentFilter());
 						jsonPost.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));
-						jsonPost.put("support_cnt", postInfo.getRecommends());
-						jsonPost.put("replycnt", postInfo.getComments());
-						jsonPost.put("floor", postInfo.getPosition());
-						jsonPost.put("ctime", postInfo.getCreateTime() / 1000);
-						//jsonPost.put("voice", "");
-						//jsonPost.put("duration", "");
+						jsonPost.put("recommends", postInfo.getRecommends());
+						jsonPost.put("comments", postInfo.getComments());
+						jsonPost.put("position", postInfo.getPosition());
+						jsonPost.put("create_time", postInfo.getCreateTime());
 						
 						///是否点赞
 						boolean isRecommend = false;
 						if(null != recommendPostIds)
 							isRecommend = recommendPostIds.contains(String.valueOf(postInfo.getPostId()));
-						jsonPost.put("is_support", isRecommend ? 1 : 0);
+						jsonPost.put("is_recommend", isRecommend);
+						
+						jsonForum = new JSONObject();
+						jsonForum.put("fid", postInfo.getForumId());
+						jsonPost.put("forum", jsonForum);
 						
 						///获取楼层用户信息
+						jsonUser = new JSONObject();
+						jsonUser.put("user_id", postInfo.getUserId());
+						
 						userInfo = UserComponent.getInfoFromCache(userId);
 						if(null == userInfo)
 							uids.add(postInfo.getUserId());
 						else
 						{
-							jsonPost.put("nickname", userInfo.getNickName());
-							jsonPost.put("avatar", userInfo.getAvatar());
-							jsonPost.put("level", userInfo.getLevel());
-							jsonPost.put("coin", userInfo.getCoin());
-							jsonPost.put("diamond", userInfo.getDiamond());
-							jsonPost.put("exp", userInfo.getExp());
-							jsonPost.put("upgrade_exp", userInfo.getUpgradeExp());
-							jsonPost.put("gained_exp", userInfo.getGainedExp());
-							jsonPost.put("badge", userInfo.getBadges());
-							
-							JSONObject jsonUser = buildUserJSONObject(userInfo);
-							long threadCount = threadService.getUserThreadCount(userId);
-							long eliteThreadCount = threadService.getUserEliteThreadCount(userId);
-							long postCount = postService.getUserPostCount(userId);
-							long commentCount = commentService.getUserCommentCount(userId);
-							jsonUser.put("threads", threadCount);
-							jsonUser.put("replies", postCount + commentCount);
-							jsonUser.put("elite_threads", eliteThreadCount);
-							
-							///判断是否为版主
-							long forumId = postInfo.getForumId();
-							int roleId = userRoleService.getRoleId(forumId, userId);
-							jsonUser.put("is_moderator", roleId > 0);
-							jsonPost.put("user", jsonUser);
+							jsonUser.put("nickname", userInfo.getNickName());
+							jsonUser.put("avatar", userInfo.getAvatar());
 						}
+						jsonPost.put("user", jsonUser);
 						
 						///获取楼层评论
-						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId(), RequestFrom.APP);
+						JSONArray arrayComments = buildPostCommentList(postInfo.getPostId());
 						if(null == arrayComments)
 							arrayComments = new JSONArray();
-						jsonPost.put("replys", arrayComments);
-						
-						if(postInfo.getComments() >= 10)
-							arrayHotPosts.put(jsonPost);
-						else
-							arrayPosts.put(jsonPost);
+						jsonPost.put("comment_list", arrayComments);
+						arrayPosts.put(jsonPost);
 					}
 					
 					///填充用户信息
@@ -727,16 +528,40 @@ public class FeedPostLogicImpl implements FeedPostLogic
 					{
 						Map<Long, User> userMap = UserComponent.getInfoByIds(uids);
 						if(null != userMap)
-						{
 							fillPostUser(arrayPosts, userMap);
-							fillPostUser(arrayHotPosts, userMap);
-						}
 					}
 				}
 			}
-			data.put("postlist", arrayPosts);
-			data.put("hotpostlist", arrayHotPosts);
+			
+			///获取主题
+			FeedThread threadInfo = threadService.getFullInfo(threadId);
+			jsonThread = buildThreadJSONObject(threadInfo, currentUserId);
+			if(null == jsonThread)
+				jsonThread = new JSONObject();
+			
+			///获取当前用户角色权限
+			JSONObject jsonCurrentUser = new JSONObject();
+			boolean isAdmin = adminService.exists(currentUserId);
+			int roleId = userRoleService.getRoleId(threadInfo.getForumId(), currentUserId);
+			boolean isModerator = false;
+			JSONArray arrayPrivileges = new JSONArray();
+			if(roleId > 0)
+			{
+				FeedSysRole roleInfo = roleService.getInfo(roleId);
+				if(null != roleInfo)
+				{
+					isModerator = true;
+					arrayPrivileges = MiniTools.StringToJSONArray(roleInfo.getPrivileges());
+				}
+			}
+			jsonCurrentUser.put("is_admin", isAdmin);
+			jsonCurrentUser.put("is_moderator", isModerator);
+			jsonCurrentUser.put("privileges", arrayPrivileges);
+
 			data.put("thread", jsonThread);
+			data.put("total", total);
+			data.put("posts", arrayPosts);
+			data.put("current_user", jsonCurrentUser);
 			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
@@ -745,75 +570,48 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		}
 		catch(Exception e)
 		{
-			throw new Exception("at FeedPostLogicImpl.getPostListByApp throw an error.", e);
+			throw new Exception("at FeedPostLogicImpl.getPostList throw an error.", e);
 		}
 	}
 	
 	private JSONObject buildThreadJSONObject(FeedThread threadInfo, long currentUserId) throws Exception
 	{
 		JSONObject jsonThread = new JSONObject();
-		jsonThread.put("fid", threadInfo.getForumId());
 		jsonThread.put("tid", threadInfo.getThreadId());
-		jsonThread.put("uid", threadInfo.getUserId());
-		jsonThread.put("title", threadInfo.getSubjectFilter());
-		jsonThread.put("postcnt", threadInfo.getReplies());
+		jsonThread.put("subject", threadInfo.getSubjectFilter());
+		jsonThread.put("replies", threadInfo.getReplies());
 		jsonThread.put("recommends", threadInfo.getRecommends());
-		
-		///构建tag信息(老版本中主题的状态是用标签来实现的, 新版中已经改用字段, 但接口需要支持老版本)
-		String tags = "";
-		if(threadInfo.isElite())
-			tags += "," + ThreadTag.ELITE;
-		if(threadInfo.isVideo())
-			tags += "," + ThreadTag.VIDEO;
-		if(threadInfo.isMark())
-			tags += "," + ThreadTag.MARK;
-		if(threadInfo.getType() == ThreadType.QUESTION)
-			tags += "," + ThreadTag.QUESTION;
-		if(tags.length() > 0)
-			tags = tags.substring(1);
-		jsonThread.put("tags", tags);
+		jsonThread.put("pageview", threadInfo.getPageView());
+		jsonThread.put("create_time", threadInfo.getCreateTime());
+		jsonThread.put("is_elite", threadInfo.isElite());
+		jsonThread.put("is_top", threadInfo.isTop());
+		jsonThread.put("is_closed", threadInfo.isClosed());
 		
 		///判断是否已对该主题点赞
 		boolean isRecommend = threadService.existsRecommend(currentUserId, threadInfo.getThreadId());
-		jsonThread.put("isrecommend", isRecommend ? 1 : 0);
+		jsonThread.put("is_recommend", isRecommend);
 		
 		///判断是否已收藏该主题
 		boolean isFavorite = favoriteService.exists(currentUserId, threadInfo.getThreadId());
-		jsonThread.put("fav", isFavorite ? 1 : 0);
-		//jsonThread.put("is_closed", threadInfo.isClosed() ? 1 : 0);
-		jsonThread.put("state", threadInfo.isClosed() ? "1" : "0");
-		jsonThread.put("page_view", threadInfo.getPageView());
-		jsonThread.put("category", threadInfo.isTop() ? 1 : 0);
+		jsonThread.put("is_fav", isFavorite);
 		
-		///获取版块信息
+		JSONObject jsonForum = new JSONObject();
+		jsonForum.put("fid", threadInfo.getForumId());
+		jsonThread.put("forum", jsonForum);
 		FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
 		if(null != forumInfo)
 		{
-			jsonThread.put("forum_name", forumInfo.getName());
-			jsonThread.put("forum_type", forumInfo.getType());
-			jsonThread.put("forum_icon", forumInfo.getIcon());
-		}
-		
-		///获取主题视频信息
-		if(threadInfo.isVideo())
-		{
-			FeedPost firstPostInfo = threadInfo.getPost();
-			if(null != firstPostInfo)
-			{
-				JSONObject jsonVideo = new JSONObject();
-				jsonVideo.put("id", firstPostInfo.getVideoId());
-				jsonVideo.put("thumbnail", firstPostInfo.getThumbnail());
-				jsonVideo.put("duration", firstPostInfo.getDuration());
-				jsonThread.put("video", jsonVideo);
-			}
+			jsonForum.put("name", forumInfo.getName());
+			jsonForum.put("icon", forumInfo.getIcon());
 		}
 		
 		///获取主题用户信息
+		JSONObject jsonUser = new JSONObject();
+		jsonUser.put("user_id", threadInfo.getUserId());
 		User threadUserInfo = UserComponent.getInfo(threadInfo.getUserId());
 		if(null != threadUserInfo)
 		{
-			JSONObject jsonUser = buildUserJSONObject(threadUserInfo);
-			
+			jsonUser = buildUserJSONObject(threadUserInfo);
 			long threadCount = threadService.getUserThreadCount(threadInfo.getUserId());
 			long eliteThreadCount = threadService.getUserEliteThreadCount(threadInfo.getUserId());
 			long postCount = postService.getUserPostCount(threadInfo.getUserId());
@@ -821,52 +619,43 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			jsonUser.put("threads", threadCount);
 			jsonUser.put("replies", postCount + commentCount);
 			jsonUser.put("elite_threads", eliteThreadCount);
-			
-			///判断是否为版主
-			int roleId = userRoleService.getRoleId(threadInfo.getForumId(), threadInfo.getUserId());
-			jsonUser.put("is_moderator", roleId > 0);
-			jsonUser.put("is_admin", adminService.exists(currentUserId));
-			jsonThread.put("user", jsonUser);
 		}
+		jsonThread.put("forum", jsonForum);
+		jsonThread.put("user", jsonUser);
 		return jsonThread;
 	}
 	
-	private JSONArray buildPostCommentList(long postId, RequestFrom from) throws Exception
+	private JSONArray buildPostCommentList(long postId) throws Exception
 	{
 		JSONArray arrayComments = new JSONArray();
-		Page<FeedComment> pageComments = null;
-		if(from == RequestFrom.APP)
-			pageComments = commentService.getPostCommentList(postId, 1, 5);
-		else if(from == RequestFrom.WEB)
-			pageComments = commentService.getPostCommentList(postId, 1, 10);
+		Page<FeedComment> pageComments = commentService.getPostCommentList(postId, 1, 10);
 		if(null != pageComments)
 		{
 			List<FeedComment> comments = pageComments.getList();
 			if(null != comments && comments.size() > 0)
 			{
 				JSONObject jsonComment = null;
+				JSONObject jsonPost = null;
+				JSONObject jsonUser = null;
 				for(FeedComment commentInfo : comments)
 				{
 					jsonComment = new JSONObject();
-					jsonComment.put("tid", commentInfo.getCommentId());
-					jsonComment.put("rid", commentInfo.getPostId());
-					jsonComment.put("uid", commentInfo.getUserId());
+					jsonComment.put("cid", commentInfo.getCommentId());
 					jsonComment.put("content", commentInfo.getContentFilter());
-					jsonComment.put("ctime", commentInfo.getCreateTime());
+					jsonComment.put("create_time", commentInfo.getCreateTime());
+					
+					jsonPost = new JSONObject();
+					jsonPost.put("pid", commentInfo.getPostId());
+					
+					jsonUser = new JSONObject();
+					jsonUser.put("user_id", commentInfo.getUserId());
 					///获取评论用户信息
 					User userInfo = UserComponent.getInfo(commentInfo.getUserId());
 					if(null != userInfo)
-					{
-						jsonComment.put("nickname", userInfo.getNickName());
-						jsonComment.put("avatar", userInfo.getAvatar());
-						jsonComment.put("level", userInfo.getLevel());
-						jsonComment.put("coin", userInfo.getCoin());
-						jsonComment.put("diamond", userInfo.getDiamond());
-						jsonComment.put("exp", userInfo.getExp());
-						jsonComment.put("upgrade_exp", userInfo.getUpgradeExp());
-						jsonComment.put("gained_exp", userInfo.getGainedExp());
-						jsonComment.put("badge", userInfo.getBadges());
-					}
+						jsonUser = buildUserJSONObject(userInfo);
+					
+					jsonComment.put("post", jsonPost);
+					jsonComment.put("user", jsonUser);
 					arrayComments.put(jsonComment);
 				}
 			}
@@ -877,32 +666,25 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private JSONObject buildUserJSONObject(User userInfo) throws Exception
 	{
 		JSONObject jsonUser = new JSONObject();
-		jsonUser.put("id", userInfo.getUserId());
+		jsonUser.put("user_id", userInfo.getUserId());
 		jsonUser.put("nickname", userInfo.getNickName());
 		jsonUser.put("avatar", userInfo.getAvatar());
-		jsonUser.put("level", userInfo.getLevel());
-		jsonUser.put("coin", userInfo.getCoin());
-		jsonUser.put("diamond", userInfo.getDiamond());
-		jsonUser.put("exp", userInfo.getExp());
-		jsonUser.put("upgrade_exp", userInfo.getUpgradeExp());
-		jsonUser.put("gained_exp", userInfo.getGainedExp());
-		jsonUser.put("badge", userInfo.getBadges());
 		return jsonUser;
 	}
 	
 	private void fillPostUser(JSONArray arrayPosts, Map<Long, User> userMap) throws Exception
 	{
 		JSONObject jsonPost = null;
+		JSONObject jsonUser = null;
 		long userId = 0L;
-		long forumId = 0L;
 		String nickName = "";
 		User userInfo = null;
 		for(int i=0; i<arrayPosts.length(); i++)
 		{
 			jsonPost = arrayPosts.getJSONObject(i);
-			nickName = jsonPost.optString("nickname", "");
-			userId = jsonPost.optLong("uid", 0L);
-			forumId = jsonPost.optLong("fid", 0L);
+			jsonUser = jsonPost.optJSONObject("user");
+			nickName = jsonUser.optString("nickname", "");
+			userId = jsonUser.optLong("user_id", 0L);
 			
 			///填充发表楼层用户信息
 			if(StringUtil.isNullOrEmpty(nickName))
@@ -910,29 +692,8 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				if(userMap.containsKey(userId))
 				{
 					userInfo = userMap.get(userId);
-					jsonPost.put("nickname", userInfo.getNickName());
-					jsonPost.put("avatar", userInfo.getAvatar());
-					jsonPost.put("level", userInfo.getLevel());
-					jsonPost.put("coin", userInfo.getCoin());
-					jsonPost.put("diamond", userInfo.getDiamond());
-					jsonPost.put("exp", userInfo.getExp());
-					jsonPost.put("upgrade_exp", userInfo.getUpgradeExp());
-					jsonPost.put("gained_exp", userInfo.getGainedExp());
-					jsonPost.put("badge", userInfo.getBadges());
-					
-					JSONObject jsonUser = buildUserJSONObject(userInfo);
-					long threadCount = threadService.getUserThreadCount(userId);
-					long eliteThreadCount = threadService.getUserEliteThreadCount(userId);
-					long postCount = postService.getUserPostCount(userId);
-					long commentCount = commentService.getUserCommentCount(userId);
-					jsonUser.put("threads", threadCount);
-					jsonUser.put("replies", postCount + commentCount);
-					jsonUser.put("elite_threads", eliteThreadCount);
-					
-					///判断是否为版主
-					int roleId = userRoleService.getRoleId(forumId, userId);
-					jsonUser.put("is_moderator", roleId > 0);
-					jsonPost.put("user", jsonUser);
+					jsonUser.put("nickname", userInfo.getNickName());
+					jsonUser.put("avatar", userInfo.getAvatar());
 				}
 			}
 		}
