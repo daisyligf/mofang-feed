@@ -255,11 +255,11 @@ public class HomeRankServiceImpl implements HomeRankService {
 			}
 			Collections.sort(forumOrderList);
 			
-//			StringBuilder sb = new StringBuilder();
-//			for(FeedForumOrder forumOrder : forumOrderList){
-//				sb.append(forumOrder.getForumId()).append("=").append(forumOrder.getOrderValue()).append("||");
-//			}
-//			GlobalObject.INFO_LOG.info("order map log------------------: " + sb.toString());
+			StringBuilder sb = new StringBuilder();
+			for(FeedForumOrder forumOrder : forumOrderList){
+				sb.append(forumOrder.getForumId()).append("=").append(forumOrder.getOrderValue()).append("||");
+			}
+			GlobalObject.INFO_LOG.info("order map log------------------: " + sb.toString());
 
 			if(type == ForumType.ALL){
 				doRefreshHotForumRank(forumOrderList);
