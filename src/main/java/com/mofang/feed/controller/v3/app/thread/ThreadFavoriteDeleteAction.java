@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/removefavthread")
+@Action(url="feed/v3/app/thread/cancelfavorite")
 public class ThreadFavoriteDeleteAction extends AbstractActionExecutor
 {
 	private FeedUserFavoriteLogic logic = FeedUserFavoriteLogicImpl.getInstance();

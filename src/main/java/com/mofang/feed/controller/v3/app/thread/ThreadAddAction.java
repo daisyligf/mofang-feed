@@ -1,5 +1,6 @@
 package com.mofang.feed.controller.v3.app.thread;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
@@ -19,7 +20,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/newthread")
+@Action(url="feed/v3/app/thread/add")
 public class ThreadAddAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -47,10 +48,18 @@ public class ThreadAddAction extends AbstractActionExecutor
 		long userId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
 		long forumId = json.optLong("fid", 0L);
-		String subject = json.optString("title", "");
+		String subject = json.optString("subject", "");
 		String content = json.optString("content", "");
 		String htmlContent = content;
-		String pics = json.optString("pic", "");
+		JSONArray arrayPic = json.optJSONArray("pic");
+		String pics = "";
+		if(null != arrayPic)
+		{
+			for(int i=0; i<arrayPic.length(); i++)
+				pics += arrayPic.getString(i) + ",";
+		}
+		if(pics.length() > 0)
+			pics = pics.substring(0, pics.length() - 1);
 		
 		///参数检查
 		if(forumId <= 0 || StringUtil.isNullOrEmpty(subject) || StringUtil.isNullOrEmpty(content))

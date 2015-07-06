@@ -24,11 +24,9 @@ public interface FeedThreadLogic
 	
 	public ResultValue recommend(long userId, long threadId) throws Exception;
 	
-	public ResultValue getInfo(long threadId) throws Exception;
-	
 	public ResultValue getForumThreadList(long forumId, int pageNum, int pageSize, long currentUserId) throws Exception;
 	
-	public ResultValue getForumTopThreadList(long forumId, int pageNum, int pageSize) throws Exception;
+	public ResultValue getForumTopThreadList(long forumId) throws Exception;
 	
 	public ResultValue getForumEliteThreadList(long forumId, int pageNum, int pageSize, long currentUserId) throws Exception;
 	

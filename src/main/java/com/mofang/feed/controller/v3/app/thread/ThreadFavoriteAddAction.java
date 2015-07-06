@@ -18,7 +18,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/favthread")
+@Action(url="feed/v3/app/thread/favorite")
 public class ThreadFavoriteAddAction extends AbstractActionExecutor
 {
 	private FeedUserFavoriteLogic logic = FeedUserFavoriteLogicImpl.getInstance();
@@ -45,7 +45,7 @@ public class ThreadFavoriteAddAction extends AbstractActionExecutor
 		
 		long userId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
-		long threadId = json.optLong("id", 0L);
+		long threadId = json.optLong("tid", 0L);
 		
 		///参数检查
 		if(threadId <= 0)

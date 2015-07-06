@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/user/follow_forum_update")
+@Action(url="feed/v3/app/thread/follow_forum_thread_list")
 public class UserFollowForumEliteThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -25,8 +25,8 @@ public class UserFollowForumEliteThreadListAction extends AbstractActionExecutor
 	{
 		ResultValue result = new ResultValue();
 		String strUserId = context.getParameters("uid");
-		String strPageNum = context.getParameters("p");
-		String strPageSize = context.getParameters("pagesize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		///参数检查
 		if(!StringUtil.isLong(strUserId))

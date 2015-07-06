@@ -13,7 +13,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/thread/hot/list")
+@Action(url="feed/v3/app/thread/hotlist")
 public class GlobalEliteThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -21,8 +21,8 @@ public class GlobalEliteThreadListAction extends AbstractActionExecutor
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
-		String strPageNum = context.getParameters("startPage");
-		String strPageSize = context.getParameters("pagesize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		int pageNum = 1;
 		int pageSize = 50;

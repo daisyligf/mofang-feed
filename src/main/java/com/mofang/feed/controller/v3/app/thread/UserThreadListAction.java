@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/mythread")
+@Action(url="feed/v3/app/thread/mylist")
 public class UserThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -32,8 +32,8 @@ public class UserThreadListAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		String strPageNum = context.getParameters("p");
-		String strPageSize = context.getParameters("pagesize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		long userId = Long.parseLong(strUserId);
 		int pageNum = 1;

@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/myfavthread")
+@Action(url="feed/v3/app/thread/myfavlist")
 public class UserFavoriteThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -32,8 +32,8 @@ public class UserFavoriteThreadListAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		String strPageNum = context.getParameters("p");
-		String strPageSize = context.getParameters("pagesize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		long userId = Long.parseLong(strUserId);
 		int pageNum = 1;

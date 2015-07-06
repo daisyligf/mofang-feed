@@ -9,7 +9,7 @@ import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
 
-@Action(url = "feed/v3/thread/search")
+@Action(url = "feed/v3/app/thread/search")
 public class ThreadSearchAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -18,9 +18,7 @@ public class ThreadSearchAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		String strForumId = context.getParameters("fid");
-		String author = context.getParameters("author");
 		String keyword = context.getParameters("keyword");
-		String strStatus = context.getParameters("status");
 		String strPageNum = context.getParameters("page");
 		String strPageSize = context.getParameters("size");
 		
@@ -32,8 +30,6 @@ public class ThreadSearchAction extends AbstractActionExecutor
 			forumName = strForumId;
 		
 		int status = ThreadStatus.NORMAL;
-		if(StringUtil.isInteger(strStatus))
-			status = Integer.parseInt(strStatus);
 		
 		int pageNum = 1;
 		if(StringUtil.isInteger(strPageNum))
@@ -43,6 +39,6 @@ public class ThreadSearchAction extends AbstractActionExecutor
 		if(StringUtil.isInteger(strPageSize))
 			pageSize = Integer.parseInt(strPageSize);
 		
-		return logic.search(forumId, forumName, author, keyword, status, pageNum, pageSize);
+		return logic.search(forumId, forumName, null, keyword, status, pageNum, pageSize);
 	}
 }

@@ -17,7 +17,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/removethread")
+@Action(url="feed/v3/app/thread/delete")
 public class ThreadDeleteAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -45,7 +45,6 @@ public class ThreadDeleteAction extends AbstractActionExecutor
 		long operatorId = Long.parseLong(strUserId);
 		JSONObject json = new JSONObject(postData);
 		long threadId = json.optLong("tid", 0L);
-		String reason = json.optString("reason", "");
 		
 		///参数检查
 		if(threadId <= 0)
@@ -54,6 +53,6 @@ public class ThreadDeleteAction extends AbstractActionExecutor
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-		return logic.delete(threadId, operatorId, reason);
+		return logic.delete(threadId, operatorId, null);
 	}
 }

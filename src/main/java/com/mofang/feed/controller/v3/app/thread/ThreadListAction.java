@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/forumdisplay")
+@Action(url="feed/v3/app/thread/list")
 public class ThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
@@ -26,8 +26,8 @@ public class ThreadListAction extends AbstractActionExecutor
 		ResultValue result = new ResultValue();
 		String strUserId = context.getParamMap().get("uid");
 		String strForumId = context.getParamMap().get("fid");
-		String strPageNum = context.getParameters("p");
-		String strPageSize = context.getParameters("pagesize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		String strType = context.getParameters("type");
 		
 		///参数检查
