@@ -82,6 +82,8 @@ public class GlobalObject
 	 */
 	public static CloseableHttpClient HTTP_CLIENT_FAHAOSERVICE;
 	
+	public static CloseableHttpClient HTTP_CLIENT_VIPERSERVICE;
+	
 	/**
 	 * Global Solr Server for Forum Core
 	 */
@@ -307,6 +309,18 @@ public class GlobalObject
         {
         		throw e;
         }
+	}
+	
+	public static void initViperServiceHttpClient(String configPath) throws Exception
+	{
+		try 
+		{
+			HttpClientProvider provider = getHttpClientProvider(configPath);
+			HTTP_CLIENT_VIPERSERVICE = provider.getHttpClient();
+		} catch (Exception e)
+		{
+			throw e;
+		}
 	}
 	
 	private static HttpClientProvider getHttpClientProvider(String configPath) throws Exception

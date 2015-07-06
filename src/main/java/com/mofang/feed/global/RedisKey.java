@@ -260,6 +260,15 @@ public class RedisKey
 	public final static String ADMIN_USER_LIST_KEY = "admin_user_list";
 	
 	/**
+	 * 签到
+	 * 结构: Hash
+	 * 示例: hset user_sign_in_${user_id} name test
+	 * 字段名： last_sign_in_time  上传签到时间
+	 * 				 days                     累计签到天数
+	 */
+	public final static String  USER_SIGN_IN_KEY_PREFIX = "user_sign_in_";
+	
+	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀
 	 * @param parameter 参数

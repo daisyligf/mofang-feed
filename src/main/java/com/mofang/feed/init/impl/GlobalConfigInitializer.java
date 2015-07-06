@@ -42,6 +42,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.HTTP_CLIENT_VIDEOSERVICE_CONFIG_PATH = config.get("conf", "http_client_videoservice_config_path");
 		GlobalConfig.HTTP_CLIENT_GAMESERVICE_CONFIG_PATH = config.get("conf", "http_client_gameservice_config_path");
 		GlobalConfig.HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH = config.get("conf", "http_client_fahaoservice_config_path");
+		GlobalConfig.HTTP_CLIENT_VIPERSERVICE_CONFIG_PATH = config.get("conf", "http_client_viperservice_config_path");
 		GlobalConfig.RETURN_MESSAGE_CONFIG_PATH = config.get("conf", "return_messsage_config_path");
 		
 		GlobalConfig.CHAT_SERVICE_URL = config.get("api", "chat_service_url");
@@ -60,6 +61,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.FORUM_FOLLOW_COUNT_URL = config.get("api", "forum_follow_count_url");
 		GlobalConfig.SYNC_GAME_FORUMID_URL = config.get("api", "sync_game_forumid_url");
 		GlobalConfig.UPDATE_USER_STATUS_URL = config.get("api", "update_user_status_url");
+		GlobalConfig.VIPER_URL = config.get("api", "viper_url");
 		
 		GlobalConfig.FEED_DETAIL_URL = config.get("link", "feed_detail_url");
 		GlobalConfig.FORUM_DETAIL_URL = config.get("link", "forum_detail_url");
@@ -94,6 +96,8 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.SQUARE_VIDEO_ROLL_ID = config.getInt("param", "square_video_roll_id");
 		GlobalConfig.SQUARE_IMAGE_MODULE_ID = config.getInt("param", "square_image_module_id");
 		GlobalConfig.HOME_PREFECTURE_IDS = config.get("param", "home_prefecture_ids");
+		GlobalConfig.SIGN_IN_DAY_EXP = config.getInt("param", "sign_in_day_exp");
+		GlobalConfig.SIGN_IN_DAY_MAX_EXP = config.getInt("param", "sign_in_day_max_exp");
 		
 		GlobalConfig.LOAD_DATA = config.getBoolean("load", "load_data");
 		GlobalConfig.LOAD_LIST =config.get("load", "load_list");

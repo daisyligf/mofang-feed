@@ -41,6 +41,8 @@ public class GlobalConfig
 	
 	public static String HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH;
 	
+	public static String HTTP_CLIENT_VIPERSERVICE_CONFIG_PATH;
+	
 	public static String RETURN_MESSAGE_CONFIG_PATH;
 	
 	public static String CHAT_SERVICE_URL;
@@ -89,6 +91,8 @@ public class GlobalConfig
 	
 	public static String GIFT_INFO_URL;
 	
+	public static String VIPER_URL;
+	
 	public static String SOLR_SERVER_HOST;
 	
 	public static String SOLR_CORE_FORUM;
@@ -132,6 +136,10 @@ public class GlobalConfig
 	public static long SQUARE_IMAGE_MODULE_ID;
 	
 	public static String HOME_PREFECTURE_IDS;
+	
+	public static int SIGN_IN_DAY_EXP ;
+	
+	public static int SIGN_IN_DAY_MAX_EXP;
 	
 	public static boolean LOAD_DATA = false;
 	

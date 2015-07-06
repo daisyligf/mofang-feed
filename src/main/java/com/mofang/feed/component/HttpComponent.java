@@ -538,6 +538,28 @@ public class HttpComponent
 		}
 	}
 	
+	public static void addExp(final long userId, final int exp) {
+		Runnable task = new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					JSONObject json = new JSONObject();
+					json.put("uid", userId);
+					
+					JSONObject jsonReward = new JSONObject();
+					jsonReward.put("exp", exp);
+					json.put("reward", jsonReward);
+					
+					post(GlobalObject.HTTP_CLIENT_VIPERSERVICE, GlobalConfig.VIPER_URL + "/user/add", json.toString());
+				} catch (Exception e) {
+					GlobalObject.ERROR_LOG.error("at HttpComponent.addExp.task.run throw an error.", e);
+				}
+			}
+		};
+		GlobalObject.ASYN_HTTP_EXECUTOR.execute(task);
+	}
+	
 	private static String get(CloseableHttpClient httpClient, String requestUrl)
 	{
 		StringBuilder strLog = new StringBuilder();

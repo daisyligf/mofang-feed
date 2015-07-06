@@ -47,6 +47,18 @@ public class TimeUtil {
 		cal.set(Calendar.SECOND, 0);
 		return cal.getTimeInMillis();
 	}
+	
+	public static boolean isSameDay(long timeA, long timeB) {
+		Calendar calA = Calendar.getInstance();
+		calA.setTimeInMillis(timeA);
+		
+		Calendar calB = Calendar.getInstance();
+		calB.setTimeInMillis(timeB);
+		
+		 return calA.get(Calendar.YEAR) == calB.get(Calendar.YEAR)
+		            && calA.get(Calendar.MONTH) == calB.get(Calendar.MONTH)
+		            &&  calA.get(Calendar.DAY_OF_MONTH) == calB.get(Calendar.DAY_OF_MONTH);
+	}
 
 	public static void main(String[] args) {
 		SimpleDateFormat format =   new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );

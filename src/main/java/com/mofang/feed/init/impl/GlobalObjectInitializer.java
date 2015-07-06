@@ -24,5 +24,6 @@ public class GlobalObjectInitializer extends AbstractInitializer
 		GlobalObject.initVideoServiceHttpClient(GlobalConfig.HTTP_CLIENT_VIDEOSERVICE_CONFIG_PATH);
 		GlobalObject.initGameServiceHttpClient(GlobalConfig.HTTP_CLIENT_GAMESERVICE_CONFIG_PATH);
 		GlobalObject.initFahaoServiceHttpClient(GlobalConfig.HTTP_CLIENT_FAHAOSERVICE_CONFIG_PATH);
+		GlobalObject.initViperServiceHttpClient(GlobalConfig.HTTP_CLIENT_VIPERSERVICE_CONFIG_PATH);
 	}
 }
