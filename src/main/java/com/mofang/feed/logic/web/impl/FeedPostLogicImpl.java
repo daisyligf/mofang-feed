@@ -44,6 +44,7 @@ import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysRoleService;
 import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.service.FeedThreadRepliesRewardService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.FeedUserFavoriteService;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
@@ -54,6 +55,7 @@ import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
+import com.mofang.feed.service.impl.FeedThreadRepliesRewardServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.feed.service.impl.FeedUserFavoriteServiceImpl;
 import com.mofang.feed.util.HtmlTagFilter;
@@ -79,6 +81,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedSysRoleService roleService = FeedSysRoleServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	private FeedThreadRepliesRewardService rewardService = FeedThreadRepliesRewardServiceImpl.getInstance();
 	
 	private FeedPostLogicImpl()
 	{}
@@ -192,6 +195,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			HttpComponent.pushPostReplyNotify(notify);
 			
 			/******************************回复奖励******************************/
+			rewardService.rewordUser(threadId);
 			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
