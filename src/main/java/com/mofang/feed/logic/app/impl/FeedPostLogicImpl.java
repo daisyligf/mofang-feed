@@ -368,6 +368,10 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				jsonUser.put("avatar", userInfo.getAvatar());
 			}
 			
+			data.put("forum", jsonForum);
+			data.put("thread", jsonThread);
+			data.put("user", jsonUser);
+			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
