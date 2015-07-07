@@ -160,7 +160,7 @@ public interface FeedThreadDao
 	
 	public long getUserTopOrEliteThreadCount(long userId) throws Exception;
 	
-	public List<Long> getThreadIdList(long forumId, long startTime, long endTime) throws Exception;
+	public List<Long> getThreadIdList(long forumId, long startTime, long endTime, int limitEnd) throws Exception;
 	
 	/**
 	 * 根据不同条件获取版块下的主题列表(用于web端)

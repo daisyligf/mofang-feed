@@ -43,17 +43,22 @@ public class ThreadReplyHighestListServiceImpl implements
 			long startTime = TimeUtil.getLastSevenDayStartTime();
 			long endTime = TimeUtil.getYesterdyEndTime();
 			for(Long forumId : forumIdList){
-				List<Long> threadIdList = threadDao.getThreadIdList(forumId, startTime, endTime);
-				if(threadIdList == null)
-					continue;
+				List<Long> threadIdList = threadDao.getThreadIdList(forumId, startTime, endTime, 7);
 				
-				if(threadIdList.size() < 7) {
-					threadIdList.clear();
-					threadIdList = threadDao.getThreadIdList(forumId, 0, 0);
+				if(threadIdList == null) {
+					threadIdList = threadDao.getThreadIdList(forumId, 0, 0, 7);
+				} else if(threadIdList.size() < 7) {
+					int supplementSize = 7 - threadIdList.size();
+					List<Long> supplementIdList = threadDao.getThreadIdList(forumId, startTime, 0, supplementSize);
+					threadIdList.addAll(supplementIdList);
 				}
-				threadReplyHighestRedis.del(forumId);
-				for(Long threadId : threadIdList){
-					threadReplyHighestRedis.add(forumId, threadId);
+				
+				if(threadIdList != null) {
+					
+					threadReplyHighestRedis.del(forumId);
+					for(Long threadId : threadIdList){
+						threadReplyHighestRedis.add(forumId, threadId);
+					}
 				}
 			}
 			long _endTime = System.currentTimeMillis();
