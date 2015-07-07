@@ -1,7 +1,4 @@
-package com.mofang.feed.controller.v3.app.forum;
-
-import java.util.HashSet;
-import java.util.Set;
+package com.mofang.feed.controller.v3.external.forum;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
@@ -18,8 +15,8 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/forumdetails")
-public class ForumListAction extends AbstractActionExecutor
+@Action(url="feed/v3/external/forum/search")
+public class ForumSearchAction extends AbstractActionExecutor
 {
 	private FeedForumLogic logic = FeedForumLogicImpl.getInstance();
 
@@ -27,32 +24,25 @@ public class ForumListAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String strForumIds = context.getParamMap().get("fids");
+		String forumName = context.getParameters("keyword");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
-		///参数检查
-		if(StringUtil.isNullOrEmpty(strForumIds))
+		if(StringUtil.isNullOrEmpty(forumName))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-
-		String[] arrForumIds = strForumIds.split(",");
-		Set<Long> forumIds = new HashSet<Long>();
-		if(arrForumIds.length > 0)
-		{
-			for(String strForumId : arrForumIds)
-			{
-				if(StringUtil.isLong(strForumId))
-					forumIds.add(Long.parseLong(strForumId));
-			}
-		}
 		
-		return logic.getForumList(forumIds);
-	}
-	
-	protected boolean needCheckAtom()
-	{
-		return false;
+		int pageNum = 1;
+		if(StringUtil.isInteger(strPageNum))
+			pageNum = Integer.parseInt(strPageNum);
+		
+		int pageSize = 50;
+		if(StringUtil.isInteger(strPageSize))
+			pageSize = Integer.parseInt(strPageSize);
+		
+		return logic.search(forumName, pageNum, pageSize);
 	}
 }

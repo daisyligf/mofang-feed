@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.app.user;
+package com.mofang.feed.controller.v3.external.thread;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
@@ -15,8 +15,8 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/app/thread/follow_forum_thread_list")
-public class UserFollowForumEliteThreadListAction extends AbstractActionExecutor
+@Action(url="feed/v3/external/thread/mylist")
+public class UserThreadListAction extends AbstractActionExecutor
 {
 	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
 
@@ -24,17 +24,16 @@ public class UserFollowForumEliteThreadListAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String strUserId = context.getParameters("uid");
-		String strPageNum = context.getParameters("page");
-		String strPageSize = context.getParameters("size");
-		
-		///参数检查
+		String strUserId = context.getParamMap().get("uid");
 		if(!StringUtil.isLong(strUserId))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
+		
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		long userId = Long.parseLong(strUserId);
 		int pageNum = 1;
@@ -45,6 +44,6 @@ public class UserFollowForumEliteThreadListAction extends AbstractActionExecutor
 		if(StringUtil.isInteger(strPageSize))
 			pageSize = Integer.parseInt(strPageSize);
 		
-		return logic.getForumEliteThreadList(userId, pageNum, pageSize);
+		return logic.getUserThreadList(userId, pageNum, pageSize);
 	}
 }

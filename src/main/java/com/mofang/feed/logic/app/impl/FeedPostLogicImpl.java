@@ -442,7 +442,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 
 			data.put("total", total);
-			data.put("list", arrayItems);
+			data.put("replies", arrayItems);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);

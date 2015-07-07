@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.app.user;
+package com.mofang.feed.controller.v3.external.post;
 
 import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
@@ -15,7 +15,7 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url = "feed/v3/user/myreplies")
+@Action(url = "feed/v3/external/post/myreplies")
 public class UserReplyListAction extends AbstractActionExecutor
 {
 	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();
@@ -32,8 +32,8 @@ public class UserReplyListAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		String strPageNum = context.getParameters("p");
-		String strPageSize = context.getParameters("pagesize");
+		String strPageNum = context.getParameters("page");
+		String strPageSize = context.getParameters("size");
 		
 		long userId = Long.parseLong(strUserId);
 		int pageNum = 1;

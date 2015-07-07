@@ -11,14 +11,11 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.app.FeedForumLogic;
 import com.mofang.feed.model.FeedForum;
-import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedTagService;
-import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedTagServiceImpl;
-import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -30,7 +27,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 {
 	private final static FeedForumLogicImpl LOGIC = new FeedForumLogicImpl();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
-	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedTagService tagService = FeedTagServiceImpl.getInstance();
 	
 	private FeedForumLogicImpl()
@@ -64,8 +60,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			data.put("type", forumInfo.getType());
 			data.put("threads", forumInfo.getThreads());
 			data.put("yesterday_threads", forumInfo.getYestodayThreads());
-			data.put("follows", forumInfo.getFollows());
-			data.put("yesterday_follows", forumInfo.getYestodayFollows());
 			data.put("create_time", forumInfo.getCreateTime());
 			
 			Set<Integer> tagSet = forumInfo.getTags();
@@ -108,7 +102,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			ResultValue result = new ResultValue();
 			JSONArray data = new JSONArray();
 			JSONObject jsonForum = null;
-			JSONArray arrayThreads = null;
 			FeedForum forumInfo = null;
 			for(long forumId : forumIds)
 			{
@@ -121,26 +114,11 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				jsonForum.put("name", forumInfo.getName());
 				jsonForum.put("name_spell", forumInfo.getNameSpell());
 				jsonForum.put("icon", forumInfo.getIcon());
-				jsonForum.put("color", forumInfo.getColor());
+				jsonForum.put("type", forumInfo.getType());
 				jsonForum.put("threads", forumInfo.getThreads());
+				jsonForum.put("today_threads", forumInfo.getTodayThreads());
 				jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-				jsonForum.put("follows", forumInfo.getFollows());
-				jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
 				jsonForum.put("create_time", forumInfo.getCreateTime());
-				
-				///获取版块精华帖
-				Page<FeedThread> page = threadService.getForumEliteThreadList(forumId, 1, 10);
-				arrayThreads = new JSONArray();
-				if(null != page)
-				{
-					List<FeedThread> list = page.getList();
-					if(null != list && list.size() > 0)
-					{
-						for(FeedThread threadInfo : list)
-							arrayThreads.put(threadInfo.getSubjectFilter());
-					}
-				}
-				jsonForum.put("thread", arrayThreads);
 				data.put(jsonForum);
 			}
 			
@@ -185,8 +163,6 @@ public class FeedForumLogicImpl implements FeedForumLogic
 						jsonForum.put("threads", forumInfo.getThreads());
 						jsonForum.put("today_threads", forumInfo.getTodayThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
-						jsonForum.put("follows", forumInfo.getFollows());
-						jsonForum.put("yestoday_follows", forumInfo.getYestodayFollows());
 						jsonForum.put("create_time", forumInfo.getCreateTime());
 						arrayForums.put(jsonForum);
 					}

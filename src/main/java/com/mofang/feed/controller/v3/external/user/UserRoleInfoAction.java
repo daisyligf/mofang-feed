@@ -24,7 +24,7 @@ public class UserRoleInfoAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String strUserId = context.getParameters("user_id");
+		String strUserId = context.getParameters("uid");
 		if(!StringUtil.isLong(strUserId))
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
