@@ -29,6 +29,9 @@ public class MainInitializer extends AbstractInitializer
 		Initializer returnMsg = new ReturnMessageInitializer();
 		returnMsg.init();
 		
+		Initializer threadRepliesRewardConf  = new ThreadRepliesRewardConfigInitializer();
+		threadRepliesRewardConf.init();
+		
 		PropertyConfigurator.configure(GlobalConfig.LOG4J_CONFIG_PATH);
 		
 		Initializer globalObject = new GlobalObjectInitializer();
