@@ -426,7 +426,7 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 	}
 
 	@Override
-	public List<Long> getThreadIdList(long forumId, long startTime, long endTime) throws Exception
+	public List<Long> getThreadIdList(long forumId, long startTime, long endTime, int limitEnd) throws Exception
 	{
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");
@@ -435,9 +435,11 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		if(startTime != 0 && endTime != 0) {
 			strSql.append(" and create_time >= " + startTime);
 			strSql.append(" and create_time <= " + endTime);
+		}else if(startTime != 0 && limitEnd < 7) {
+			strSql.append(" and create_time < " + startTime);
 		}
 		
-		strSql.append(" order by replies desc limit 0,7");
+		strSql.append(" order by replies desc limit 0," + limitEnd);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);
 	}
