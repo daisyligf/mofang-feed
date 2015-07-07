@@ -14,14 +14,14 @@ import com.mofang.feed.util.TimeUtil;
 
 public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 
-	private static final FeedUserSignInServiceImpl REDIS = new FeedUserSignInServiceImpl();
+	private static final FeedUserSignInServiceImpl SERVICE = new FeedUserSignInServiceImpl();
 	private FeedUserSignInDao signInDao = FeedUserSignInDaoImpl.getInstance();
 	private FeedUserSignInRedis signInRedis = FeedUserSignInRedisImpl.getInstance();
 	
 	private FeedUserSignInServiceImpl(){}
 	
 	public static FeedUserSignInServiceImpl getInstance(){
-		return REDIS;
+		return SERVICE;
 	}
 	
 	@Override
@@ -35,6 +35,7 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 				userSignIn = new UserSignIn();
 				userSignIn.lastSignInTime = now;
 				userSignIn.days = 1;
+				add = true;
 			}else {
 				long lastSignInTime = userSignIn.lastSignInTime;
 				int intervalDay =(int) (now - lastSignInTime)/1000/60/60/24;
