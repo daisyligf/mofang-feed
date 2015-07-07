@@ -54,11 +54,19 @@ public class ThreadAddAction extends AbstractActionExecutor
 			pics = pics.substring(0, pics.length() - 1);
 		
 		///参数检查
-		if(forumId <= 0 || StringUtil.isNullOrEmpty(subject) || StringUtil.isNullOrEmpty(content))
+		if(forumId <= 0)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
+		}
+		
+		if(StringUtil.isNullOrEmpty(subject))
+			subject = "同步评论的资源标题";
+		if(StringUtil.isNullOrEmpty(content))
+		{
+			content = "同步评论的资源内容";
+			htmlContent = content;
 		}
 		
 		///构造Thread实体对象
