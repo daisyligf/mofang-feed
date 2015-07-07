@@ -1,4 +1,4 @@
-package com.mofang.feed.controller.v3.external.thread;
+package com.mofang.feed.controller.v3.external.post;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,10 +7,10 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.logic.app.FeedThreadLogic;
-import com.mofang.feed.logic.app.impl.FeedThreadLogicImpl;
+import com.mofang.feed.global.common.LimitConstants;
+import com.mofang.feed.logic.app.FeedPostLogic;
+import com.mofang.feed.logic.app.impl.FeedPostLogicImpl;
 import com.mofang.feed.model.FeedPost;
-import com.mofang.feed.model.FeedThread;
 import com.mofang.framework.util.StringUtil;
 import com.mofang.framework.web.server.annotation.Action;
 import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
@@ -20,10 +20,10 @@ import com.mofang.framework.web.server.reactor.context.HttpRequestContext;
  * @author zhaodx
  *
  */
-@Action(url="feed/v3/external/thread/add")
-public class ThreadAddAction extends AbstractActionExecutor
+@Action(url="feed/v3/external/post/add")
+public class PostAddAction extends AbstractActionExecutor
 {
-	private FeedThreadLogic logic = FeedThreadLogicImpl.getInstance();
+	private FeedPostLogic logic = FeedPostLogicImpl.getInstance();
 
 	@Override
 	protected ResultValue exec(HttpRequestContext context) throws Exception
@@ -39,8 +39,7 @@ public class ThreadAddAction extends AbstractActionExecutor
 		
 		JSONObject json = new JSONObject(postData);
 		long userId = json.optLong("uid", 0L);
-		long forumId = json.optLong("fid", 0L);
-		String subject = json.optString("subject", "");
+		long threadId = json.optLong("tid", 0L);
 		String content = json.optString("content", "");
 		String htmlContent = content;
 		JSONArray arrayPic = json.optJSONArray("pic");
@@ -54,37 +53,22 @@ public class ThreadAddAction extends AbstractActionExecutor
 			pics = pics.substring(0, pics.length() - 1);
 		
 		///参数检查
-		if(forumId <= 0)
+		if(threadId <= 0 || StringUtil.isNullOrEmpty(content)
+				|| content.length() > LimitConstants.POST_CONTENT_LENGTH)
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
 		
-		if(StringUtil.isNullOrEmpty(subject))
-			subject = "同步评论的资源标题";
-		if(StringUtil.isNullOrEmpty(content))
-		{
-			content = "同步评论的资源内容";
-			htmlContent = content;
-		}
-		
-		///构造Thread实体对象
-		FeedThread threadInfo = new FeedThread();
-		threadInfo.setForumId(forumId);
-		threadInfo.setUserId(userId);
-		threadInfo.setSubject(subject);
-		threadInfo.setLastPostUid(userId);
-		
 		///构造Post实体对象
 		FeedPost postInfo = new FeedPost();
-		postInfo.setForumId(forumId);
 		postInfo.setUserId(userId);
+		postInfo.setThreadId(threadId);
 		postInfo.setContent(content);
 		postInfo.setHtmlContent(htmlContent);
 		postInfo.setPictures(pics);
-		threadInfo.setPost(postInfo);
 		
-		return logic.add(threadInfo);
+		return logic.add(postInfo);
 	}
 }

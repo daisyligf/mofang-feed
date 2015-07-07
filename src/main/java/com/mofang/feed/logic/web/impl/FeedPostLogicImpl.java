@@ -191,6 +191,8 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			notify.setReplyType(ReplyType.THREAD);
 			HttpComponent.pushPostReplyNotify(notify);
 			
+			/******************************回复奖励******************************/
+			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);

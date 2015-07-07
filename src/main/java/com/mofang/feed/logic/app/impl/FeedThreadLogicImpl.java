@@ -748,6 +748,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 					jsonThread.put("is_elite", threadInfo.isElite());				///是否为精华帖
 					jsonThread.put("is_top", threadInfo.isTop());					///是否为置顶帖
 					jsonThread.put("recommends", threadInfo.getRecommends());        ///主题点赞数
+					jsonThread.put("last_post_time", threadInfo.getLastPostTime());        ///主题最后回复时间
 					
 					///构建linkurl (linkurl是一种link规则，客户端根据link规则来进行跳转)
 					String linkurl = threadInfo.getLinkUrl();

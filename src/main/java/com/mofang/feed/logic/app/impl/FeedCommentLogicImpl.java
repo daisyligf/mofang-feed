@@ -185,7 +185,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			///获取用户信息
 			JSONObject jsonUser = new JSONObject();
 			jsonUser.put("user_id", model.getUserId());
-			User userInfo = UserComponent.getInfo(model.getUserId());
+			User userInfo = UserComponent.getInfo(userId);
 			if(null != userInfo)
 			{
 				jsonUser.put("nickname", userInfo.getNickName());
@@ -300,8 +300,8 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 							uids.add(commentInfo.getUserId());
 						else
 						{
-							jsonComment.put("nickname", userInfo.getNickName());
-							jsonComment.put("avatar", userInfo.getAvatar());
+							jsonUser.put("nickname", userInfo.getNickName());
+							jsonUser.put("avatar", userInfo.getAvatar());
 						}
 						jsonComment.put("post", jsonPost);
 						jsonComment.put("user", jsonUser);
