@@ -590,6 +590,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						{
 							jsonUser.put("nickname", userInfo.getNickName());
 							jsonUser.put("avatar", userInfo.getAvatar());
+							jsonUser.put("level", userInfo.getLevel());
 						}
 						jsonPost.put("user", jsonUser);
 						
@@ -744,6 +745,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		jsonUser.put("user_id", userInfo.getUserId());
 		jsonUser.put("nickname", userInfo.getNickName());
 		jsonUser.put("avatar", userInfo.getAvatar());
+		jsonUser.put("level", userInfo.getLevel());
 		jsonUser.put("coin", userInfo.getCoin());
 		return jsonUser;
 	}
@@ -770,6 +772,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 					userInfo = userMap.get(userId);
 					jsonUser.put("nickname", userInfo.getNickName());
 					jsonUser.put("avatar", userInfo.getAvatar());
+					jsonUser.put("level", userInfo.getLevel());
 				}
 			}
 		}

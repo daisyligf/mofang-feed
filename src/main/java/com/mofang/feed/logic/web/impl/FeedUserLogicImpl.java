@@ -133,6 +133,7 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			data.put("user_id", userId);
 			data.put("nickname", userInfo.getNickName());
 			data.put("avatar", userInfo.getAvatar());
+			data.put("level", userInfo.getLevel());
 			data.put("coin", userInfo.getCoin());
 			data.put("register_time", userInfo.getRegisterTime());
 			data.put("status", userInfo.getStatus());    ///0:正常   1:冻结
