@@ -36,4 +36,9 @@ public class FeedThreadRepliesRewardDaoImpl extends AbstractMysqlSupport<FeedThr
 		super.execute(strSql.toString());
 	}
 
+	@Override
+	public void add(FeedThreadRepliesReward model) throws Exception {
+		super.insert(model);
+	}
+
 }
