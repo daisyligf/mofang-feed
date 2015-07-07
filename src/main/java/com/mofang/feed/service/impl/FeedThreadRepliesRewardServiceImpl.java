@@ -40,8 +40,14 @@ public class FeedThreadRepliesRewardServiceImpl implements
 						int replies = thread.getReplies();
 						FeedThreadRepliesReward model = rewardDao.getModel(threadId);
 						int rewardIndex = -1;
+						boolean add = false;
 						if(model == null) {
-							rewardIndex = ThreadRepliesRewardConstant.CONFIGS.size() - 1;
+							for(int idx = 0; idx < ThreadRepliesRewardConstant.CONFIGS.size(); idx ++) {
+								ThreadRepliesRewardConfig config = ThreadRepliesRewardConstant.CONFIGS.get(idx);
+								if(replies >= config.repliesRangeMin && replies <= config.repliesRangeMax)
+									rewardIndex = idx;
+							}
+							add = true;
 						} else {
 							for(int idx = 0; idx < ThreadRepliesRewardConstant.CONFIGS.size(); idx ++) {
 								ThreadRepliesRewardConfig config = ThreadRepliesRewardConstant.CONFIGS.get(idx);
@@ -64,7 +70,15 @@ public class FeedThreadRepliesRewardServiceImpl implements
 								exp = RandomUtil.randomInt(config.randomMin, config.randomMax);
 							}
 							
-							rewardDao.update(threadId, config.level, exp);
+							if(add) {
+								FeedThreadRepliesReward rewardModel = new FeedThreadRepliesReward();
+								rewardModel.setThreadId(threadId);
+								rewardModel.setExp(exp);
+								rewardModel.setLevel(config.level);
+								rewardDao.add(rewardModel);
+							} else {
+								rewardDao.update(threadId, config.level, exp);
+							}
 							
 							HttpComponent.addExp(userId, exp);
 						}
