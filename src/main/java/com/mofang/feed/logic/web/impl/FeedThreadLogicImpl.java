@@ -20,6 +20,7 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.FeedPrivilege;
+import com.mofang.feed.global.common.LimitConstants;
 import com.mofang.feed.global.common.OperateBehavior;
 import com.mofang.feed.global.common.OperateSourceType;
 import com.mofang.feed.global.common.RecommendType;
@@ -109,6 +110,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			
+			if(subject.length() > LimitConstants.SUBJECT_LENGTH)
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+			
 			///过滤内容所有HTML标签
 			content = HtmlTagFilter.filterHtmlTag(content);
 			///过滤内容敏感词
@@ -134,6 +142,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			}
 			
 			if(StringUtil.isNullOrEmpty(contentFilter) || StringUtil.isNullOrEmpty(htmlContentFilter))
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+			
+			if(content.length() > LimitConstants.THREAD_CONTENT_LENGTH)
 			{
 				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -253,6 +268,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			
+			if(subject.length() > LimitConstants.SUBJECT_LENGTH)
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+			
 			///过滤内容所有HTML标签
 			content = HtmlTagFilter.filterHtmlTag(content);
 			///过滤内容敏感词
@@ -278,6 +300,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			}
 			
 			if(StringUtil.isNullOrEmpty(contentFilter) || StringUtil.isNullOrEmpty(htmlContentFilter))
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+			
+			if(content.length() > LimitConstants.THREAD_CONTENT_LENGTH)
 			{
 				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);

@@ -17,6 +17,7 @@ import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.FeedPrivilege;
+import com.mofang.feed.global.common.LimitConstants;
 import com.mofang.feed.global.common.OperateBehavior;
 import com.mofang.feed.global.common.OperateSourceType;
 import com.mofang.feed.global.common.RecommendType;
@@ -127,6 +128,13 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 			
 			if(StringUtil.isNullOrEmpty(contentFilter) || StringUtil.isNullOrEmpty(htmlContentFilter))
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+			
+			if(content.length() > LimitConstants.THREAD_CONTENT_LENGTH)
 			{
 				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
@@ -298,6 +306,13 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 			
 			if(StringUtil.isNullOrEmpty(contentFilter) || StringUtil.isNullOrEmpty(htmlContentFilter))
+			{
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+			
+			if(content.length() > LimitConstants.THREAD_CONTENT_LENGTH)
 			{
 				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
