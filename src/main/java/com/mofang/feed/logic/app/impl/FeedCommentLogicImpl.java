@@ -21,6 +21,7 @@ import com.mofang.feed.global.common.OperateSourceType;
 import com.mofang.feed.global.common.ReplyType;
 import com.mofang.feed.logic.app.FeedCommentLogic;
 import com.mofang.feed.model.FeedComment;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
@@ -32,6 +33,7 @@ import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedBlackListService;
 import com.mofang.feed.service.FeedCommentService;
+import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
@@ -39,6 +41,7 @@ import com.mofang.feed.service.FeedThreadRepliesRewardService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
+import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
@@ -63,6 +66,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 	private FeedOperateHistoryService operateService = FeedOperateHistoryServiceImpl.getInstance();
 	private FeedCommentService commentService = FeedCommentServiceImpl.getInstance();
 	private FeedThreadRepliesRewardService rewardService = FeedThreadRepliesRewardServiceImpl.getInstance();
+	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	
 	private FeedCommentLogicImpl()
 	{}
@@ -170,6 +174,10 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			notify.setReplyPictures("");
 			notify.setReplyUserId(model.getUserId());
 			notify.setReplyType(ReplyType.POST);
+			notify.setForumId(forumId);
+			FeedForum forumInfo = forumService.getInfo(forumId);
+			if(null != forumInfo)
+				notify.setForumName(forumInfo.getName());
 			HttpComponent.pushPostReplyNotify(notify);
 			
 			/******************************回复奖励******************************/

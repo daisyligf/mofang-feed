@@ -200,6 +200,10 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			notify.setReplyPictures(model.getPictures());
 			notify.setReplyUserId(model.getUserId());
 			notify.setReplyType(ReplyType.THREAD);
+			notify.setForumId(forumId);
+			FeedForum forumInfo = forumService.getInfo(forumId);
+			if(null != forumInfo)
+				notify.setForumName(forumInfo.getName());
 			HttpComponent.pushPostReplyNotify(notify);
 			
 			/******************************回复奖励******************************/
