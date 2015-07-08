@@ -220,13 +220,18 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
 				return result;
 			}
-			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(threadInfo.getForumId(), operatorId, FeedPrivilege.EDIT_THREAD);
-			if(!hasPrivilege)
+			
+			long userId = threadInfo.getUserId();
+			if(operatorId != userId)
 			{
-				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
-				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
-				return result;
+				///权限检查
+				boolean hasPrivilege = userRoleService.hasPrivilege(threadInfo.getForumId(), operatorId, FeedPrivilege.EDIT_THREAD);
+				if(!hasPrivilege)
+				{
+					result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+					result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+					return result;
+				}
 			}
 			
 			///过滤所有HTML标签
