@@ -6,7 +6,6 @@ import com.mofang.feed.controller.AbstractActionExecutor;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
-import com.mofang.feed.global.common.LimitConstants;
 import com.mofang.feed.logic.web.FeedThreadLogic;
 import com.mofang.feed.logic.web.impl.FeedThreadLogicImpl;
 import com.mofang.feed.model.FeedPost;
@@ -56,13 +55,6 @@ public class ThreadAddAction extends AbstractActionExecutor
 			return result;
 		}
 
-		if(subject.length() > LimitConstants.SUBJECT_LENGTH  || content.length() > LimitConstants.THREAD_CONTENT_LENGTH)
-		{
-			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
-			return result;
-		}
-		
 		// /构造Thread实体对象
 		FeedThread threadInfo = new FeedThread();
 		threadInfo.setForumId(forumId);
