@@ -263,7 +263,7 @@ public class RedisKey
 	 * 签到
 	 * 结构: Hash
 	 * 示例: hset user_sign_in_${user_id} name test
-	 * 字段名： last_sign_in_time  上传签到时间
+	 * 字段名： last_sign_in_time  上次签到时间
 	 * 				 days                     累计签到天数
 	 */
 	public final static String  USER_SIGN_IN_KEY_PREFIX = "user_sign_in_";

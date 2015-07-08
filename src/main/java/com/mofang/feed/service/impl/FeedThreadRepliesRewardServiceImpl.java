@@ -1,5 +1,7 @@
 package com.mofang.feed.service.impl;
 
+import java.util.List;
+
 import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.ThreadRepliesRewardConstant;
@@ -41,16 +43,18 @@ public class FeedThreadRepliesRewardServiceImpl implements
 						FeedThreadRepliesReward model = rewardDao.getModel(threadId);
 						int rewardIndex = -1;
 						boolean add = false;
+						List<ThreadRepliesRewardConfig> configList = ThreadRepliesRewardConstant.CONFIGS;
+						int size = configList.size();
 						if(model == null) {
-							for(int idx = 0; idx < ThreadRepliesRewardConstant.CONFIGS.size(); idx ++) {
-								ThreadRepliesRewardConfig config = ThreadRepliesRewardConstant.CONFIGS.get(idx);
+							for(int idx = 0; idx < size; idx ++) {
+								ThreadRepliesRewardConfig config = configList.get(idx);
 								if(replies >= config.repliesRangeMin && replies <= config.repliesRangeMax)
 									rewardIndex = idx;
 							}
 							add = true;
 						} else {
-							for(int idx = 0; idx < ThreadRepliesRewardConstant.CONFIGS.size(); idx ++) {
-								ThreadRepliesRewardConfig config = ThreadRepliesRewardConstant.CONFIGS.get(idx);
+							for(int idx = 0; idx < size; idx ++) {
+								ThreadRepliesRewardConfig config = configList.get(idx);
 								if(model.getLevel() == config.level && replies >= config.repliesRangeMin && replies <= config.repliesRangeMax)
 									break;
 								if(model.getLevel() != config.level && replies >= config.repliesRangeMin && replies <= config.repliesRangeMax)
@@ -59,8 +63,7 @@ public class FeedThreadRepliesRewardServiceImpl implements
 						}
 						
 						if(rewardIndex != -1) {
-							ThreadRepliesRewardConfig config = ThreadRepliesRewardConstant.CONFIGS.get(rewardIndex);
-							
+							ThreadRepliesRewardConfig config = configList.get(rewardIndex);
 							
 							int exp = 0;
 							
