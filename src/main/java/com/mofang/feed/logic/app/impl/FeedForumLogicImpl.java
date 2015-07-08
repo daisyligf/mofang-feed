@@ -170,7 +170,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			}
 			
 			data.put("total", total);
-			data.put("list", arrayForums);
+			data.put("forums", arrayForums);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);
