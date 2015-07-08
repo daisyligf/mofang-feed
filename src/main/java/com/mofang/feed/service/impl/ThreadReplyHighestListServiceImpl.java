@@ -50,7 +50,9 @@ public class ThreadReplyHighestListServiceImpl implements
 				} else if(threadIdList.size() < 7) {
 					int supplementSize = 7 - threadIdList.size();
 					List<Long> supplementIdList = threadDao.getThreadIdList(forumId, startTime, 0, supplementSize);
-					threadIdList.addAll(supplementIdList);
+					if(supplementIdList != null) {
+						threadIdList.addAll(supplementIdList);
+					}
 				}
 				
 				if(threadIdList != null) {
