@@ -6,6 +6,7 @@ import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
 import com.mofang.feed.logic.web.FeedUserSignInLogic;
+import com.mofang.feed.model.external.SignInResult;
 import com.mofang.feed.service.FeedUserSignInService;
 import com.mofang.feed.service.impl.FeedUserSignInServiceImpl;
 
@@ -25,9 +26,12 @@ public class FeedUserSignInLogicImpl implements FeedUserSignInLogic {
 		try {
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
-			signInService.sign(userId);
+			SignInResult signInResult = signInService.sign(userId);
 			
-			data.put("is_sign_in", true);
+			data.put("is_sign_in", signInResult.isSignIn);
+			data.put("days", signInResult.days);
+			data.put("rank", signInResult.rank);
+			data.put("totalMember", signInResult.totalMember);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);
@@ -42,8 +46,11 @@ public class FeedUserSignInLogicImpl implements FeedUserSignInLogic {
 		try {
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
-			boolean flag = signInService.isSignIned(userId);
-			data.put("is_sign_in", flag);
+			SignInResult signInResult = signInService.getResult(userId);
+			data.put("is_sign_in", signInResult.isSignIn);
+			data.put("days", signInResult.days);
+			data.put("rank", signInResult.rank);
+			data.put("totalMember", signInResult.totalMember);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);

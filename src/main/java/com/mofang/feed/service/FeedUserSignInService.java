@@ -1,8 +1,11 @@
 package com.mofang.feed.service;
 
+import com.mofang.feed.model.external.SignInResult;
+
 public interface FeedUserSignInService {
 
-	public void sign(long userId) throws Exception;
+	public SignInResult sign(long userId) throws Exception;
 	
-	public boolean isSignIned(long userId) throws Exception;
+	public SignInResult getResult(long userId) throws Exception;
+	
 }

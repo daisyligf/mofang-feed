@@ -269,6 +269,13 @@ public class RedisKey
 	public final static String  USER_SIGN_IN_KEY_PREFIX = "user_sign_in_";
 	
 	/**
+	 * 已签到列表
+	 * 结构: ZSet
+	 * 示例: zadd  sigin_in_member_list score userId
+	 */
+	public final static String SIGN_IN_MEMBER_LIST_KEY = "sign_in_member_list";
+	
+	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀
 	 * @param parameter 参数
