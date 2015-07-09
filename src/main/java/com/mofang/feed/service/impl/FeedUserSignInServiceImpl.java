@@ -93,6 +93,7 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 				model.setUserId(userId);
 				signInDao.add(model);
 			}
+			
 			return result;
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedUserSignInServiceImpl.sign throw an error.", e);

@@ -84,11 +84,13 @@ public class FeedUserSignInRedisImpl implements FeedUserSignInRedis {
 			@Override
 			public SignInResult execute(Jedis jedis) throws Exception {
 				String key = RedisKey.SIGN_IN_MEMBER_LIST_KEY;
-				long rank = jedis.zrank(key, String.valueOf(userId)) + 1;
-				long totalMember = jedis.zcard(key);
+				Long rank = jedis.zrank(key, String.valueOf(userId));
+				Long totalMember = jedis.zcard(key);
 				SignInResult result = new SignInResult();
-				result.rank = (int)rank;
-				result.totalMember = (int)totalMember;
+				if(rank != null && totalMember != null) {
+					result.rank = rank.intValue() + 1;
+					result.totalMember = totalMember.intValue();
+				}
 				return result;
 			}
 		};
@@ -115,7 +117,7 @@ public class FeedUserSignInRedisImpl implements FeedUserSignInRedis {
 			public Boolean execute(Jedis jedis) throws Exception {
 				String key = RedisKey.SIGN_IN_MEMBER_LIST_KEY;
 				jedis.zadd(key, signInTime, String.valueOf(userId));
-				jedis.expireAt(key, TimeUtil.getInitDelay(24)/1000);
+				jedis.expireAt(key, TimeUtil.getTodayEndTime()/1000);
 				return true;
 			}
 		};
