@@ -17,14 +17,16 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 
 	private static final FeedUserSignInServiceImpl SERVICE = new FeedUserSignInServiceImpl();
 	private FeedUserSignInDao signInDao = FeedUserSignInDaoImpl.getInstance();
-	private FeedUserSignInRedis signInRedis = FeedUserSignInRedisImpl.getInstance();
-	
-	private FeedUserSignInServiceImpl(){}
-	
-	public static FeedUserSignInServiceImpl getInstance(){
+	private FeedUserSignInRedis signInRedis = FeedUserSignInRedisImpl
+			.getInstance();
+
+	private FeedUserSignInServiceImpl() {
+	}
+
+	public static FeedUserSignInServiceImpl getInstance() {
 		return SERVICE;
 	}
-	
+
 	@Override
 	public SignInResult sign(long userId) throws Exception {
 		try {
@@ -32,71 +34,75 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 			long now = System.currentTimeMillis();
 			boolean isMax = false;
 			boolean add = false;
-			if(userSignIn == null) {
+			if (userSignIn == null) {
 				userSignIn = new UserSignIn();
 				userSignIn.lastSignInTime = now;
 				userSignIn.days = 1;
 				add = true;
-			}else {
+			} else {
 				long lastSignInTime = userSignIn.lastSignInTime;
-				int intervalDay =(int) (now - lastSignInTime)/1000/60/60/24;
-				
+				int intervalDay = (int) (now - lastSignInTime) / 1000 / 60 / 60
+						/ 24;
+
 				userSignIn.lastSignInTime = now;
-				if(intervalDay == 0 || intervalDay == 1) {
-					
+				if (intervalDay == 0 || intervalDay == 1) {
+
 					boolean isSame = TimeUtil.isSameDay(now, lastSignInTime);
-					if(!isSame) {
-						
-						if(userSignIn.days >= GlobalConfig.SIGN_IN_DAY_MAX_EXP) {
+					if (!isSame) {
+
+						if (userSignIn.days >= GlobalConfig.SIGN_IN_DAY_MAX_EXP) {
 							isMax = true;
 						}
-							
+
 						userSignIn.days++;
 						add = true;
 					}
-				}  else if(intervalDay > 1) {
+				} else if (intervalDay > 1) {
 					userSignIn.days = 1;
-					
+
 					add = true;
 				}
-				
+
 			}
 
 			SignInResult result = new SignInResult();
-			
-			if(add) {
-				
-				//更新签到信息
-				signInRedis.update(userId, userSignIn.lastSignInTime, userSignIn.days);
-				
-				//post请求添加经验
-				if(isMax) {
-					HttpComponent.addExp(userId, GlobalConfig.SIGN_IN_DAY_MAX_EXP);
-				}else {
+
+			if (add) {
+
+				// 更新签到信息
+				signInRedis.update(userId, userSignIn.lastSignInTime,
+						userSignIn.days);
+
+				// post请求添加经验
+				if (isMax) {
+					HttpComponent.addExp(userId,
+							GlobalConfig.SIGN_IN_DAY_MAX_EXP);
+				} else {
 					HttpComponent.addExp(userId, GlobalConfig.SIGN_IN_DAY_EXP);
 				}
-				
-				//记录到签到成员列表
-				if(!signInRedis.exists()) {
+
+				// 记录到签到成员列表
+				if (!signInRedis.exists()) {
 					signInRedis.addSignInfoAndExpire(userId, now);
 				} else {
 					signInRedis.addSignInfo(userId, now);
 				}
-				
+
 				result = signInRedis.getResult(userId);
 				result.days = userSignIn.days;
 				result.isSignIn = true;
-				
-				//添加签到流水
+
+				// 添加签到流水
 				FeedUserSignIn model = new FeedUserSignIn();
 				model.setCreateTime(now);
 				model.setUserId(userId);
 				signInDao.add(model);
 			}
-			
+
 			return result;
 		} catch (Exception e) {
-			GlobalObject.ERROR_LOG.error("at FeedUserSignInServiceImpl.sign throw an error.", e);
+			GlobalObject.ERROR_LOG.error(
+					"at FeedUserSignInServiceImpl.sign throw an error.", e);
 			throw e;
 		}
 	}
@@ -106,30 +112,32 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 		try {
 			UserSignIn userSignIn = signInRedis.getInfo(userId);
 			SignInResult result = null;
-			
-			if(signInRedis.exists()) {
+
+			if (signInRedis.exists()) {
 				result = signInRedis.getResult(userId);
 			}
-			
-			if(result == null) {
+
+			if (result == null) {
 				result = new SignInResult();
 			}
-			
+
 			boolean flag = false;
-			if(userSignIn != null) {
-				flag = TimeUtil.isSameDay(System.currentTimeMillis(), userSignIn.lastSignInTime);
+			if (userSignIn != null) {
+				flag = TimeUtil.isSameDay(System.currentTimeMillis(),
+						userSignIn.lastSignInTime);
 				result.days = userSignIn.days;
 			} else {
 				result.days = 0;
 			}
-			
+
 			result.isSignIn = flag;
 			return result;
 		} catch (Exception e) {
-			GlobalObject.ERROR_LOG.error("at FeedUserSignInServiceImpl.isSignIned throw an error.", e);
+			GlobalObject.ERROR_LOG.error(
+					"at FeedUserSignInServiceImpl.isSignIned throw an error.",
+					e);
 			throw e;
 		}
 	}
-
 
 }
