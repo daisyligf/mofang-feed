@@ -34,6 +34,7 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 			long now = System.currentTimeMillis();
 			boolean isMax = false;
 			boolean add = false;
+			boolean repeat = false;
 			if (userSignIn == null) {
 				userSignIn = new UserSignIn();
 				userSignIn.lastSignInTime = now;
@@ -56,6 +57,8 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 
 						userSignIn.days++;
 						add = true;
+					} else {
+						repeat = true;
 					}
 				} else if (intervalDay > 1) {
 					userSignIn.days = 1;
@@ -97,6 +100,11 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 				model.setCreateTime(now);
 				model.setUserId(userId);
 				signInDao.add(model);
+			}
+			
+			//重复签到了
+			if(repeat) {
+				result.repeat = true;
 			}
 
 			return result;

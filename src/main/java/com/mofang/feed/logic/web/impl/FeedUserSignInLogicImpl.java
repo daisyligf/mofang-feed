@@ -32,6 +32,7 @@ public class FeedUserSignInLogicImpl implements FeedUserSignInLogic {
 			data.put("days", signInResult.days);
 			data.put("rank", signInResult.rank);
 			data.put("totalMember", signInResult.totalMember);
+			data.put("is_repeat", signInResult.repeat);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);
