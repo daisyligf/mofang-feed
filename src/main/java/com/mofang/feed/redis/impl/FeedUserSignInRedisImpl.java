@@ -87,8 +87,10 @@ public class FeedUserSignInRedisImpl implements FeedUserSignInRedis {
 				Long rank = jedis.zrank(key, String.valueOf(userId));
 				Long totalMember = jedis.zcard(key);
 				SignInResult result = new SignInResult();
-				if(rank != null && totalMember != null) {
+				if(rank != null) {
 					result.rank = rank.intValue() + 1;
+				}
+				if(totalMember != null) {
 					result.totalMember = totalMember.intValue();
 				}
 				return result;
