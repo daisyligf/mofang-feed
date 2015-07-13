@@ -13,6 +13,15 @@ public class TimeUtil {
 		cl.set(Calendar.SECOND, 0);
 		return cl.getTimeInMillis() - System.currentTimeMillis();
 	}
+	
+	public static long getTodayEndTime(){
+		Calendar cal = Calendar.getInstance();
+		cal.get(Calendar.HOUR_OF_DAY);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		return cal.getTimeInMillis();
+	}
 
 	public static long getYesterdyStartTime() {
 		Calendar cal = Calendar.getInstance();
