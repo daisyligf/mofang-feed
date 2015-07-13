@@ -534,6 +534,16 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{
+		///验证主题是否存在
+		ResultValue result = new ResultValue();
+		FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+		if(null == threadInfo)
+		{
+			result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+			result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+			return result;
+		}
+		
 		Page<FeedPost> page = postService.getThreadPostList(threadId, pageNum, pageSize);
 		ResultValue resultValue = getPostList(page, threadId, pageNum, pageSize, currentUserId);
 		
@@ -546,6 +556,16 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{
+		///验证主题是否存在
+		ResultValue result = new ResultValue();
+		FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+		if(null == threadInfo)
+		{
+			result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+			result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+			return result;
+		}
+				
 		Page<FeedPost> page = postService.getHostPostList(threadId, pageNum, pageSize);
 		ResultValue resultValue = getPostList(page, threadId, pageNum, pageSize, currentUserId);
 		

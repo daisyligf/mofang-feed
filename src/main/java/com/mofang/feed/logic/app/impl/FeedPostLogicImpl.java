@@ -401,6 +401,16 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{
+		///验证主题是否存在
+		ResultValue result = new ResultValue();
+		FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+		if(null == threadInfo)
+		{
+			result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+			result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+			return result;
+		}
+				
 		/*********记录用户浏览数**********/
 		StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
 		
@@ -411,6 +421,16 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{
+		///验证主题是否存在
+		ResultValue result = new ResultValue();
+		FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+		if(null == threadInfo)
+		{
+			result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+			result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+			return result;
+		}
+				
 		/*********记录用户浏览数**********/
 		StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
 
