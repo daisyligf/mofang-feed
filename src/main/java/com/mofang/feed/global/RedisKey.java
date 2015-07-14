@@ -90,26 +90,6 @@ public class RedisKey
 	public final static String FORUM_TOP_THREAD_LIST_KEY_PREFIX = "forum_top_thread_list_";
 	
 	/**
-	 * 广场模块主题列表key前缀(精选、视频、晒图等)
-	 * 结构: SortedSet
-	 * 说明:
-	 *          score: display_order + 推送时间
-	 *          value: 主题ID
-	 * 示例: zadd module_thread_list_${module_id} score ${thread_id}
-	 */
-	public final static String MODULE_THREAD_LIST_KEY_PREFIX = "module_thread_list_";
-	
-	/**
-	 * 全局精华主题列表key前缀(web端使用)
-	 * 结构: SortedSet
-	 * 说明:
-	 *          score: 设置精华时间
-	 *          value: 主题ID
-	 * 示例: zadd global_elite_thread_list score ${thread_id}
-	 */
-	public final static String GLOBAL_ELITE_THREAD_LIST_KEY = "global_elite_thread_list";
-	
-	/**
 	 * 楼层信息key前缀
 	 * 结构: Hash
 	 * 示例: hset post_info_${post_id} message test
@@ -175,13 +155,6 @@ public class RedisKey
 	 * 示例: set user_last_post_time_${user_id} 142358672211
 	 */
 	public final static String USER_LAST_POST_TIME_KEY_PREFIX = "user_last_post_time_";
-	
-	/**
-	 * 广场模块推送主题信息key前缀
-	 * 结构: Hash
-	 * 示例: hset module_item_info_${item_id} subtitle test
-	 */
-	public final static String MODULE_ITEM_INFO_KEY_PREFIX = "module_item_info_";
 	
 	/**
 	 * 角色信息key前缀
