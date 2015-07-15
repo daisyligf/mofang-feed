@@ -81,7 +81,7 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 					HttpComponent.addExp(userId,
 							GlobalConfig.SIGN_IN_DAY_MAX_EXP);
 				} else {
-					HttpComponent.addExp(userId, GlobalConfig.SIGN_IN_DAY_EXP);
+					HttpComponent.addExp(userId, GlobalConfig.SIGN_IN_DAY_EXP  * userSignIn.days);
 				}
 
 				// 记录到签到成员列表
