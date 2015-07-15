@@ -331,6 +331,9 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						notify.setForumName(forumInfo.getName());
 					HttpComponent.pushFeedRecommendNotify(notify);
 				}
+				
+				/******************************执行任务******************************/
+				TaskComponent.recommendThread(userId);
 			}
 			else
 			{
