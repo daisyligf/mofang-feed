@@ -366,11 +366,22 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				result.setMessage(ReturnMessage.POST_NOT_EXISTS);
 				return result;
 			}
+			
+			///主题有效性检查
+			long threadId = postInfo.getThreadId();
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
 			///权限检查
 			long forumId = postInfo.getForumId();
-			long userId = postInfo.getUserId();
-			long threadId = postInfo.getThreadId();
-			if(operatorId != userId)  ///如果不是作者
+			long postUserId = postInfo.getUserId();
+			long threadUserId = threadInfo.getUserId();
+			if(operatorId != postUserId && operatorId != threadUserId)  ///如果不是作者并且不是楼主
 			{
 				boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.DELETE_POST);
 				if(!hasPrivilege)
@@ -383,25 +394,21 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			
 			///如果删除的是一楼，则将主题删除
 			String subject = "";
-			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
-			if(null != threadInfo)
-			{
-				subject = threadInfo.getSubject();
-				if(postInfo.getPosition() == 1)
-					threadService.delete(threadInfo);
-			}
+			subject = threadInfo.getSubject();
+			if(postInfo.getPosition() == 1)
+				threadService.delete(threadInfo);
 			
 			///删除楼层
 			postService.delete(postInfo);
 			
 			/******************************系统通知******************************/
 			///不是自己删帖才需要发通知
-			if(operatorId != userId)
-				SysMessageNotifyComponent.deletePost(operatorId, userId, subject, postInfo.getContentFilter(), reason);
+			if(operatorId != postUserId)
+				SysMessageNotifyComponent.deletePost(operatorId, postUserId, subject, postInfo.getContentFilter(), reason);
 			
 			/******************************操作记录******************************/
 			FeedOperateHistory operateInfo = new FeedOperateHistory();
-			operateInfo.setUserId(userId);
+			operateInfo.setUserId(postUserId);
 			operateInfo.setForumId(forumId);
 			operateInfo.setPrivilegeId(FeedPrivilege.DELETE_POST);
 			operateInfo.setSourceType(OperateSourceType.POST);
