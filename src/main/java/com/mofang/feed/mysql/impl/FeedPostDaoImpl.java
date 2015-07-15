@@ -22,6 +22,7 @@ import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 import com.mofang.framework.data.mysql.core.meta.ResultData;
 import com.mofang.framework.data.mysql.core.meta.RowData;
+import com.mofang.framework.util.StringUtil;
 
 /**
  * 
@@ -309,10 +310,12 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 	}
 
 	@Override
-	public Map<Long, String> getThreadContentMap() throws Exception
+	public Map<Long, String> getThreadContentMap(String where) throws Exception
 	{
 		Map<Long, String> map = new HashMap<Long, String>();
-		String strSql = "select thread_id, content_filter from feed_post where position = 1";
+		String strSql = "select thread_id, content_filter from feed_post where position = 1 ";
+		if(!StringUtil.isNullOrEmpty(where))
+			strSql += " and " + where;
 		ResultData  data = super.executeQuery(strSql);
 		if(null == data)
 			return map;

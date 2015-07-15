@@ -1,6 +1,5 @@
 package com.mofang.feed.data.transfer;
 
-import com.mofang.feed.data.transfer.handler.FeedBlackListTransfer;
 import com.mofang.feed.data.transfer.handler.FeedCommentTransfer;
 import com.mofang.feed.data.transfer.handler.FeedForumThreadsUpdateTransfer;
 import com.mofang.feed.data.transfer.handler.FeedForumTransfer;
@@ -21,6 +20,11 @@ public class TransferManager
 {
 	public static void exec()
 	{
+		TransferIncrementManager.exec();
+	}
+	
+	private static void transfer()
+	{
 		FeedTransfer transfer = null;
 		long start = System.currentTimeMillis();
 		long itemStart = 0L;
@@ -31,7 +35,7 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("forum data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		/*
+		
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedThreadTransfer();
 		transfer.exec();
@@ -69,17 +73,11 @@ public class TransferManager
 		System.out.println("user favorite data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
 		
 		itemStart = System.currentTimeMillis();
-		transfer = new FeedBlackListTransfer();
-		transfer.exec();
-		itemEnd = System.currentTimeMillis();
-		System.out.println("black list data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		*/
-		itemStart = System.currentTimeMillis();
 		transfer = new FeedForumThreadsUpdateTransfer();
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("forum threads update completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		/*
+		
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedThreadReplyUpdateTransfer();
 		transfer.exec();
@@ -91,7 +89,7 @@ public class TransferManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("post comments update completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		*/
+		
 		long end = System.currentTimeMillis();
 		System.out.println("data transfer completed. cost time: " + (end - start) + " ms.");
 	}

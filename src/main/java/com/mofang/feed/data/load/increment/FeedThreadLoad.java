@@ -1,4 +1,4 @@
-package com.mofang.feed.data.load.impl;
+package com.mofang.feed.data.load.increment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,18 +8,22 @@ import java.util.Map;
 import com.mofang.feed.data.load.FeedLoad;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.ThreadStatus;
+import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.feed.mysql.impl.FeedPostDaoImpl;
 import com.mofang.feed.mysql.impl.FeedThreadDaoImpl;
+import com.mofang.feed.redis.FeedForumRedis;
 import com.mofang.feed.redis.FeedThreadRedis;
-import com.mofang.feed.redis.WaterproofWallRedis;
+import com.mofang.feed.redis.impl.FeedForumRedisImpl;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
-import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.solr.FeedThreadSolr;
 import com.mofang.feed.solr.impl.FeedThreadSolrImpl;
+import com.mofang.framework.data.mysql.core.criterion.operand.GreaterThanOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
+import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
 
 /**
  * 
@@ -31,9 +35,9 @@ public class FeedThreadLoad implements FeedLoad
 	private final static int STEP = 10000;
 	private FeedThreadDao threadDao  = FeedThreadDaoImpl.getInstance();
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
-	private WaterproofWallRedis waterproofWallRedis = WaterproofWallRedisImpl.getInstance();
 	private FeedThreadSolr threadSolr = FeedThreadSolrImpl.getInstance();
 	private FeedPostDao postDao = FeedPostDaoImpl.getInstance();
+	private FeedForumRedis forumRedis = FeedForumRedisImpl.getInstance();
 
 	public void exec()
 	{
@@ -61,13 +65,24 @@ public class FeedThreadLoad implements FeedLoad
 			handleRedis(threadInfo);
 			
 			///添加到solr列表中
-			solrList.add(threadInfo);
-			if(total % STEP == 0 || total == list.size())
+			try
 			{
-				handleSolr(solrList);
-				solrList.clear();
+				FeedForum forumInfo = forumRedis.getInfo(threadInfo.getForumId());
+				if(!forumInfo.isHidden())
+				{
+					solrList.add(threadInfo);
+					if(total % STEP == 0 || total == list.size())
+					{
+						handleSolr(solrList);
+						solrList.clear();
+					}
+					total++;
+				}
 			}
-			total++;
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 		///更新redis自增ID的值
 		initUniqueId();
@@ -83,7 +98,6 @@ public class FeedThreadLoad implements FeedLoad
 			long forumId = threadInfo.getForumId();
 			long threadId = threadInfo.getThreadId();
 			long lastPostTime = threadInfo.getLastPostTime();
-			long userId = threadInfo.getUserId();
 			long topTime = threadInfo.getTopTime();
 			
 			if(threadInfo.getStatus() == ThreadStatus.NORMAL)
@@ -91,8 +105,6 @@ public class FeedThreadLoad implements FeedLoad
 				///保存主题信息
 				threadRedis.save(threadInfo);
 				
-				///更新用户最后发帖时间
-				waterproofWallRedis.updateUserLastPostTime(userId, lastPostTime);
 				///如果是置顶帖
 				if(threadInfo.isTop())
 				{
@@ -146,7 +158,10 @@ public class FeedThreadLoad implements FeedLoad
 	{
 		try
 		{
-			return threadDao.getList(null);
+			Operand where = new WhereOperand();
+			Operand greatThan = new GreaterThanOperand("thread_id", (938054 + 50000));
+			where.append(greatThan);
+			return threadDao.getList(where);
 		}
 		catch(Exception e)
 		{
@@ -159,7 +174,8 @@ public class FeedThreadLoad implements FeedLoad
 	{
 		try
 		{
-			return postDao.getThreadContentMap(null);
+			String where = "thread_id > " + (938054 + 50000);
+			return postDao.getThreadContentMap(where);
 		}
 		catch(Exception e)
 		{

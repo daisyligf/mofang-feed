@@ -109,5 +109,5 @@ public interface FeedPostDao
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<Long, String> getThreadContentMap() throws Exception;
+	public Map<Long, String> getThreadContentMap(String where) throws Exception;
 }
