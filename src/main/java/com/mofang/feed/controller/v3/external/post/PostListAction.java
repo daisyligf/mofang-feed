@@ -24,11 +24,9 @@ public class PostListAction extends AbstractActionExecutor
 	protected ResultValue exec(HttpRequestContext context) throws Exception
 	{
 		ResultValue result = new ResultValue();
-		String strUserId = context.getParamMap().get("uid");
 		String strThreadId = context.getParamMap().get("tid");
-		String strPageNum = context.getParameters("page");
+		String strPostId = context.getParameters("pid");
 		String strPageSize = context.getParameters("size");
-		String strType = context.getParameters("type");
 		
 		///参数检查
 		if(!StringUtil.isLong(strThreadId))
@@ -37,25 +35,24 @@ public class PostListAction extends AbstractActionExecutor
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-
-		long threadId = Long.parseLong(strThreadId);		
-		long userId = 0L;
-		int pageNum = 1;
-		int pageSize = 50;
-		int type = 0;
 		
-		if(StringUtil.isLong(strUserId))
-			userId = Long.parseLong(strUserId);
-		if(StringUtil.isInteger(strPageNum))
-			pageNum = Integer.parseInt(strPageNum);
+		long postId = 0L;
+		if(StringUtil.isLong(strPostId))
+			postId = Long.parseLong(strPostId);
+		
+		if(postId < 0L)
+		{
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}	
+
+		long threadId = Long.parseLong(strThreadId);	
+		int pageSize = 50;
+		
 		if(StringUtil.isInteger(strPageSize))
 			pageSize = Integer.parseInt(strPageSize);
-		if(StringUtil.isInteger(strType))
-			type = Integer.parseInt(strType);
 		
-		if(1 == type)    ///只看楼主
-			return logic.getHostPostList(threadId, pageNum, pageSize, userId);
-		else
-			return logic.getThreadPostList(threadId, pageNum, pageSize, userId);
+		return logic.getThreadPostList(threadId, postId, pageSize);
 	}
 }

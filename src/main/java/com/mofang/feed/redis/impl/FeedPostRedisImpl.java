@@ -193,6 +193,28 @@ public class FeedPostRedisImpl implements FeedPostRedis
 	}
 	
 	@Override
+	public Set<String> getThreadPostList(final long threadId, final long postId, final int size) throws Exception
+	{
+		RedisWorker<Set<String>> worker = new RedisWorker<Set<String>>()
+		{
+			@Override
+			public Set<String> execute(Jedis jedis) throws Exception
+			{
+				int start = 0;
+				String key = RedisKey.buildRedisKey(RedisKey.THREAD_POST_LIST_KEY_PREFIX, threadId);
+				if(postId > 0L)
+				{
+					Long rank = jedis.zrevrank(key, String.valueOf(postId));
+					start = null == rank ? 0 : rank.intValue() + 1;
+				}
+				int end = start + size - 1;
+				return jedis.zrevrange(key, start, end);
+			}
+		};
+		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
+	}
+	
+	@Override
 	public long getThreadPostCount(long threadId) throws Exception
 	{
 		String key = RedisKey.buildRedisKey(RedisKey.THREAD_POST_LIST_KEY_PREFIX, threadId);

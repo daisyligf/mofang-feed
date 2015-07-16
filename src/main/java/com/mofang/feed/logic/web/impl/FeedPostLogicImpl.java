@@ -213,9 +213,15 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			/******************************回复奖励******************************/
 			rewardService.rewordUser(threadId);
 			
+			///获取楼层总数(用于跳转到用户回复的最新楼层)
+			long posts = postService.getThreadPostCount(threadId);
+			JSONObject data = new JSONObject();
+			data.put("total", posts);
+			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
 			return result;
 		}
 		catch(Exception e)

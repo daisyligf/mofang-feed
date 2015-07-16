@@ -143,6 +143,16 @@ public interface FeedPostRedis
 	public Set<String> getThreadPostList(long threadId, int start, int end) throws Exception;
 	
 	/**
+	 * 获取主题楼层列表
+	 * @param threadId 主题ID
+	 * @param postId 楼层ID(从当前楼层开始)
+	 * @param size 获取记录数
+	 * @return
+	 * @throws Exception
+	 */
+	public Set<String> getThreadPostList(long threadId, long postId, int size) throws Exception;
+	
+	/**
 	 * 获取主题楼层总数
 	 * @param threadId 主题ID
 	 * @return

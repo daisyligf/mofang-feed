@@ -506,6 +506,36 @@ public class FeedPostServiceImpl implements FeedPostService
 	}
 
 	@Override
+	public Page<FeedPost> getThreadPostList(long threadId, long postId, int pageSize) throws Exception
+	{
+		try
+		{
+			long total = postRedis.getThreadPostCount(threadId);
+			Set<String> idSet = postRedis.getThreadPostList(threadId, postId, pageSize);
+			return convertEntityList(total, idSet);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedPostServiceImpl.getThreadPostList throw an error.", e);
+			throw e;
+		}
+	}
+	
+	@Override
+	public long getThreadPostCount(long threadId) throws Exception
+	{
+		try
+		{
+			return postRedis.getThreadPostCount(threadId);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedPostServiceImpl.getThreadPostCount throw an error.", e);
+			throw e;
+		}
+	}
+
+	@Override
 	public Page<FeedPost> getHostPostList(long threadId, int pageNum, int pageSize) throws Exception
 	{
 		try
