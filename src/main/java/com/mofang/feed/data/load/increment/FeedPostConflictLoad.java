@@ -1,12 +1,11 @@
 package com.mofang.feed.data.load.increment;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.mofang.feed.data.load.FeedLoad;
 import com.mofang.feed.global.GlobalObject;
@@ -23,9 +22,16 @@ import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.impl.FeedCommentRedisImpl;
 import com.mofang.feed.redis.impl.FeedPostRedisImpl;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
+import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.GreaterThanOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.InOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.LessThanOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
+import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
+import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.WhereOperand;
+import com.mofang.framework.data.mysql.core.criterion.type.SortType;
+import com.mofang.framework.util.StringUtil;
 
 public class FeedPostConflictLoad implements FeedLoad
 {
@@ -34,7 +40,6 @@ public class FeedPostConflictLoad implements FeedLoad
 	private FeedThreadRedis threadRedis = FeedThreadRedisImpl.getInstance();
 	private FeedThreadDao threadDao = FeedThreadDaoImpl.getInstance();
 	private FeedCommentRedis commentRedis = FeedCommentRedisImpl.getInstance();
-	private static Map<Long, Integer> POSITION_MAP = new HashMap<Long, Integer>();
 	
 	public void exec()
 	{
@@ -50,11 +55,6 @@ public class FeedPostConflictLoad implements FeedLoad
 		
 		list = null;
 		System.gc();
-		
-		///	更新position
-		initPosition();
-		POSITION_MAP = null;
-		System.gc();
 	}
 	
 	private void handle(Map<Long, List<FeedPost>> map)
@@ -62,6 +62,8 @@ public class FeedPostConflictLoad implements FeedLoad
 		List<FeedPost> postList = null;
 		try
 		{
+			int total = map.keySet().size();
+			int current = 1;
 			for(long threadId : map.keySet())
 			{
 				FeedThread threadInfo = threadRedis.getInfo(threadId);
@@ -72,19 +74,17 @@ public class FeedPostConflictLoad implements FeedLoad
 				postRedis.deleteThreadPostListByThreadId(threadId);
 				postRedis.deleteHostPostListByThreadId(threadId);
 				
-				int position = 2;
+				int position = 0;
 				int posts = 0;
 				int comments = 0;
 				long lastPostTime = System.currentTimeMillis();
 				long lastPostUserId = 0L;
 				postList = map.get(threadId);
 				
-				///排序楼层
-				Comparator<FeedPost> ascComparator = new PostComparator();
-				Collections.sort(postList, ascComparator);
-				
 				for(FeedPost postInfo : postList)
 				{
+					position += 1;
+					
 					///重新生成主题的楼层列表和楼主列表
 					if(postInfo.getStatus() == PostStatus.NORMAL)
 					{
@@ -96,7 +96,7 @@ public class FeedPostConflictLoad implements FeedLoad
 						}
 						
 						///计算楼层数
-						posts++;
+						posts += 1;
 					}
 					
 					///计算评论数
@@ -109,7 +109,6 @@ public class FeedPostConflictLoad implements FeedLoad
 					
 					lastPostTime = postInfo.getCreateTime();
 					lastPostUserId = postInfo.getUserId();
-					position++;
 				}
 				
 				///更新主题的回复数以及最后回复时间和最后回复用户ID
@@ -117,6 +116,16 @@ public class FeedPostConflictLoad implements FeedLoad
 				threadInfo.setReplies(replies);
 				threadInfo.setLastPostTime(lastPostTime);
 				threadInfo.setLastPostUid(lastPostUserId);
+				
+				String subjectFilter = threadInfo.getSubjectFilter();
+				String subjectMark = threadInfo.getSubjectMark();
+				if(StringUtil.isNullOrEmpty(subjectFilter))
+					subjectFilter = threadInfo.getSubject();
+				if(StringUtil.isNullOrEmpty(subjectMark))
+					subjectMark = threadInfo.getSubject();
+				
+				threadInfo.setSubjectFilter(subjectFilter);
+				threadInfo.setSubjectMark(subjectMark);
 				threadRedis.save(threadInfo);
 				threadDao.update(threadInfo);
 				
@@ -125,32 +134,15 @@ public class FeedPostConflictLoad implements FeedLoad
 					threadRedis.addForumThreadList(threadInfo.getForumId(), threadId, lastPostTime);
 				
 				///保存主题对应的最大position
-				POSITION_MAP.put(threadId, position);
+				postRedis.initPosition(threadId, position);
+				
+				System.out.println(total + " thread need handle,  no. " +  current + " thread be handling, current thread_id: " + threadId);
+				current++;
 			}
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}
-	}
-	
-	private void initPosition()
-	{
-		Iterator<Long> iterator = POSITION_MAP.keySet().iterator();
-		long threadId = 0L;
-		int position = 0;
-		try
-		{
-			while(iterator.hasNext())
-			{
-				threadId = iterator.next();
-				position = POSITION_MAP.get(threadId);
-				postRedis.initPosition(threadId, position);
-			}
-		}
-		catch(Exception e)
-		{
-			GlobalObject.ERROR_LOG.error("at FeedPostLoad.initPosition throw an error.", e);
 		}
 	}
 	
@@ -166,7 +158,7 @@ public class FeedPostConflictLoad implements FeedLoad
 				postList = new ArrayList<FeedPost>();
 			
 			postList.add(postInfo);
-			map.put(threadId, list);
+			map.put(threadId, postList);
 		}
 		return map;
 	}
@@ -175,9 +167,13 @@ public class FeedPostConflictLoad implements FeedLoad
 	{
 		try
 		{
+			Set<Long> set = getConflictThreadId();
+			if(null == set)
+				return null;
+			
 			Operand where = new WhereOperand();
-			Operand postIdLesserThan = new LessThanOperand("thread_id", 938054);
-			where.append(postIdLesserThan);
+			Operand in = new InOperand("thread_id", set);
+			where.append(in);
 			return postDao.getList(where);
 		}
 		catch(Exception e)
@@ -187,12 +183,31 @@ public class FeedPostConflictLoad implements FeedLoad
 		}
 	}
 	
-	class PostComparator implements Comparator<FeedPost>
+	private Set<Long> getConflictThreadId()
 	{
-		@Override
-		public int compare(FeedPost o1, FeedPost o2)
+		try
 		{
-			return (int)(o1.getCreateTime() - o2.getCreateTime());
+			Operand where = new WhereOperand();
+			Operand threadIdLesserThan = new LessThanOperand("thread_id", 938054);
+			Operand postIdGreatThan = new GreaterThanOperand("post_id", (6193654 + 300000));
+			Operand and = new AndOperand();
+			OrderByEntry entry = new OrderByEntry("create_time", SortType.Asc);
+			Operand orderby = new OrderByOperand(entry);
+			where.append(threadIdLesserThan).append(and).append(postIdGreatThan).append(orderby);
+			List<FeedPost> list = postDao.getList(where);
+			if(null == list || list.size() == 0)
+				return null;
+			
+			Set<Long> set = new HashSet<Long>();
+			for(FeedPost postInfo : list)
+				set.add(postInfo.getThreadId());
+			
+			return set;
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedPostLoad.getConflictThreadId throw an error.", e);
+			return null;
 		}
 	}
 }

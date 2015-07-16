@@ -20,7 +20,7 @@ public class TransferManager
 {
 	public static void exec()
 	{
-		TransferIncrementManager.exec();
+		transfer();
 	}
 	
 	private static void transfer()

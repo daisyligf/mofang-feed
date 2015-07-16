@@ -21,7 +21,7 @@ public class FeedPostNonConflictTransfer extends BaseTransfer implements FeedTra
 	private final static long POST_ID_STEP = 300000L;
 	private final static int BATCH_EXEC_STEP = 1000;
 	
-	private final static String SQL_PREFIX = "insert into feed_post_new(post_id, forum_id, thread_id, user_id, content, content_filter, content_mark, html_content, html_content_filter, html_content_mark, pictures, video_id, thumbnail, duration, position, comments, recommends, status, create_time, update_time) values ";
+	private final static String SQL_PREFIX = "insert into feed_post_nonconflict(post_id, forum_id, thread_id, user_id, content, content_filter, content_mark, html_content, html_content_filter, html_content_mark, pictures, video_id, thumbnail, duration, position, comments, recommends, status, create_time, update_time) values ";
 	private List<String> sqlList = new ArrayList<String>();
 
 	@Override

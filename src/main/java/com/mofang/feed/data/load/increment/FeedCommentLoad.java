@@ -118,7 +118,7 @@ public class FeedCommentLoad implements FeedLoad
 			Operand where = new WhereOperand();
 			Operand commentIdGreaterThan = new GreaterThanOperand("comment_id", (6193666 + 50000));
 			where.append(commentIdGreaterThan);
-			return commentDao.getList(null);
+			return commentDao.getList(where);
 		}
 		catch(Exception e)
 		{

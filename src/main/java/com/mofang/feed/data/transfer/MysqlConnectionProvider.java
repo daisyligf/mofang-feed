@@ -16,12 +16,12 @@ public class MysqlConnectionProvider
 		{
 			Class.forName(Driver);
 			String url;
-			url="jdbc:mysql://10.6.16.194:3306/feed?user=feedbbs&password=UcCCTzAe&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-			//url="jdbc:mysql://192.168.1.61:3306/feed_ol?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			//url="jdbc:mysql://10.6.16.194:3306/feed?user=feedbbs&password=UcCCTzAe&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			url="jdbc:mysql://192.168.1.61:3306/feed_ol?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
 			ORIGINAL_CONN = DriverManager.getConnection(url);
 			
-			url="jdbc:mysql://10.6.16.194:3306/feed_v3?user=feedbbs&password=UcCCTzAe&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-			//url="jdbc:mysql://192.168.1.61:3306/feed_test?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			//url="jdbc:mysql://10.6.16.194:3306/feed_v3?user=feedbbs&password=UcCCTzAe&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+			url="jdbc:mysql://192.168.1.61:3306/feed?user=root&password=mofang888&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
 			NEW_CONN = DriverManager.getConnection(url);
 		}
 		catch(Exception e)

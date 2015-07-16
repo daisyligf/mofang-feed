@@ -14,13 +14,13 @@ public class TransferIncrementManager
 		long start = System.currentTimeMillis();
 		long itemStart = 0L;
 		long itemEnd = 0L;
-		
+		/*
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedThreadTransfer();
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("thread data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		*/
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedPostConflictTransfer();
 		transfer.exec();
@@ -32,7 +32,7 @@ public class TransferIncrementManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("post nonconflict data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		/*
 		itemStart = System.currentTimeMillis();
 		transfer = new FeedCommentTransfer();
 		transfer.exec();
@@ -44,7 +44,7 @@ public class TransferIncrementManager
 		transfer.exec();
 		itemEnd = System.currentTimeMillis();
 		System.out.println("thread recommend data transfer completed. cost time: " + (itemEnd - itemStart) + " ms.");
-		
+		*/
 		long end = System.currentTimeMillis();
 		System.out.println("data transfer completed. cost time: " + (end - start) + " ms.");
 	}

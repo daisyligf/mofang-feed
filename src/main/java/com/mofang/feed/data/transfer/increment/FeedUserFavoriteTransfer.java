@@ -2,9 +2,7 @@ package com.mofang.feed.data.transfer.increment;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.mofang.feed.data.transfer.BaseTransfer;
 import com.mofang.feed.data.transfer.FeedTransfer;
@@ -25,6 +23,8 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 	
 	public void exec()
 	{
+		truncate();
+		
 		///获取收藏数据
 		System.out.println("get user_favorite data......");
 		ResultSet rs = getData();
@@ -34,17 +34,30 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 			return;
 		}
 		
-		///获取新版数据
-		Set<String> set = getNewData();
-		
 		System.out.println("prepare handle user_favorite data......");
-		handle(rs, set);
+		handle(rs);
 		System.out.println("user_favorite data transfer completed!");
+		
+		System.out.println("prepare add user_favorite index......");
+		//addIndex();
+		System.out.println("add user_favorite index completed!");
 		
 		System.gc();
 	}
 	
-	private void handle(ResultSet rs, Set<String> set)
+	private ResultSet getData()
+	{
+		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select a.tid, a.uid, a.create_time ");
+		strSql.append("from feed_favorite a ");
+		strSql.append("left join ");
+		strSql.append("(select tid from feed_thread where fid in (" + forumIds + ")) b on a.tid = b.tid ");
+		strSql.append("where b.tid is not null and a.uid > 0 group by a.tid, a.uid ");
+		return getData(strSql.toString());
+	}
+	
+	private void handle(ResultSet rs)
 	{
 		try
 		{
@@ -52,7 +65,7 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 			int total = 1;
 			while(rs.next())
 			{
-				execSql = buildSql(rs, set);
+				execSql = buildSql(rs);
 				if(StringUtil.isNullOrEmpty(execSql))
 					continue;
 
@@ -90,20 +103,15 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 		sqlList.clear();
 	}
 	
-	private String buildSql(ResultSet rs, Set<String> set)
+	private String buildSql(ResultSet rs)
 	{
 		try
 		{
-			long userId = rs.getLong(1);
-			long threadId = rs.getLong(2);
-			long createTime = rs.getTimestamp(3).getTime();
-			
-			String key = userId + "_" + threadId;
-			if(set.contains(key))
-				return null;
-			
+			long threadId = rs.getLong(1);
 			if(threadId > 938054)
 				threadId += THREAD_ID_STEP;
+			long userId = rs.getLong(2);
+			long createTime = rs.getTimestamp(3).getTime();
 			
 			StringBuilder strSql = new StringBuilder();
 			strSql.append("(" + userId + "," + threadId + "," + createTime + "),");
@@ -116,43 +124,9 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 		}
 	}
 	
-	private Set<String> getNewData()
+	private void truncate()
 	{
-		Set<String> set = new HashSet<String>();
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select user_id, thread_id from feed_user_favorite ");
-		ResultSet rs = query(strSql.toString());
-		if(null == rs)
-			return set;
-		
-		try
-		{
-			long userId = 0L;
-			long threadId = 0L;
-			while(rs.next())
-			{
-				userId = rs.getLong(1);
-				threadId = rs.getLong(2);
-				set.add(userId + "_" + threadId);
-			}
-			return set;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return set;
-		}
-	}
-
-	private ResultSet getData()
-	{
-		String forumIds = ForumChangeUtil.convertToRetainForumString(ForumChangeUtil.RetainForumSet);
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select a.tid, a.uid, a.create_time ");
-		strSql.append("from feed_favorite a ");
-		strSql.append("left join ");
-		strSql.append("(select tid from feed_thread where fid in (" + forumIds + ")) b on a.tid = b.tid ");
-		strSql.append("where b.tid is not null and a.uid > 0 group by a.tid, a.uid ");
-		return getData(strSql.toString());
+		String strSql = "truncate table feed_user_favorite_new";
+		execute(strSql);
 	}
 }

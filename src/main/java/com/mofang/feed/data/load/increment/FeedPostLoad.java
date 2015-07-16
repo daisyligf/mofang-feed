@@ -65,6 +65,7 @@ public class FeedPostLoad implements FeedLoad
 				solrList.clear();
 			}
 			total++;
+			System.out.println("handle data :" + total);
 		}
 		list = null;
 		System.gc();

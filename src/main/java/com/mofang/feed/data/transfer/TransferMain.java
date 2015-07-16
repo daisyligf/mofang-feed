@@ -13,7 +13,8 @@ public class TransferMain
 			 */
 			
 			MysqlConnectionProvider.init();
-			TransferManager.exec();
+			//TransferManager.exec();
+			TransferIncrementManager.exec();
 		}
 		catch(Exception e)
 		{

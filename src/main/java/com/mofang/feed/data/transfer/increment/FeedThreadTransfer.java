@@ -102,7 +102,7 @@ public class FeedThreadTransfer extends BaseTransfer implements FeedTransfer
 	private Set<Long> getEliteThreadSet()
 	{
 		Set<Long> set = new HashSet<Long>();
-		String strSql = "select tid from feed_tag_thread where tagid = " + ELITE_TAG_ID;
+		String strSql = "select tid from feed_tag_thread where tid > 938054 and tagid = " + ELITE_TAG_ID;
 		try
 		{
 			ResultSet rs = getData(strSql);
