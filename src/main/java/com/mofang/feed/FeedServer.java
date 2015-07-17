@@ -43,7 +43,7 @@ public class FeedServer
 				LoadManager.execute(GlobalConfig.LOAD_LIST);
 			
 			///增量初始化
-			FeedIncrementLoad.execute();
+			///FeedIncrementLoad.execute();
 			
 			//启动定时器
 			ScheduledManager.getInstance().execute();
