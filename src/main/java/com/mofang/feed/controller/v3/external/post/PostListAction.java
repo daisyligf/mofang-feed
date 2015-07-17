@@ -27,6 +27,7 @@ public class PostListAction extends AbstractActionExecutor
 		String strThreadId = context.getParamMap().get("tid");
 		String strPostId = context.getParameters("pid");
 		String strPageSize = context.getParameters("size");
+		String strSort = context.getParameters("sort");
 		
 		///参数检查
 		if(!StringUtil.isLong(strThreadId))
@@ -49,10 +50,16 @@ public class PostListAction extends AbstractActionExecutor
 
 		long threadId = Long.parseLong(strThreadId);	
 		int pageSize = 50;
+		int sort = 0;   ///默认正序
 		
 		if(StringUtil.isInteger(strPageSize))
 			pageSize = Integer.parseInt(strPageSize);
+		if(StringUtil.isInteger(strSort))
+			sort = Integer.parseInt(strSort);
 		
-		return logic.getThreadPostList(threadId, postId, pageSize);
+		if(sort == 0)
+			return logic.getThreadPostList(threadId, 1, pageSize, 0);
+		else
+			return logic.getThreadPostList(threadId, postId, pageSize);
 	}
 }
