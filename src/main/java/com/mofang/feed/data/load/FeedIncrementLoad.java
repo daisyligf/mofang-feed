@@ -18,7 +18,7 @@ public class FeedIncrementLoad
 				long start = System.currentTimeMillis();
 				long itemStart = 0L;
 				long itemEnd = 0L;
-				/*
+				
 				System.out.println("thread data prepare load......");
 				itemStart = System.currentTimeMillis();
 				load = new FeedThreadLoad();
@@ -39,7 +39,7 @@ public class FeedIncrementLoad
 				load.exec();
 				itemEnd = System.currentTimeMillis();
 				System.out.println("comment data load completed. cost time: " + (itemEnd - itemStart) + " ms.");
-				*/
+				
 				System.out.println("post conflict data prepare load......");
 				itemStart = System.currentTimeMillis();
 				load = new FeedPostConflictLoad();
