@@ -209,9 +209,8 @@ public class GlobalObject
 			config.setMinConnectionsPerPartition(minConnectionsPerPartition);
 			config.setAcquireIncrement(acquireIncrement);
 			config.setReleaseHelperThreads(releaseHelperThreads);
-			config.setIdleMaxAge(240, TimeUnit.SECONDS);
 			config.setIdleConnectionTestPeriod(60, TimeUnit.SECONDS);
-			config.setIdleMaxAgeInSeconds(1800);
+			config.setIdleMaxAgeInSeconds(240);
 			return config;
         }
         catch(Exception e)

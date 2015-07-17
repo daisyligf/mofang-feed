@@ -66,25 +66,32 @@ public class FeedPostConflictLoad implements FeedLoad
 			int current = 1;
 			for(long threadId : map.keySet())
 			{
+				System.out.println("*************************************************************************");
+				long start = System.currentTimeMillis();
 				FeedThread threadInfo = threadRedis.getInfo(threadId);
 				if(null == threadInfo)
 					continue;
 				
+				long end = System.currentTimeMillis();
+				System.out.println("get thread info cost: " + (end - start));
+				
+				start = System.currentTimeMillis();
 				///删除主题的楼层列表和楼主列表
 				postRedis.deleteThreadPostListByThreadId(threadId);
 				postRedis.deleteHostPostListByThreadId(threadId);
+				end = System.currentTimeMillis();
+				System.out.println("delete thread post list cost: " + (end - start));
 				
+				start = System.currentTimeMillis();
 				int position = 0;
 				int posts = 0;
 				int comments = 0;
 				long lastPostTime = System.currentTimeMillis();
 				long lastPostUserId = 0L;
 				postList = map.get(threadId);
-				
 				for(FeedPost postInfo : postList)
 				{
 					position += 1;
-					
 					///重新生成主题的楼层列表和楼主列表
 					if(postInfo.getStatus() == PostStatus.NORMAL)
 					{
@@ -94,7 +101,6 @@ public class FeedPostConflictLoad implements FeedLoad
 						{
 							postRedis.addHostPostList(threadId, postInfo.getPostId(), position);
 						}
-						
 						///计算楼层数
 						posts += 1;
 					}
@@ -110,7 +116,10 @@ public class FeedPostConflictLoad implements FeedLoad
 					lastPostTime = postInfo.getCreateTime();
 					lastPostUserId = postInfo.getUserId();
 				}
+				end = System.currentTimeMillis();
+				System.out.println("handle post list cost: " + (end - start));
 				
+				start = System.currentTimeMillis();
 				///更新主题的回复数以及最后回复时间和最后回复用户ID
 				int replies = posts + comments;
 				threadInfo.setReplies(replies);
@@ -128,15 +137,24 @@ public class FeedPostConflictLoad implements FeedLoad
 				threadInfo.setSubjectMark(subjectMark);
 				threadRedis.save(threadInfo);
 				threadDao.update(threadInfo);
+				end = System.currentTimeMillis();
+				System.out.println("update thread info cost: " + (end - start));
 				
+				start = System.currentTimeMillis();
 				///更新版块主题列表中该主题的score(只需要更新非置顶帖的score)
 				if(!threadInfo.isTop())
 					threadRedis.addForumThreadList(threadInfo.getForumId(), threadId, lastPostTime);
+				end = System.currentTimeMillis();
+				System.out.println("update forum thread score cost: " + (end - start));
 				
+				start = System.currentTimeMillis();
 				///保存主题对应的最大position
 				postRedis.initPosition(threadId, position);
+				end = System.currentTimeMillis();
+				System.out.println("save post position cost: " + (end - start));
 				
-				System.out.println(total + " thread need handle,  no. " +  current + " thread be handling, current thread_id: " + threadId);
+				System.out.println("total: " + total + " no. " +  current + " done, thread_id: " + threadId + ", post count: " + postList.size());
+				System.out.println("*************************************************************************");
 				current++;
 			}
 		}

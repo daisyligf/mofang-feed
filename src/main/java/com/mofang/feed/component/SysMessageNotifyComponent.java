@@ -430,6 +430,34 @@ public class SysMessageNotifyComponent
 		}
 	}
 	
+	public static void rewardCoin(final long operatorId, final long userId, final int coin, final String reason)
+	{
+		try
+		{
+			Runnable pushTask = new Runnable()
+			{
+				@Override
+				public void run() 
+				{
+					String operatorName = "";
+					User userInfo = UserComponent.getInfo(operatorId);
+					if(null != userInfo)
+						operatorName = userInfo.getNickName();
+					
+					String category = "post_award";
+					String title = "您被" + operatorName + "奖励" + coin + "魔币";
+					String detail = "您被" + operatorName + "奖励" + coin + "魔币，理由：" + reason;
+					pushNotify(userId, category, title, detail.toString(), null);
+				}
+			};
+			GlobalObject.ASYN_HTTP_EXECUTOR.execute(pushTask);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at SysMessageNotifyComponent.relieveUser throw an error.", e);
+		}
+	}
+	
 	/**
 	 * 发送系统通知
 	 * @param userId  通知接收用户
