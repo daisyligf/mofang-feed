@@ -55,6 +55,7 @@ public class ForumCreateAction extends AbstractActionExecutor
 		String icon = json.optString("icon", "");
 		int type = json.optInt("type", ForumType.HOT_FORUM);
 		int gameId = json.optInt("game_id", 0);
+		boolean isHidden = json.optBoolean("is_hidden", false);
 		JSONArray arrTags = json.optJSONArray("tags");
 		
 		///参数检查
@@ -92,7 +93,7 @@ public class ForumCreateAction extends AbstractActionExecutor
 		forumInfo.setColor(color);
 		forumInfo.setType(type);
 		forumInfo.setEdit(true);
-		forumInfo.setHidden(false);
+		forumInfo.setHidden(isHidden);
 		
 		Set<Integer> tagSet = new HashSet<Integer>();
 		for(int i=0; i<arrTags.length(); i++)

@@ -1,6 +1,5 @@
 package com.mofang.feed;
 
-import com.mofang.feed.data.load.FeedIncrementLoad;
 import com.mofang.feed.data.load.LoadManager;
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.init.Initializer;
@@ -41,9 +40,6 @@ public class FeedServer
 			///初始化redis数据
 			if(GlobalConfig.LOAD_DATA)
 				LoadManager.execute(GlobalConfig.LOAD_LIST);
-			
-			///增量初始化
-			///FeedIncrementLoad.execute();
 			
 			//启动定时器
 			ScheduledManager.getInstance().execute();

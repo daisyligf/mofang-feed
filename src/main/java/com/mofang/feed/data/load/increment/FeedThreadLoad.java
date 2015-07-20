@@ -62,7 +62,7 @@ public class FeedThreadLoad implements FeedLoad
 				threadInfo.setPost(postInfo);
 			}
 			
-			handleRedis(threadInfo);
+			//handleRedis(threadInfo);
 			
 			///添加到solr列表中
 			try
@@ -85,8 +85,8 @@ public class FeedThreadLoad implements FeedLoad
 			}
 		}
 		///更新redis自增ID的值
-		initUniqueId();
-		
+		///initUniqueId();
+		handleSolr(solrList);
 		list = null;
 		System.gc();
 	}
@@ -147,6 +147,7 @@ public class FeedThreadLoad implements FeedLoad
 			final List<FeedThread> list = new ArrayList<FeedThread>();
 			list.addAll(solrList);
 			threadSolr.batchAdd(list);
+			System.out.println("solr add");
 		}
 		catch(Exception e)
 		{
@@ -174,7 +175,7 @@ public class FeedThreadLoad implements FeedLoad
 	{
 		try
 		{
-			String where = "thread_id > " + (938054 + 50000);
+			String where = "thread_id > " + (938054 + 50000) + " and position = 1 ";
 			return postDao.getThreadContentMap(where);
 		}
 		catch(Exception e)

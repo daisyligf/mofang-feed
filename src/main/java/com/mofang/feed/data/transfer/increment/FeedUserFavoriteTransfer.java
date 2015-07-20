@@ -38,10 +38,6 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 		handle(rs);
 		System.out.println("user_favorite data transfer completed!");
 		
-		System.out.println("prepare add user_favorite index......");
-		//addIndex();
-		System.out.println("add user_favorite index completed!");
-		
 		System.gc();
 	}
 	
@@ -126,7 +122,7 @@ public class FeedUserFavoriteTransfer extends BaseTransfer implements FeedTransf
 	
 	private void truncate()
 	{
-		String strSql = "truncate table feed_user_favorite_new";
+		String strSql = "truncate table feed_user_favorite";
 		execute(strSql);
 	}
 }
