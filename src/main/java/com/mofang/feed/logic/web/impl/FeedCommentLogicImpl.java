@@ -172,7 +172,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 				notify.setUserId(threadInfo.getUserId());
 				notify.setPostId(threadInfo.getThreadId());
 				notify.setPostTitle(threadInfo.getSubjectFilter());
-				notify.setReplyId(commentId);
+				notify.setReplyId(postId);
 				notify.setReplyText(model.getContentFilter());
 				notify.setReplyPictures("");
 				notify.setReplyUserId(model.getUserId());
