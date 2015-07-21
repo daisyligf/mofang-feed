@@ -165,24 +165,32 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			TaskComponent.reply(userId);
 			
 			/******************************回复通知******************************/
-			///非自己回复的需要发送通知
+			PostReplyNotify notify = new PostReplyNotify();
+			notify.setPostId(threadInfo.getThreadId());
+			notify.setPostTitle(threadInfo.getSubjectFilter());
+			notify.setReplyId(postId);
+			notify.setReplyText(model.getContentFilter());
+			notify.setReplyPictures("");
+			notify.setReplyUserId(model.getUserId());
+			notify.setReplyType(ReplyType.POST);
+			notify.setForumId(forumId);
+			FeedForum forumInfo = forumService.getInfo(forumId);
+			if(null != forumInfo)
+				notify.setForumName(forumInfo.getName());
+			
+			///非自己回复的需要发送通知(给楼主发送通知)
 			if(userId != threadInfo.getUserId())
 			{
-				PostReplyNotify notify = new PostReplyNotify();
 				notify.setUserId(threadInfo.getUserId());
-				notify.setPostId(threadInfo.getThreadId());
-				notify.setPostTitle(threadInfo.getSubjectFilter());
-				notify.setReplyId(postId);
-				notify.setReplyText(model.getContentFilter());
-				notify.setReplyPictures("");
-				notify.setReplyUserId(model.getUserId());
-				notify.setReplyType(ReplyType.POST);
-				notify.setForumId(forumId);
-				FeedForum forumInfo = forumService.getInfo(forumId);
-				if(null != forumInfo)
-					notify.setForumName(forumInfo.getName());
 				HttpComponent.pushPostReplyNotify(notify);
 			}
+			///非自己回复的需要发送通知(给层主发送通知)
+			if(userId != postInfo.getUserId())
+			{
+				notify.setUserId(postInfo.getUserId());
+				HttpComponent.pushPostReplyNotify(notify);
+			}
+			
 			
 			/******************************回复奖励******************************/
 			rewardService.rewordUser(threadId);
