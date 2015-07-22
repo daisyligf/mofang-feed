@@ -7,4 +7,6 @@ public interface FeedUserSignInLogic {
 	public ResultValue sign(long userId) throws Exception;
 	
 	public ResultValue isSignIned(long userId) throws Exception;
+	
+	public ResultValue totalMember() throws Exception;
 }

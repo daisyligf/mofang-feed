@@ -61,4 +61,20 @@ public class FeedUserSignInLogicImpl implements FeedUserSignInLogic {
 		}
 	}
 
+	@Override
+	public ResultValue totalMember() throws Exception {
+		try {
+			ResultValue result = new ResultValue();
+			JSONObject data = new JSONObject();
+			int totalMember = signInService.totalMember();
+			data.put("totalMember", totalMember);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} catch (Exception e) {
+			throw new Exception("at FeedUserSignInLogicImpl.totalMember throw an error.", e);
+		}
+	}
+
 }

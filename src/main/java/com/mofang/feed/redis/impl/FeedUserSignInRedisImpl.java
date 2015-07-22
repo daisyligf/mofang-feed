@@ -127,5 +127,22 @@ public class FeedUserSignInRedisImpl implements FeedUserSignInRedis {
 		
 	}
 
+	@Override
+	public int totalMember() throws Exception {
+		RedisWorker<Integer> worker = new RedisWorker<Integer>() {
+			@Override
+			public Integer execute(Jedis jedis) throws Exception {
+				String key = RedisKey.SIGN_IN_MEMBER_LIST_KEY;
+				Long totalMember = jedis.zcard(key);
+				int _totalMember=0;
+				if(totalMember != null) {
+					_totalMember = totalMember.intValue();
+				}
+				return _totalMember;
+			}
+		};
+		return GlobalObject.REDIS_SLAVE_EXECUTOR.execute(worker);
+	}
+
 
 }

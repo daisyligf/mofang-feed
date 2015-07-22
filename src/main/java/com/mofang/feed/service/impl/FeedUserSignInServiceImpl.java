@@ -148,4 +148,16 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 		}
 	}
 
+	@Override
+	public int totalMember() throws Exception {
+		try {
+			return signInRedis.totalMember();
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error(
+					"at FeedUserSignInServiceImpl.getSignInMembers throw an error.",
+					e);
+			throw e;
+		}
+	}
+
 }

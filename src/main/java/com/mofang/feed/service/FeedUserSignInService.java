@@ -8,4 +8,6 @@ public interface FeedUserSignInService {
 	
 	public SignInResult getResult(long userId) throws Exception;
 	
+	public int totalMember() throws Exception;
+	
 }

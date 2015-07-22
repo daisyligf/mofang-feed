@@ -16,4 +16,6 @@ public interface FeedUserSignInRedis {
 	public void addSignInfoAndExpire(long userId, long signInTime) throws Exception;
 	
 	public SignInResult getResult(long userId) throws Exception;
+	
+	public int totalMember() throws Exception;
 }
