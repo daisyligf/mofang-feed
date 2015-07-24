@@ -24,6 +24,7 @@ public class TaskClearForumTodayThreadsEntity extends TaskEntity
 		{
 			try 
 			{
+				
 				///更新数据库
 				forumDao.clearTodayThreads();
 				

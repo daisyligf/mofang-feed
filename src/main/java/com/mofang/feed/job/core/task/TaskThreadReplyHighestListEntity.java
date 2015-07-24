@@ -17,6 +17,7 @@ public class TaskThreadReplyHighestListEntity extends TaskEntity {
 		@Override
 		public void run() {
 			try {
+				
 				ThreadReplyHighestListServiceImpl.getInstance().generate();
 			} catch (Exception e) {
 				GlobalObject.ERROR_LOG

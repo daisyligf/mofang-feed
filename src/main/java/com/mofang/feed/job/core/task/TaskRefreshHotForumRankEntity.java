@@ -17,6 +17,7 @@ public class TaskRefreshHotForumRankEntity extends TaskEntity {
 		@Override
 		public void run() {
 			try {
+				
 				//从数据库根据 type=all 获得板块列表
 				
 				// uv+发帖*10+回复*3+关注*5+赞*2 排序列表

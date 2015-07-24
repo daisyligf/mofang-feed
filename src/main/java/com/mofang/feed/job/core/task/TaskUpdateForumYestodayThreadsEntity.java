@@ -28,7 +28,7 @@ public class TaskUpdateForumYestodayThreadsEntity extends TaskEntity
 		public void run() 
 		{
 			try 
-			{
+			{	
 				///获取版块昨日帖子数
 				long startTime = TimeUtil.getYesterdyStartTime();
 				long endTime = TimeUtil.getYesterdyEndTime();
