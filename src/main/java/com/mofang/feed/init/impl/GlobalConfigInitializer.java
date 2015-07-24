@@ -63,6 +63,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.SYNC_GAME_FORUMID_URL = config.get("api", "sync_game_forumid_url");
 		GlobalConfig.UPDATE_USER_STATUS_URL = config.get("api", "update_user_status_url");
 		GlobalConfig.VIPER_URL = config.get("api", "viper_url");
+		GlobalConfig.GAMEINFO_BY_IDS_URL = config.get("api", "gameinfo_by_ids_url");
 		
 		GlobalConfig.FEED_DETAIL_URL = config.get("link", "feed_detail_url");
 		GlobalConfig.FORUM_DETAIL_URL = config.get("link", "forum_detail_url");

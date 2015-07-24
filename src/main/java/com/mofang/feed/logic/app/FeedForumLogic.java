@@ -16,4 +16,6 @@ public interface FeedForumLogic
 	public ResultValue getForumList(Set<Long> forumIds) throws Exception;
 	
 	public ResultValue search(String forumName, int pageNum, int pageSize) throws Exception;
+	
+	public ResultValue getForumRecomendList(Set<Long> gameIds) throws Exception;
 }

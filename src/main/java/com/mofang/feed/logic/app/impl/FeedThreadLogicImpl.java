@@ -715,7 +715,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			throw new Exception("at FeedThreadLogicImpl.search throw an error.", e);
 		}
 	}
-
+	
 	private ResultValue convertPageToJSON(Page<FeedThread> page) throws Exception
 	{
 		///存储缓存中没有数据的用户ID, 用于批量获取用户信息
@@ -823,4 +823,6 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		result.setData(data);
 		return result;
 	}
+
+
 }

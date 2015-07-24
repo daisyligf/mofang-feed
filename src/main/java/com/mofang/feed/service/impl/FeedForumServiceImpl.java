@@ -1,6 +1,7 @@
 package com.mofang.feed.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +13,9 @@ import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.model.FeedForum;
+import com.mofang.feed.model.FeedHomeHotForumRank;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.FollowForumCount;
 import com.mofang.feed.mysql.FeedCommentDao;
 import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.FeedForumTagDao;
@@ -50,8 +53,8 @@ import com.mofang.feed.solr.impl.FeedCommentSolrImpl;
 import com.mofang.feed.solr.impl.FeedForumSolrImpl;
 import com.mofang.feed.solr.impl.FeedPostSolrImpl;
 import com.mofang.feed.solr.impl.FeedThreadSolrImpl;
-import com.mofang.feed.util.MysqlPageNumber;
 import com.mofang.feed.util.ForumHelper;
+import com.mofang.feed.util.MysqlPageNumber;
 import com.mofang.framework.util.ChineseSpellUtil;
 import com.mofang.framework.util.StringUtil;
 
@@ -81,6 +84,7 @@ public class FeedForumServiceImpl implements FeedForumService
 	private FeedHomeRecommendGameRankDao recommendGameRankDao = FeedHomeRecommendGameRankDaoImpl.getInstance();
 	private RecommendGameListRedis recommendGameListRedis = RecommendGameListRedisImpl.getInstance();
 	private HotForumListRedis hotForumListRedis = HotForumListRedisImpl.getInstance();
+	private FeedHomeHotForumRankDao forumRankDao = FeedHomeHotForumRankDaoImpl.getInstance();
 	
 	private FeedForumServiceImpl()
 	{}
@@ -351,5 +355,62 @@ public class FeedForumServiceImpl implements FeedForumService
 			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getUrlMap throw an error.", e);
 			throw e;
 		}
+	}
+
+	@Override
+	public List<FeedForum> getForumRecomendList(Set<Long> gameIds)
+			throws Exception {
+		try {
+			Set<Long> forumIds = HttpComponent.getForumIdsByGameIds(gameIds);
+			int size = 0;
+			if(forumIds == null || forumIds.size() == 0) {
+				//没有板块推荐列表，从热门取前3个
+				size = 3;
+				forumIds = new HashSet<Long>(size);
+				
+				List<FeedHomeHotForumRank> hotForumRankList = forumRankDao.getList();
+				if(hotForumRankList != null && hotForumRankList.size() > size) {
+					for(int idx=0; idx < size; idx ++) {
+						FeedHomeHotForumRank rank = hotForumRankList.get(idx);
+						forumIds.add(rank.getForumId());
+					}
+				}
+				
+			} else {
+				size = forumIds.size();
+				int _size = size - 3;
+				if(_size > 0) {
+					
+					List<FeedHomeHotForumRank> hotForumRankList = forumRankDao.getList();
+					if(hotForumRankList != null && hotForumRankList.size() > _size) {
+						for(int idx=0; idx < _size; idx ++) {
+							FeedHomeHotForumRank rank = hotForumRankList.get(idx);
+							forumIds.add(rank.getForumId());
+						}
+					}
+				}
+				
+			}
+			
+			//获取关注数
+			Map<Long, FollowForumCount> map = HttpComponent.getForumFollowCount(forumIds);
+			
+			List<FeedForum> list = new ArrayList<FeedForum>(size);
+			for(long forumId : forumIds) {
+				FeedForum forum = forumRedis.getInfo(forumId);
+				
+				FollowForumCount ffc = map.get(forumId);
+				if(ffc != null) 
+					forum.setFollows(ffc.getTotalFollows());
+				
+				if(forum != null)
+					list.add(forum);
+			}
+			return list;
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getForumRecomendList throw an error.");
+			throw e;
+		}
+		
 	}
 }

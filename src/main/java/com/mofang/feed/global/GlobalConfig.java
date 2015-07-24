@@ -95,6 +95,8 @@ public class GlobalConfig
 	
 	public static String VIPER_URL;
 	
+	public static String GAMEINFO_BY_IDS_URL;
+	
 	public static String SOLR_SERVER_HOST;
 	
 	public static String SOLR_CORE_FORUM;

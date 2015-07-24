@@ -37,4 +37,6 @@ public interface FeedForumService
 	public Page<FeedForum> search(String forumName, int pageNum, int pageSize) throws Exception;
 	
 	public Map<String, String> getUrlMap(long forumId) throws Exception;
+	
+	public List<FeedForum> getForumRecomendList(Set<Long> gameIds) throws Exception;
 }

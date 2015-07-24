@@ -560,6 +560,51 @@ public class HttpComponent
 		GlobalObject.ASYN_HTTP_EXECUTOR.execute(task);
 	}
 	
+	public static Set<Long> getForumIdsByGameIds(Set<Long> gameIds) {
+		try {
+			if(gameIds == null || gameIds.size() == 0)
+				return null;
+			
+			String ids = "";
+			for(long gameId : gameIds)
+				ids += gameId + ",";
+			
+			if(ids.length() > 0)
+				ids = ids.substring(0, ids.length() - 1);
+			
+			String requestUrl = GlobalConfig.GAMEINFO_BY_IDS_URL + "?ids=" + ids;
+			String result = get(GlobalObject.HTTP_CLIENT_GAMESERVICE, requestUrl);
+			if(StringUtil.isNullOrEmpty(result))
+				return null;
+
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return null;
+			
+			JSONArray data = json.optJSONArray("data");
+			if(null == data)
+				return null;
+
+			JSONObject item = null;
+			Set<Long> set = new HashSet<Long>(data.length());	
+			for(int idx=0; idx < data.length(); idx++)
+			{
+				item = data.optJSONObject(idx);
+				if(null == item)
+					continue;
+				
+				long forumId = item.optLong("forum_id", 0l);
+				set.add(forumId);
+			}
+			
+			return set;
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getForumIdsByGameIds throw an error.", e);
+			return null;
+		}
+	}
+	
 	private static String get(CloseableHttpClient httpClient, String requestUrl)
 	{
 		StringBuilder strLog = new StringBuilder();

@@ -224,7 +224,7 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		strSql.append("select thread_id from feed_thread ");
 		strSql.append("where forum_id = " + forumId + " ");
 		strSql.append("and status = 1 and is_elite = 1 ");
-		strSql.append(" order by last_post_time desc ");
+		strSql.append("order by last_post_time desc ");
 		strSql.append("limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);
@@ -419,7 +419,7 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");	
 		strSql.append("where is_elite=1");
-		strSql.append(" order by last_post_time desc");
+		strSql.append(" order by create_time desc");
 		strSql.append(" limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		return convertResultDataToList(data);

@@ -67,6 +67,9 @@ public class FeedUserSignInLogicImpl implements FeedUserSignInLogic {
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
 			int totalMember = signInService.totalMember();
+			data.put("is_sign_in", false);
+			data.put("days", 0);
+			data.put("rank", 0);
 			data.put("totalMember", totalMember);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);

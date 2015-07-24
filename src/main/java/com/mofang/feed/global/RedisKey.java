@@ -248,6 +248,7 @@ public class RedisKey
 	 */
 	public final static String SIGN_IN_MEMBER_LIST_KEY = "sign_in_member_list";
 	
+	
 	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀
