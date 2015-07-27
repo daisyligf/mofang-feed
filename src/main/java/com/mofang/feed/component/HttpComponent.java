@@ -595,7 +595,8 @@ public class HttpComponent
 					continue;
 				
 				long forumId = item.optLong("forum_id", 0l);
-				set.add(forumId);
+				if(forumId != 0l)
+					set.add(forumId);
 			}
 			
 			return set;
