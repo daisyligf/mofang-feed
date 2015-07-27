@@ -368,6 +368,12 @@ public class FeedForumServiceImpl implements FeedForumService
 				size = 3;
 				forumIds = new HashSet<Long>(size);
 				
+			} else {
+				size = 3 - forumIds.size();
+			}
+			
+			if(size > 0) {
+				
 				List<FeedHomeHotForumRank> hotForumRankList = forumRankDao.getList();
 				if(hotForumRankList != null && hotForumRankList.size() > size) {
 					for(int idx=0; idx < size; idx ++) {
@@ -375,21 +381,6 @@ public class FeedForumServiceImpl implements FeedForumService
 						forumIds.add(rank.getForumId());
 					}
 				}
-				
-			} else {
-				size = forumIds.size();
-				int _size = size - 3;
-				if(_size > 0) {
-					
-					List<FeedHomeHotForumRank> hotForumRankList = forumRankDao.getList();
-					if(hotForumRankList != null && hotForumRankList.size() > _size) {
-						for(int idx=0; idx < _size; idx ++) {
-							FeedHomeHotForumRank rank = hotForumRankList.get(idx);
-							forumIds.add(rank.getForumId());
-						}
-					}
-				}
-				
 			}
 			
 			//获取关注数
