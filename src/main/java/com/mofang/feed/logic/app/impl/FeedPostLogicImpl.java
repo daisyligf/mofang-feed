@@ -500,6 +500,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						jsonItem.put("pid", postAndCommentInfo.getPostId());
 						jsonItem.put("position", postAndCommentInfo.getPosition());
 						jsonItem.put("reply_content", postAndCommentInfo.getReplyContent());
+						jsonItem.put("reply_pics", MiniTools.StringToJSONArray(postAndCommentInfo.getReplyPics()));
 						jsonItem.put("reply_time", postAndCommentInfo.getReplyTime());
 						arrayItems.put(jsonItem);
 					}

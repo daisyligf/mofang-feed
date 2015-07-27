@@ -40,6 +40,7 @@ import com.mofang.feed.solr.FeedCommentSolr;
 import com.mofang.feed.solr.FeedPostSolr;
 import com.mofang.feed.solr.impl.FeedCommentSolrImpl;
 import com.mofang.feed.solr.impl.FeedPostSolrImpl;
+import com.mofang.feed.util.MiniTools;
 import com.mofang.feed.util.MysqlPageNumber;
 import com.mofang.feed.util.RedisPageNumber;
 
@@ -629,6 +630,7 @@ public class FeedPostServiceImpl implements FeedPostService
 					int rank = postRedis.getRank(postInfo.getThreadId(), postInfo.getPostId());
 					postAndCommentInfo.setPosition(rank);
 					postAndCommentInfo.setReplyContent(postInfo.getContentFilter());
+					postAndCommentInfo.setReplyPics(postInfo.getPictures());
 					postAndCommentInfo.setReplyTime(postInfo.getCreateTime());
 				}
 				else if(replyInfo.getType() == ReplyType.POST)    ///评论

@@ -14,6 +14,7 @@ public class FeedPostAndComment
 	private long postId;
 	private int position = 1;
 	private String replyContent;
+	private String replyPics;
 	private long replyTime = System.currentTimeMillis();
 
 	public long getThreadId() {
@@ -79,4 +80,14 @@ public class FeedPostAndComment
 	public void setReplyTime(long replyTime) {
 		this.replyTime = replyTime;
 	}
+
+	public String getReplyPics() {
+		return replyPics;
+	}
+
+	public void setReplyPics(String replyPics) {
+		this.replyPics = replyPics;
+	}
+	
+	
 }
