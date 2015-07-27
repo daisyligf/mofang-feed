@@ -391,7 +391,7 @@ public class FeedForumServiceImpl implements FeedForumService
 			//获取关注数
 			Map<Long, FollowForumCount> map = HttpComponent.getForumFollowCount(forumIds);
 			
-			List<FeedForum> list = new ArrayList<FeedForum>(size);
+			List<FeedForum> list = new ArrayList<FeedForum>(3);
 			for(long forumId : forumIds) {
 				FeedForum forum = forumRedis.getInfo(forumId);
 				
