@@ -375,9 +375,14 @@ public class FeedForumServiceImpl implements FeedForumService
 			if(size > 0) {
 				
 				List<FeedHomeHotForumRank> hotForumRankList = forumRankDao.getList();
-				if(hotForumRankList != null && hotForumRankList.size() > size) {
-					for(int idx=0; idx < size; idx ++) {
+				if(hotForumRankList != null && hotForumRankList.size() > 0) {
+					for(int idx = 0; idx < hotForumRankList.size(); idx ++) {
 						FeedHomeHotForumRank rank = hotForumRankList.get(idx);
+						//可能会重复
+						if(forumIds.contains(rank.getForumId()))
+							continue;
+						if(forumIds.size() == 3)
+							break;
 						forumIds.add(rank.getForumId());
 					}
 				}
