@@ -10,9 +10,9 @@ import com.mofang.feed.global.common.CommentStatus;
 import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.global.common.ReplyType;
+import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedPost;
-import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedPostAndComment;
 import com.mofang.feed.model.FeedPostRecommend;
 import com.mofang.feed.model.FeedReply;
@@ -40,7 +40,6 @@ import com.mofang.feed.solr.FeedCommentSolr;
 import com.mofang.feed.solr.FeedPostSolr;
 import com.mofang.feed.solr.impl.FeedCommentSolrImpl;
 import com.mofang.feed.solr.impl.FeedPostSolrImpl;
-import com.mofang.feed.util.MiniTools;
 import com.mofang.feed.util.MysqlPageNumber;
 import com.mofang.feed.util.RedisPageNumber;
 
@@ -505,6 +504,23 @@ public class FeedPostServiceImpl implements FeedPostService
 			throw e;
 		}
 	}
+	
+	@Override
+	public Page<FeedPost> getThreadPostList(long threadId, int pageNum,
+			int pageSize, Set<Long> userIds, boolean include) throws Exception 
+	{
+		try {
+			long total = postDao.getPostCount(threadId, 1, userIds, include);
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int end = pageNumber.getEnd();
+			List<Long> idList = postDao.getPostList(threadId, 1, start, end, userIds, include);
+			return convertEntityList(total, idList);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedPostServiceImpl.getThreadPostList by userIds throw an error.", e);
+			throw e;
+		}
+	}
 
 	@Override
 	public Page<FeedPost> getThreadPostList(long threadId, long postId, int pageSize) throws Exception
@@ -716,4 +732,5 @@ public class FeedPostServiceImpl implements FeedPostService
 		Page<FeedPost> page = new Page<FeedPost>(total, list);
 		return page;
 	}
+
 }

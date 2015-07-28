@@ -131,6 +131,18 @@ public interface FeedPostService
 	public Page<FeedPost> getThreadPostList(long threadId, int pageNum, int pageSize) throws Exception;
 	
 	/**
+	 * 
+	 * @param threadId
+	 * @param pageNum
+	 * @param pageSize
+	 * @param userIds
+	 * @param include 是否包含
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<FeedPost> getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include) throws Exception;
+	
+	/**
 	 * 获取主题楼层列表(web端评论使用)
 	 * @param threadId 主题ID
 	 * @param postId 楼层ID(从当前楼层开始)

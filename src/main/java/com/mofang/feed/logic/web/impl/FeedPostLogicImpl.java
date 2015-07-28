@@ -568,6 +568,31 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		
 		return resultValue;
 	}
+	
+	@Override
+	public ResultValue getThreadPostList(long threadId, int pageNum,
+			int pageSize, Set<Long> userIds, boolean include) throws Exception 
+	{
+		try {
+			///验证主题是否存在
+			ResultValue result = new ResultValue();
+			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
+			if(null == threadInfo)
+			{
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
+			Page<FeedPost> page = postService.getThreadPostList(threadId, pageNum, pageSize, userIds, include);
+			ResultValue resultValue = getPostList(page, threadId, pageNum, pageSize, 0);
+			
+			return resultValue;
+		} catch (Exception e) {
+			throw new Exception("at FeedPostLogicImpl.getThreadPostList by userIds throw an error.", e);
+		}
+		
+	}
 
 	@Override
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
@@ -836,4 +861,5 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 		}
 	}
+
 }

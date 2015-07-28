@@ -57,6 +57,19 @@ public interface FeedPostDao
 	 */
 	public List<FeedPost> getPostList(long threadId, int status, int start, int end) throws Exception;
 	
+	/***
+	 * 
+	 * @param threadId
+	 * @param status
+	 * @param start
+	 * @param end
+	 * @param userIds 用户id列表
+	 * @param include 是否包含
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Long> getPostList(long threadId, int status, int start, int end, Set<Long> userIds, boolean include) throws Exception;
+	
 	/**
 	 * 获取楼层总数
 	 * @param threadId 主题ID(等于0时不区分主题)
@@ -65,6 +78,17 @@ public interface FeedPostDao
 	 * @throws Exception
 	 */
 	public long getPostCount(long threadId, int status) throws Exception;
+	
+	/**
+	 * 
+	 * @param threadId
+	 * @param status
+	 * @param userIds
+	 * @param include 是否包含
+	 * @return
+	 * @throws Exception
+	 */
+	public long getPostCount(long threadId, int status, Set<Long> userIds , boolean include) throws Exception; 
 	
 	/**
 	 * 获取用户楼层ID列表

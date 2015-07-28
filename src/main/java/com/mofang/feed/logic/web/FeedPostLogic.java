@@ -1,5 +1,7 @@
 package com.mofang.feed.logic.web;
 
+import java.util.Set;
+
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.model.FeedPost;
 
@@ -21,6 +23,8 @@ public interface FeedPostLogic
 	public ResultValue getInfo(long postId) throws Exception;
 	
 	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception;
+	
+	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include) throws Exception;
 	
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception;
 }

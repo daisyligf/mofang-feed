@@ -194,6 +194,35 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 			where.append(statusEqual);
 		return super.getCount(where);
 	}
+	
+	@Override
+	public long getPostCount(long threadId, int status, final Set<Long> userIds,
+			final boolean include) throws Exception 
+	{
+		Operand where = new WhereOperand();
+		Operand threadEqual = new EqualOperand("thread_id", threadId);
+		Operand statusEqual = new EqualOperand("status", status);
+		Operand and = new AndOperand();
+
+		Operand userIdsOperand = new Operand() {
+			@Override
+			protected String toExpression() {
+				String strUserIds = "";
+				for (long strForumId : userIds)
+					strUserIds += strForumId + ",";
+				if (strUserIds.length() > 0)
+					strUserIds = strUserIds.substring(0, strUserIds.length() - 1);
+				
+				if(include)
+					return String.format("user_id in (%s)", strUserIds);
+				else 
+					return String.format("user_id not in (%s)", strUserIds);
+			}
+		};
+		where.append(threadEqual).append(and).append(statusEqual).append(and).append(userIdsOperand);
+		return super.getCount(where);
+	}
+
 
 	@Override
 	public List<Long> getUserPostList(long userId, int start, int end) throws Exception
@@ -334,4 +363,65 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		}
 		return map;
 	}
+
+	@Override
+	public List<Long> getPostList(long threadId, int status, int start,
+			int end, final Set<Long> userIds, final boolean include) throws Exception {
+		String strUserIds = "";
+		for (long strForumId : userIds)
+			strUserIds += strForumId + ",";
+		if (strUserIds.length() > 0)
+			strUserIds = strUserIds.substring(0, strUserIds.length() - 1);
+		
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select post_id from feed_post ");
+		
+		if(include)
+			strSql.append("where user_id in (" + strUserIds + ") ");
+		else 
+			strSql.append("where user_id not in (" + strUserIds + ") ");
+		strSql.append("and status = " + status);
+		strSql.append(" and thread_id = " + threadId);
+		strSql.append(" order by create_time asc ");
+		strSql.append("limit " + start + ", " + end);
+		ResultData data = super.executeQuery(strSql.toString());
+		if(null == data)
+			return null;
+		
+		List<RowData> rows = data.getQueryResult();
+		if(null == rows || rows.size() == 0)
+			return null;
+		
+		List<Long> list = new ArrayList<Long>(rows.size());
+		for(RowData row : rows)
+			list.add(row.getLong(0));
+		
+		return list;
+//		Operand where = new WhereOperand();
+//		Operand threadEqual = new EqualOperand("thread_id", threadId);
+//		Operand statusEqual = new EqualOperand("status", status);
+//		OrderByEntry entry = new OrderByEntry("post_id", SortType.Asc);
+//		Operand orderby = new OrderByOperand(entry);
+//		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+//		Operand and = new AndOperand();
+//		
+//		Operand userIdsOperand = new Operand() {
+//			@Override
+//			protected String toExpression() {
+//				String strUserIds = "";
+//				for (long strForumId : userIds)
+//					strUserIds += strForumId + ",";
+//				if (strUserIds.length() > 0)
+//					strUserIds = strUserIds.substring(0, strUserIds.length() - 1);
+//				
+//				if(include)
+//					return String.format("user_id in (%s)", strUserIds);
+//				else 
+//					return String.format("user_id not in (%s)", strUserIds);
+//			}
+//		};
+//		where.append(threadEqual).append(and).append(statusEqual).append(and).append(userIdsOperand).append(orderby).append(limit);
+	}
+
+	
 }
