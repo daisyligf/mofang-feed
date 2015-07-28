@@ -24,7 +24,7 @@ public interface FeedPostLogic
 	
 	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception;
 	
-	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include) throws Exception;
+	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception;
 	
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception;
 }

@@ -140,7 +140,7 @@ public interface FeedPostService
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<FeedPost> getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include) throws Exception;
+	public Page<FeedPost> getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception;
 	
 	/**
 	 * 获取主题楼层列表(web端评论使用)

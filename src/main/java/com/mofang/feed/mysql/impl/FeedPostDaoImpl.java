@@ -366,7 +366,7 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 
 	@Override
 	public List<Long> getPostList(long threadId, int status, int start,
-			int end, final Set<Long> userIds, final boolean include) throws Exception {
+			int end, final Set<Long> userIds, final boolean include , boolean sort) throws Exception {
 		String strUserIds = "";
 		for (long strForumId : userIds)
 			strUserIds += strForumId + ",";
@@ -382,7 +382,11 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 			strSql.append("where user_id not in (" + strUserIds + ") ");
 		strSql.append("and status = " + status);
 		strSql.append(" and thread_id = " + threadId);
-		strSql.append(" order by create_time asc ");
+		
+		if(sort)
+			strSql.append(" order by create_time desc ");
+		else
+			strSql.append(" order by create_time asc ");
 		strSql.append("limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
 		if(null == data)
@@ -397,30 +401,6 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 			list.add(row.getLong(0));
 		
 		return list;
-//		Operand where = new WhereOperand();
-//		Operand threadEqual = new EqualOperand("thread_id", threadId);
-//		Operand statusEqual = new EqualOperand("status", status);
-//		OrderByEntry entry = new OrderByEntry("post_id", SortType.Asc);
-//		Operand orderby = new OrderByOperand(entry);
-//		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
-//		Operand and = new AndOperand();
-//		
-//		Operand userIdsOperand = new Operand() {
-//			@Override
-//			protected String toExpression() {
-//				String strUserIds = "";
-//				for (long strForumId : userIds)
-//					strUserIds += strForumId + ",";
-//				if (strUserIds.length() > 0)
-//					strUserIds = strUserIds.substring(0, strUserIds.length() - 1);
-//				
-//				if(include)
-//					return String.format("user_id in (%s)", strUserIds);
-//				else 
-//					return String.format("user_id not in (%s)", strUserIds);
-//			}
-//		};
-//		where.append(threadEqual).append(and).append(statusEqual).append(and).append(userIdsOperand).append(orderby).append(limit);
 	}
 
 	

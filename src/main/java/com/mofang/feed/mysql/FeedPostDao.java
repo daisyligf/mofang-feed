@@ -68,7 +68,7 @@ public interface FeedPostDao
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Long> getPostList(long threadId, int status, int start, int end, Set<Long> userIds, boolean include) throws Exception;
+	public List<Long> getPostList(long threadId, int status, int start, int end, Set<Long> userIds, boolean include, boolean sort) throws Exception;
 	
 	/**
 	 * 获取楼层总数

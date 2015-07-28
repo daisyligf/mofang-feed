@@ -507,14 +507,14 @@ public class FeedPostServiceImpl implements FeedPostService
 	
 	@Override
 	public Page<FeedPost> getThreadPostList(long threadId, int pageNum,
-			int pageSize, Set<Long> userIds, boolean include) throws Exception 
+			int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception 
 	{
 		try {
 			long total = postDao.getPostCount(threadId, 1, userIds, include);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = postDao.getPostList(threadId, 1, start, end, userIds, include);
+			List<Long> idList = postDao.getPostList(threadId, 1, start, end, userIds, include, sort);
 			return convertEntityList(total, idList);
 		} catch (Exception e) {
 			GlobalObject.ERROR_LOG.error("at FeedPostServiceImpl.getThreadPostList by userIds throw an error.", e);

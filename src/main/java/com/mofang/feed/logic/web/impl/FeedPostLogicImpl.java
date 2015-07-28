@@ -571,7 +571,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	
 	@Override
 	public ResultValue getThreadPostList(long threadId, int pageNum,
-			int pageSize, Set<Long> userIds, boolean include) throws Exception 
+			int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception 
 	{
 		try {
 			///验证主题是否存在
@@ -584,7 +584,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				return result;
 			}
 			
-			Page<FeedPost> page = postService.getThreadPostList(threadId, pageNum, pageSize, userIds, include);
+			Page<FeedPost> page = postService.getThreadPostList(threadId, pageNum, pageSize, userIds, include, sort);
 			ResultValue resultValue = getPostList(page, threadId, pageNum, pageSize, 0);
 			
 			return resultValue;

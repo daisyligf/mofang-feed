@@ -26,6 +26,8 @@ public class PostListActionByUserIdsAction extends AbstractActionExecutor{
 		String strPageSize = context.getParameters("size");
 		String strUserIds = context.getParameters("userIds");
 		String strInclude = context.getParameters("include");
+		String strSort = context.getParameters("sort");
+		
 		
 		///参数检查
 		if(!StringUtil.isLong(strThread) || StringUtil.isNullOrEmpty(strUserIds))
@@ -39,6 +41,7 @@ public class PostListActionByUserIdsAction extends AbstractActionExecutor{
 		int pageNum = 1;
 		int pageSize = 10;
 		int include = 0;
+		int sort = 0; // 默认倒序
 		
 		if(StringUtil.isInteger(strPageNum))
 			pageNum = Integer.parseInt(strPageNum);
@@ -46,6 +49,8 @@ public class PostListActionByUserIdsAction extends AbstractActionExecutor{
 			pageSize = Integer.parseInt(strPageSize);
 		if(StringUtil.isInteger(strInclude))
 			include = Integer.parseInt(strInclude);
+		if(StringUtil.isInteger(strSort)) 
+			sort = Integer.parseInt(strSort);
 		
 		String[] arrUserId = strUserIds.split(",");
 		Set<Long> setUserId = new HashSet<Long>(arrUserId.length);
@@ -53,7 +58,7 @@ public class PostListActionByUserIdsAction extends AbstractActionExecutor{
 			setUserId.add(Long.parseLong(strUid.trim()));
 		}
 		
-		return logic.getThreadPostList(threadId, pageNum, pageSize, setUserId, include == 0);
+		return logic.getThreadPostList(threadId, pageNum, pageSize, setUserId, include == 0, sort == 0);
 	}
 
 	protected boolean needCheckAtom()
