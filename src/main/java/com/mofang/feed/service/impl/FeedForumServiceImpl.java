@@ -395,12 +395,14 @@ public class FeedForumServiceImpl implements FeedForumService
 			for(long forumId : forumIds) {
 				FeedForum forum = forumRedis.getInfo(forumId);
 				
+				if(forum == null)
+					continue;
+				
 				FollowForumCount ffc = map.get(forumId);
 				if(ffc != null) 
 					forum.setFollows(ffc.getTotalFollows());
 				
-				if(forum != null)
-					list.add(forum);
+				list.add(forum);
 			}
 			return list;
 		} catch (Exception e) {
