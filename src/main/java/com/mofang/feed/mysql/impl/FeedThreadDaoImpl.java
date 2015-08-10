@@ -419,6 +419,8 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select thread_id from feed_thread ");	
 		strSql.append("where is_elite=1");
+		//全局调用精华帖修改成调用活动、灌水、推游版块的精华帖。
+		strSql.append(" and forum_id in (10, 11, 12)");
 		strSql.append(" order by create_time desc");
 		strSql.append(" limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
