@@ -61,8 +61,8 @@ public class PostAddAction extends AbstractActionExecutor
 			pics = pics.substring(0, pics.length() - 1);
 		
 		///参数检查
-		if(threadId <= 0 || StringUtil.isNullOrEmpty(content)
-				|| content.length() > LimitConstants.POST_CONTENT_LENGTH)
+		if(threadId <= 0 || (!StringUtil.isNullOrEmpty(content)
+				&& content.length() > LimitConstants.POST_CONTENT_LENGTH) )
 		{
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
