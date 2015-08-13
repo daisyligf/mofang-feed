@@ -3,6 +3,7 @@ package com.mofang.feed.job.core.task;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.job.core.TaskEntity;
 import com.mofang.feed.model.FeedForum;
@@ -50,7 +51,10 @@ public class TaskClearForumTodayThreadsEntity extends TaskEntity
 	public TaskClearForumTodayThreadsEntity()
 	{
 		super.setTask(new Task());
-		super.setInitialDelay(TimeUtil.getInitDelay(24));
+		if(GlobalConfig.TIME_TASK_DELAY_TIME == 1)
+			super.setInitialDelay(10000l);
+		else
+			super.setInitialDelay(TimeUtil.getInitDelay(24));
 		super.setPeriod(24 * 60 * 60 * 1000l);
 		super.setUnit(TimeUnit.MILLISECONDS);
 	}

@@ -100,6 +100,7 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		GlobalConfig.HOME_PREFECTURE_IDS = config.get("param", "home_prefecture_ids");
 		GlobalConfig.SIGN_IN_DAY_EXP = config.getInt("param", "sign_in_day_exp");
 		GlobalConfig.SIGN_IN_DAY_MAX_EXP = config.getInt("param", "sign_in_day_max_exp");
+		GlobalConfig.TIME_TASK_DELAY_TIME = config.getInt("param", "time_task_delay_time");
 		
 		GlobalConfig.LOAD_DATA = config.getBoolean("load", "load_data");
 		GlobalConfig.LOAD_LIST =config.get("load", "load_list");

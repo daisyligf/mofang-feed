@@ -145,6 +145,8 @@ public class GlobalConfig
 	
 	public static int SIGN_IN_DAY_MAX_EXP;
 	
+	public static long TIME_TASK_DELAY_TIME;
+	
 	public static boolean LOAD_DATA = false;
 	
 	public static String LOAD_LIST;
