@@ -41,7 +41,7 @@ public class TaskClearForumTodayThreadsEntity extends TaskEntity
 						forumRedis.clearTodayThreads(forumInfo.getForumId());
 				}
 			}
-			catch (Exception e) 
+			catch (Throwable e) 
 			{
 				GlobalObject.ERROR_LOG.error("at TaskClearForumTodayThreadsEntity.Task.run throw an error.", e);
 			}

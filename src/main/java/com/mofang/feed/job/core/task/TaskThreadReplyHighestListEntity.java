@@ -20,7 +20,7 @@ public class TaskThreadReplyHighestListEntity extends TaskEntity {
 			try {
 				
 				ThreadReplyHighestListServiceImpl.getInstance().generate();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				GlobalObject.ERROR_LOG
 				.error("at TaskThreadReplyHighestListEntity.Task.run throw an error.",
 						e);

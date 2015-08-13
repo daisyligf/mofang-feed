@@ -45,7 +45,7 @@ public class TaskUpdateForumYestodayThreadsEntity extends TaskEntity
 					}
 				}
 			}
-			catch (Exception e) 
+			catch (Throwable e) 
 			{
 				GlobalObject.ERROR_LOG.error("at TaskUpdateForumYestodayThreadsEntity.Task.run throw an error.", e);
 			}

@@ -30,7 +30,7 @@ public class TaskRefreshHotForumRankEntity extends TaskEntity {
 				//板块的url列表数据 存入 redis结构
 				HomeRankServiceImpl.getInstance().refresh(ForumType.ALL);
 
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				GlobalObject.ERROR_LOG
 						.error("at TaskRefreshHotForumRankEntity.Task.run throw an error.",
 								e);

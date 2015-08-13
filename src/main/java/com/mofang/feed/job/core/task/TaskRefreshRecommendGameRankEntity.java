@@ -30,7 +30,7 @@ public class TaskRefreshRecommendGameRankEntity extends TaskEntity {
 				//板块的url列表数据 存入 redis结构
 				HomeRankServiceImpl.getInstance().refresh(ForumType.RECOMMEND_GAME);
 
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				GlobalObject.ERROR_LOG
 						.error("at TaskRefreshRecommendGameRankEntity.Task.run throw an error.",
 								e);
