@@ -108,14 +108,12 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			String contentMark = "";
 			String htmlContentFilter = "";
 			String htmlContentMark = "";
-			
 			if(!StringUtil.isNullOrEmpty(content)) {
+				
 				///过滤内容所有HTML标签
 				content = HtmlTagFilter.filterHtmlTag(content);
 				///过滤内容敏感词
 				SensitiveWord	contentWord = HttpComponent.sensitiveFilter(content);
-//				String contentFilter = "";
-//				String contentMark = "";
 				if(null != contentWord)
 				{
 					contentFilter = contentWord.getOut();
@@ -126,8 +124,6 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				htmlContent = HtmlTagFilter.filterOptionHtmlTag(htmlContent);
 				///过滤内容敏感词
 				SensitiveWord htmlContentWord = HttpComponent.sensitiveFilter(htmlContent);
-//				String htmlContentFilter = "";
-//				String htmlContentMark = "";
 				if(null != htmlContentWord)
 				{
 					htmlContentFilter = htmlContentWord.getOut();

@@ -62,8 +62,14 @@ public class ThreadAddAction extends AbstractActionExecutor
 			pics = pics.substring(0, pics.length() - 1);
 		
 		///参数检查
-		if(forumId <= 0 || StringUtil.isNullOrEmpty(subject) || StringUtil.isNullOrEmpty(content))
+		if(forumId <= 0 || StringUtil.isNullOrEmpty(subject))
 		{
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
+		
+		if(StringUtil.isNullOrEmpty(content) && StringUtil.isNullOrEmpty(pics)) {
 			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;

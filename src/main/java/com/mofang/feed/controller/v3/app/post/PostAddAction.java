@@ -69,6 +69,12 @@ public class PostAddAction extends AbstractActionExecutor
 			return result;
 		}
 		
+		if(StringUtil.isNullOrEmpty(content) && StringUtil.isNullOrEmpty(pics)) {
+			result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+			return result;
+		}
+		
 		///构造Post实体对象
 		FeedPost postInfo = new FeedPost();
 		postInfo.setUserId(userId);

@@ -113,35 +113,38 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			
-			///过滤内容所有HTML标签
-			content = HtmlTagFilter.filterHtmlTag(content);
-			///过滤内容敏感词
-			SensitiveWord contentWord = HttpComponent.sensitiveFilter(content);
 			String contentFilter = "";
 			String contentMark = "";
-			if(null != contentWord)
-			{
-				contentFilter = contentWord.getOut();
-				contentMark = contentWord.getOutMark();
-			}
-			
-			///保留内容指定HTML标签
-			htmlContent = HtmlTagFilter.filterOptionHtmlTag(htmlContent);
-			///过滤内容敏感词
-			SensitiveWord htmlContentWord = HttpComponent.sensitiveFilter(htmlContent);
 			String htmlContentFilter = "";
 			String htmlContentMark = "";
-			if(null != htmlContentWord)
-			{
-				htmlContentFilter = htmlContentWord.getOut();
-				htmlContentMark = htmlContentWord.getOutMark();
-			}
-			
-			if(StringUtil.isNullOrEmpty(contentFilter) || StringUtil.isNullOrEmpty(htmlContentFilter))
-			{
-				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
-				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
-				return result;
+			if(!StringUtil.isNullOrEmpty(content)) {
+				
+				///过滤内容所有HTML标签
+				content = HtmlTagFilter.filterHtmlTag(content);
+				///过滤内容敏感词
+				SensitiveWord contentWord = HttpComponent.sensitiveFilter(content);
+				if(null != contentWord)
+				{
+					contentFilter = contentWord.getOut();
+					contentMark = contentWord.getOutMark();
+				}
+				
+				///保留内容指定HTML标签
+				htmlContent = HtmlTagFilter.filterOptionHtmlTag(htmlContent);
+				///过滤内容敏感词
+				SensitiveWord htmlContentWord = HttpComponent.sensitiveFilter(htmlContent);
+				if(null != htmlContentWord)
+				{
+					htmlContentFilter = htmlContentWord.getOut();
+					htmlContentMark = htmlContentWord.getOutMark();
+				}
+				
+				if(StringUtil.isNullOrEmpty(contentFilter) || StringUtil.isNullOrEmpty(htmlContentFilter))
+				{
+					result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+					result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+					return result;
+				}
 			}
 			
 			///禁言检查
