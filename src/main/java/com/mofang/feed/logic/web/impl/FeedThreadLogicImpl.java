@@ -91,6 +91,13 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			long userId = model.getUserId();
 			long forumId = model.getForumId();
 			
+			FeedForum forum = forumService.getInfo(forumId);
+			if(forum == null) {
+				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
+				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
+				return result;
+			}
+			
 			///过滤所有HTML标签
 			subject = HtmlTagFilter.filterHtmlTag(subject);
 			///过滤标题敏感词

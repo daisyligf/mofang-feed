@@ -108,8 +108,8 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			String contentMark = "";
 			String htmlContentFilter = "";
 			String htmlContentMark = "";
+			
 			if(!StringUtil.isNullOrEmpty(content)) {
-				
 				///过滤内容所有HTML标签
 				content = HtmlTagFilter.filterHtmlTag(content);
 				///过滤内容敏感词
