@@ -156,14 +156,14 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			
-			///灌水检查
-			boolean isSpam = waterproofWallRedis.isSpam(userId);
-			if(isSpam)
-			{
-				result.setCode(ReturnCode.ADD_FREQUENCY_FAST);
-				result.setMessage(ReturnMessage.ADD_FREQUENCY_FAST);
-				return result;
-			}
+			///灌水检查 TODO 暂时去掉
+//			boolean isSpam = waterproofWallRedis.isSpam(userId);
+//			if(isSpam)
+//			{
+//				result.setCode(ReturnCode.ADD_FREQUENCY_FAST);
+//				result.setMessage(ReturnMessage.ADD_FREQUENCY_FAST);
+//				return result;
+//			}
 			
 			///完善Thread实体对象
 			model.setSubjectFilter(subjectFilter);
