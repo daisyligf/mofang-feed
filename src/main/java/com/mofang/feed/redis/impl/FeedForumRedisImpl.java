@@ -260,4 +260,22 @@ public class FeedForumRedisImpl implements FeedForumRedis
 		
 		return new FeedForum(forumMap);
 	}
+
+	@Override
+	public void updateIcon(final long forumId, final String icon) throws Exception {
+		RedisWorker<Boolean> worker = new RedisWorker<Boolean>()
+		{
+			@Override
+			public Boolean execute(Jedis jedis) throws Exception
+			{
+				String key = RedisKey.buildRedisKey(RedisKey.FORUM_INFO_KEY_PREFIX, forumId);
+				if(!jedis.exists(key))
+					return false;
+				
+				jedis.hset(key, "icon", icon);
+				return true;
+			}
+		};
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);		
+	}
 }

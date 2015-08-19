@@ -100,6 +100,8 @@ public interface FeedForumRedis
 	 */
 	public void updateYestodayThreads(long forumId, int threads) throws Exception;
 	
+	public void updateIcon(long forumId, String icon) throws Exception;
+	
 	/**
 	 * 将Set转换成实体列表
 	 * @param set id集合

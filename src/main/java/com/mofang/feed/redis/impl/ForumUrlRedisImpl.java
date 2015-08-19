@@ -38,6 +38,21 @@ public class ForumUrlRedisImpl implements ForumUrlRedis {
 		};
 		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
+	
+	@Override
+	public void setUrl(final long forumId, final String giftUrl) throws Exception {
+		RedisWorker<Boolean> worker = new RedisWorker<Boolean>(){
+
+			@Override
+			public Boolean execute(Jedis jedis) throws Exception {
+				String key = RedisKey.buildRedisKey(RedisKey.FORUM_EXTEND_KEY_PREFIX, forumId);
+				jedis.hset(key, ForumURLKey.GIFT_URL_KEY, giftUrl);
+				return true;
+			}
+			
+		};
+		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
+	}
 
 	@Override
 	public Map<String, String> getUrl(final long forumId) throws Exception {
@@ -60,5 +75,6 @@ public class ForumUrlRedisImpl implements ForumUrlRedis {
 		RedisWorker<Boolean> worker = new DeleteWorker(key);
 		GlobalObject.REDIS_MASTER_EXECUTOR.execute(worker);
 	}
+
 
 }

@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import com.mofang.feed.job.core.TaskEntity;
 import com.mofang.feed.job.core.task.TaskClearForumTodayThreadsEntity;
+import com.mofang.feed.job.core.task.TaskRefreshForumInfoEntity;
 import com.mofang.feed.job.core.task.TaskRefreshHotForumRankEntity;
 import com.mofang.feed.job.core.task.TaskRefreshRecommendGameRankEntity;
 import com.mofang.feed.job.core.task.TaskThreadReplyHighestListEntity;
@@ -44,6 +45,7 @@ public class ScheduledManager {
 		add(new TaskThreadReplyHighestListEntity());
 		add(new TaskUpdateForumYestodayThreadsEntity());
 		add(new TaskClearForumTodayThreadsEntity());
+		add(new TaskRefreshForumInfoEntity());
 	}
 
 	public void execute() {

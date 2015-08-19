@@ -6,6 +6,7 @@ import java.util.Map;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.external.FeedForumOrder;
 import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.Pair;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
@@ -20,6 +21,8 @@ public interface FeedForumDao
 	public void add(FeedForum model) throws Exception;
 	
 	public void update(FeedForum model) throws Exception;
+	
+	public void updateForumIcon(long forumId, String icon) throws Exception; 
 	
 	public void delete(long forumId) throws Exception;
 	
@@ -50,4 +53,6 @@ public interface FeedForumDao
 	public Map<Long,ForumCount> getThreadRecommendCount(long startTime, long endTime) throws Exception;
 
 	public List<Long> getForumIdList() throws Exception;
+	
+	public List<Pair<Long, Integer>> getForumIdGameIdPairList(int type) throws Exception;
 }

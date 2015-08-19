@@ -10,6 +10,7 @@ import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.external.FeedForumOrder;
 import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.Pair;
 import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
@@ -244,4 +245,36 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		}
 		return list;
 	}
+
+	@Override
+	public List<Pair<Long, Integer>> getForumIdGameIdPairList(int type) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		if(type == ForumType.ALL)
+			strSql.append("select forum_id, game_id from feed_forum where type != ").append(ForumType.OFFICAL).append(" and type != ").append(ForumType.HIDDEN);
+		else 
+			strSql.append("select forum_id, game_id from feed_forum where type = ").append(type);
+		ResultData data = super.executeQuery(strSql.toString());
+		if (data == null)
+			return null;
+		List<RowData> rows = data.getQueryResult();
+		if (rows == null || rows.size() == 0)
+			return null;
+		List<Pair<Long, Integer>> list = new ArrayList<Pair<Long, Integer>>(rows.size());
+		for(RowData row : rows){
+			Pair<Long, Integer> pair = new Pair<Long, Integer>();
+			pair.left = row.getLong(0);
+			pair.right = row.getInteger(1);
+			list.add(pair);
+		}
+		return list;		
+	}
+
+	@Override
+	public void updateForumIcon(long forumId, String icon) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		//strSql.append("update feed_forum set icon = " + icon + " where forum_id=" + forumId);
+		strSql.append("update feed_forum set follows = 1 where forum_id=" + forumId);
+		super.execute(strSql.toString());
+	}
+	
 }

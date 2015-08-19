@@ -17,6 +17,8 @@ public interface ForumUrlRedis {
 	 */
 	public void setUrl(long forumId, Map<String, String> urlMap) throws Exception;
 	
+	public void setUrl(long forumId, String giftUrl) throws Exception;
+	
 	public void delete(long forumId) throws Exception;
 	
 	public Map<String, String> getUrl(long forumId) throws Exception;
