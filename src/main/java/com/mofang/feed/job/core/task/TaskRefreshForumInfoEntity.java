@@ -68,8 +68,6 @@ public class TaskRefreshForumInfoEntity extends TaskEntity {
 					Game game = entry.getValue();
 					String giftUrl = GlobalConfig.GIFT_INFO_URL + game.getName();
 					
-					System.out.println("forumId:"+forumId+",giftUrl:"+giftUrl);
-					
 					 forumDao.updateForumIcon(forumId, game.getIcon());
 
 					 //redis 更新 forum_info key icon 字段
