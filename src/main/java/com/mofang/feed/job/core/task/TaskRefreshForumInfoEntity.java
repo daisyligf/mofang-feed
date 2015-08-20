@@ -63,11 +63,11 @@ public class TaskRefreshForumInfoEntity extends TaskEntity {
 				Set<Long> recommendForumIdSet = recommendGameDao.getForumIdSet();
 				
 				for(Map.Entry<Long, Game> entry : gameMap.entrySet()) {
-					//mysql 更新 feed_forum 表 icon 字段
 					long forumId  = entry.getKey();
 					Game game = entry.getValue();
 					String giftUrl = GlobalConfig.GIFT_INFO_URL + game.getName();
 					
+					//mysql 更新 feed_forum 表 icon 字段
 					 forumDao.updateForumIcon(forumId, game.getIcon());
 
 					 //redis 更新 forum_info key icon 字段
