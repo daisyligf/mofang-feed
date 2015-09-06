@@ -133,6 +133,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			forumInfo.setType(model.getType());
 			forumInfo.setGameId(model.getGameId());
 			forumInfo.setIcon(icon);
+			forumInfo.setHidden(model.isHidden());
 			forumService.edit(forumInfo);
 			
 			///保存版块标签
