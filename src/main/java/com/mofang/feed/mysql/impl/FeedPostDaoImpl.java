@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Condition;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedReply;
+import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
+import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.model.external.ForumCount;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
@@ -401,6 +404,38 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 			list.add(row.getLong(0));
 		
 		return list;
+	}
+
+	@Override
+	public Map<Long, FeedActivityUser> getUserByCondition(long threadId,
+			FeedActivityThreadRewardCondition condition) throws Exception {
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select user_id, position, forum_id from feed_post where thread_id = " + threadId);
+		if(condition.startTime > 0 && condition.endTime > 0) {
+			strSql.append(" and create_time >= " + condition.startTime + " and create_time <= " + condition.endTime);
+		}
+		if(condition.havePic) {
+			strSql.append(" and (content like '%<img%' or pictures !='')");
+		}
+		strSql.append(" group by user_id ");
+		
+		ResultData data = super.executeQuery(strSql.toString());
+		if(null == data)
+			return null;
+		
+		List<RowData> rows = data.getQueryResult();
+		if(null == rows || rows.size() == 0)
+			return null;		
+		
+		Map<Long, FeedActivityUser> result = new HashMap<Long, FeedActivityUser>(rows.size());
+		for(RowData row : rows) {
+			FeedActivityUser user = new FeedActivityUser();
+			user.setUserId(row.getLong(0));
+			user.setPostion(row.getInteger(1));
+			user.setForumId(row.getLong(2));
+			result.put(user.getUserId(), user);
+		}
+		return result;
 	}
 
 	

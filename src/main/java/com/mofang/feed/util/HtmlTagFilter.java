@@ -37,4 +37,14 @@ public class HtmlTagFilter
 		text = matcher.replaceAll(""); // 过滤html标签
 		return text;
 	}
+	
+	/**
+	 * 是否有img标签
+	 * @param text
+	 * @return
+	 */
+	public static boolean findImg(String text) {
+		return Pattern.compile("<img.*src\\s*=\\s*(.*?)[^>]*?>").matcher(text).find();
+	}
+	
 }

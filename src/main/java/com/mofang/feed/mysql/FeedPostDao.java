@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedReply;
+import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
+import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.model.external.ForumCount;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
@@ -134,4 +136,6 @@ public interface FeedPostDao
 	 * @throws Exception
 	 */
 	public Map<Long, String> getThreadContentMap(String where) throws Exception;
+	
+	public Map<Long, FeedActivityUser> getUserByCondition(long threadId, FeedActivityThreadRewardCondition condtion) throws Exception; 
 }

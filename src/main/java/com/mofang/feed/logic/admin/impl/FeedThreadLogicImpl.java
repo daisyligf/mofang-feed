@@ -811,4 +811,5 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			throw new Exception("at FeedThreadLogicImpl.search throw an error.", e);
 		}
 	}
+
 }

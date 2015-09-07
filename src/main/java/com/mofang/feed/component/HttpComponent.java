@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import com.mofang.feed.global.GlobalConfig;
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.model.external.FeedRecommendNotify;
 import com.mofang.feed.model.external.FollowForumCount;
 import com.mofang.feed.model.external.ForumCount;
@@ -233,6 +234,52 @@ public class HttpComponent
 			GlobalObject.ERROR_LOG.error("at HttpComponent.getUserInfo throw an error.", e);
 			return null;
 		}
+	}
+	
+	/***
+	 * 填充不返回魔币相关信息的用户信息
+	 * @param userIds
+	 */
+	public static void fillUserInfoNoMoreByIds(Map<Long, FeedActivityUser> userMap) {
+		if(null == userMap || userMap.size() == 0)
+			return;
+		
+		String uids = "";
+		for(Long userId : userMap.keySet())
+			uids += "," + userId;
+		
+		if(uids.length() > 0)
+			uids = uids.substring(1);
+		
+		String requestUrl = GlobalConfig.BATCH_USER_INFO_URL + "?uids=" + uids + "&more=0";
+		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
+		if(StringUtil.isNullOrEmpty(result))
+			return;
+		
+		try {
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return;
+			
+			JSONArray data = json.optJSONArray("data");
+			if(null == data)
+				return;
+
+			JSONObject jsonUser = null;
+			for(int idx=0; idx<data.length(); idx++)
+			{
+				jsonUser = data.getJSONObject(idx);
+				long userId = jsonUser.optLong("uid", 0L);
+				FeedActivityUser user = userMap.get(userId);
+				user.setNickName(jsonUser.optString("nickname", ""));
+				user.setLevel(jsonUser.optInt("level", 1));
+			}
+			
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at HttpComponent.fillUserInfoNoMoreByIds throw an error.", e);
+		}
+		
 	}
 	
 	public static Map<Long, User> getUserInfoByIds(Set<Long> userIds)

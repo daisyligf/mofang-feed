@@ -23,8 +23,8 @@ public class User
 	private int gainedExp = 0;
 	private JSONArray badges;
 	private long registerTime = System.currentTimeMillis();
-	private int status = 0;     ///0:正常  1:冻结 
-
+	private int status = 0;     ///0:正常  1:冻结
+	
 	public User() 
 	{}
 
