@@ -194,11 +194,19 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		Operand orderby = new OrderByOperand(entry);
 		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
 		Operand and = new AndOperand();
+		
+		Operand hiddenForum = new Operand() {
+			@Override
+			protected String toExpression() {
+				return "forum_id not in (select forum_id from feed_forum where is_hidden = 1) ";
+			}
+		};
 
 		if (forumId > 0)
-			where.append(forumEqual).append(and).append(statusEqual).append(orderby).append(limit);
+			where.append(forumEqual).append(and).append(hiddenForum).append(and).append(statusEqual).append(orderby).append(limit);
 		else
-			where.append(statusEqual).append(orderby).append(limit);
+			where.append(statusEqual).append(and).append(hiddenForum).append(orderby).append(limit);
+		
 		return super.getList(where);
 	}
 
@@ -209,11 +217,17 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		Operand forumEqual = new EqualOperand("forum_id", forumId);
 		Operand statusEqual = new EqualOperand("status", status);
 		Operand and = new AndOperand();
+		Operand hiddenForum = new Operand() {
+			@Override
+			protected String toExpression() {
+				return "forum_id not in (select forum_id from feed_forum where is_hidden = 1)";
+			}
+		};
 
 		if (forumId > 0)
-			where.append(forumEqual).append(and).append(statusEqual);
+			where.append(forumEqual).append(and).append(hiddenForum).append(and).append(statusEqual);
 		else
-			where.append(statusEqual);
+			where.append(statusEqual).append(and).append(hiddenForum);
 		return super.getCount(where);
 	}
 
