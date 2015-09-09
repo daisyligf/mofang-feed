@@ -416,7 +416,7 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		if(condition.havePic) {
 			strSql.append(" and (content like '%<img%' or pictures !='')");
 		}
-		strSql.append(" group by user_id ");
+		strSql.append(" group by user_id order by position asc");
 		
 		ResultData data = super.executeQuery(strSql.toString());
 		if(null == data)

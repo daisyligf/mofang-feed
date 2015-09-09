@@ -42,7 +42,6 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 			FeedActivityThreadRewardCondition condition) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
-			JSONArray data = new JSONArray();
 			
 			///权限检查
 			boolean hasPrivilege = adminUserService.exists(operatorId);
@@ -51,6 +50,7 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
 				return result;
 			}
+			JSONArray data = new JSONArray();
 			
 			Map<Long, FeedActivityUser> userMap = activityThreadService
 					.generateRewardUserList(threadId, condition);
