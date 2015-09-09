@@ -9,15 +9,19 @@ import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.global.ReturnCode;
 import com.mofang.feed.global.ReturnMessage;
+import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.logic.admin.FeedActivityThreadLogic;
+import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
 import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.service.FeedActivityThreadService;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedSysUserRoleService;
+import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedActivityThreadServiceImpl;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
+import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 
 public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 
@@ -26,6 +30,7 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 			.getInstance();
 	private FeedSysUserRoleService sysUserRoleService = FeedSysUserRoleServiceImpl.getInstance();
 	private FeedAdminUserService adminUserService = FeedAdminUserServiceImpl.getInstance();
+	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 
 	private FeedActivityThreadLogicImpl() {
 	}
@@ -47,6 +52,14 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
 				return result;
 			}
+			
+			FeedThread feedThread = threadService.getInfo(threadId, DataSource.REDIS);
+			if(feedThread == null) {
+				result.setCode(ReturnCode.THREAD_NOT_EXISTS);
+				result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
+				return result;
+			}
+			
 			JSONArray data = new JSONArray();
 			
 			List<FeedActivityUser> userList = activityThreadService
@@ -77,6 +90,7 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 					jsonUser.put("nickname", user.getNickName());
 					jsonUser.put("position", user.getPostion());
 					jsonUser.put("level", user.getLevel());
+					jsonUser.put("thread_subject", feedThread.getSubject());
 					data.put(jsonUser);
 				}
 				
