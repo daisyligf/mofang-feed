@@ -23,6 +23,7 @@ import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.OperatorHistoryInfo;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedForumService;
@@ -632,6 +633,16 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				List<FeedThread> threads = page.getList();
 				if(null != threads)
 				{
+					
+					Map<Long, OperatorHistoryInfo> historyMap = null;
+					if(status == 0) {
+						Set<Long> threadIds = new HashSet<Long>(threads.size());
+						for(int idx = 0; idx < threads.size(); idx ++) {
+							threadIds.add(threads.get(idx).getThreadId());
+						}
+						historyMap = operateService.getMap(threadIds, FeedPrivilege.DELETE_THREAD);
+					}
+					
 					JSONObject jsonThread = null;
 					JSONObject jsonForum = null;
 					JSONObject jsonUser = null;
@@ -651,6 +662,14 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 						jsonThread.put("is_elite", threadInfo.isElite());			///是否为精华帖
 						jsonThread.put("is_top", threadInfo.isTop());			///是否为置顶帖
 						jsonThread.put("is_closed", threadInfo.isClosed());		///主题是否关闭(锁定)
+						
+						if(null != historyMap && historyMap.size() != 0) {
+							OperatorHistoryInfo historyInfo = historyMap.get(threadInfo.getThreadId());
+							if(null != historyInfo) {
+								jsonThread.put("oprerator_name", historyInfo.operatorName);
+								jsonThread.put("operate_time", historyInfo.operateTime);
+							}
+						}
 						
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", threadInfo.getForumId());

@@ -1,9 +1,13 @@
 package com.mofang.feed.service.impl;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.mofang.feed.component.UserComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
+import com.mofang.feed.model.external.OperatorHistoryInfo;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.mysql.FeedOperateHistoryDao;
 import com.mofang.feed.mysql.impl.FeedOperateHistoryDaoImpl;
@@ -65,4 +69,16 @@ public class FeedOperateHistoryServiceImpl implements FeedOperateHistoryService
 		};
 		GlobalObject.ASYN_DAO_EXECUTOR.execute(task);
 	}
+
+	@Override
+	public Map<Long, OperatorHistoryInfo> getMap(Set<Long> sourceIds,
+			int privilegeType) throws Exception {
+		try {
+			return historyDao.getMap(sourceIds, privilegeType);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at FeedOperateHistoryServiceImpl.getMap throw an error.", e);
+			throw e;
+		}
+	}
+	
 }
