@@ -1,6 +1,6 @@
 package com.mofang.feed.service.impl;
 
-import java.util.Map;
+import java.util.List;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
@@ -22,7 +22,7 @@ public class FeedActivityThreadServiceImpl implements FeedActivityThreadService 
 	}
 
 	@Override
-	public Map<Long, FeedActivityUser> generateRewardUserList(long threadId,
+	public List<FeedActivityUser> generateRewardUserList(long threadId,
 			FeedActivityThreadRewardCondition condition) throws Exception {
 		try {
 				return postDao.getUserByCondition(threadId, condition);

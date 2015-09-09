@@ -240,16 +240,21 @@ public class HttpComponent
 	 * 填充不返回魔币相关信息的用户信息
 	 * @param userIds
 	 */
-	public static void fillUserInfoNoMoreByIds(Map<Long, FeedActivityUser> userMap) {
-		if(null == userMap || userMap.size() == 0)
+	public static void fillUserInfoNoMoreByIds(List<FeedActivityUser> userList) {
+		if(null == userList || userList.size() == 0)
 			return;
 		
+		Map<Long, FeedActivityUser> userMap = new HashMap<Long, FeedActivityUser>(userList.size());
 		String uids = "";
-		for(Long userId : userMap.keySet())
+		for(int idx = 0; idx < userList.size(); idx ++){
+			long userId = userList.get(idx).getUserId();
 			uids += "," + userId;
+			userMap.put(userId, userList.get(idx));
+		}
 		
 		if(uids.length() > 0)
 			uids = uids.substring(1);
+		
 		
 		String requestUrl = GlobalConfig.BATCH_USER_INFO_URL + "?uids=" + uids + "&more=0";
 		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);

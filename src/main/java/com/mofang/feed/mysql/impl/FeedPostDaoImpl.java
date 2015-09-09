@@ -406,7 +406,7 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 	}
 
 	@Override
-	public Map<Long, FeedActivityUser> getUserByCondition(long threadId,
+	public List<FeedActivityUser> getUserByCondition(long threadId,
 			FeedActivityThreadRewardCondition condition) throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select user_id, position, forum_id from feed_post where thread_id = " + threadId);
@@ -426,13 +426,13 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		if(null == rows || rows.size() == 0)
 			return null;		
 		
-		Map<Long, FeedActivityUser> result = new HashMap<Long, FeedActivityUser>(rows.size());
+		List<FeedActivityUser> result = new ArrayList<FeedActivityUser>(rows.size());
 		for(RowData row : rows) {
 			FeedActivityUser user = new FeedActivityUser();
 			user.setUserId(row.getLong(0));
 			user.setPostion(row.getInteger(1));
 			user.setForumId(row.getLong(2));
-			result.put(user.getUserId(), user);
+			result.add(user);
 		}
 		return result;
 	}
