@@ -60,7 +60,10 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 				return result;
 			}
 			
-			JSONArray data = new JSONArray();
+			
+			JSONObject data = new JSONObject();
+			data.put("thread_subject", feedThread.getSubject());
+			JSONArray userJsonArr = new JSONArray();
 			
 			List<FeedActivityUser> userList = activityThreadService
 					.generateRewardUserList(threadId, condition);
@@ -90,12 +93,11 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 					jsonUser.put("nickname", user.getNickName());
 					jsonUser.put("position", user.getPostion());
 					jsonUser.put("level", user.getLevel());
-					jsonUser.put("thread_subject", feedThread.getSubject());
-					data.put(jsonUser);
+					userJsonArr.put(jsonUser);
 				}
 				
 			}
-			
+			data.put("users", userJsonArr);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);

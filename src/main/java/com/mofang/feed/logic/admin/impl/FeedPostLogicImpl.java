@@ -22,6 +22,7 @@ import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
+import com.mofang.feed.model.external.OperatorHistoryInfo;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedOperateHistoryService;
@@ -211,6 +212,16 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				List<FeedPost> posts = page.getList();
 				if(null != posts)
 				{
+					
+					Map<Long, OperatorHistoryInfo> historyMap = null;
+					if(status == 0) {
+						Set<Long> postIds = new HashSet<Long>(posts.size());
+						for(int idx = 0; idx < posts.size(); idx ++) {
+							postIds.add(posts.get(idx).getPostId());
+						}
+						historyMap = operateService.getMap(postIds, FeedPrivilege.DELETE_POST);
+					}
+					
 					JSONObject jsonPost = null;
 					JSONObject jsonForum = null;
 					JSONObject jsonThread = null;
@@ -227,6 +238,14 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						jsonPost.put("recommends", postInfo.getRecommends());
 						jsonPost.put("create_time", postInfo.getCreateTime());
 						jsonPost.put("status", postInfo.getStatus());
+						
+						if(null != historyMap && historyMap.size() != 0) {
+							OperatorHistoryInfo historyInfo = historyMap.get(postInfo.getPostId());
+							if(null != historyInfo) {
+								jsonPost.put("oprerator_name", historyInfo.operatorName);
+								jsonPost.put("oprerator_name", historyInfo.operateTime);
+							}
+						}
 						
 						jsonForum = new JSONObject();
 						jsonForum.put("fid", postInfo.getForumId());
