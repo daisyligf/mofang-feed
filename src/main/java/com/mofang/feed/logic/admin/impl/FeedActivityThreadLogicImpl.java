@@ -83,11 +83,11 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 				if(condition.admin) {
 					isBanzu = sysUserRoleService.exists(user.getForumId(), userId);
 					isAdmin = adminUserService.exists(userId);
-					if(isBanzu && isAdmin) banzuAndadmin = true;
+					if(isBanzu || isAdmin) banzuAndadmin = true;
 				}
 				
 				//如果相符
-				if( (banzuAndadmin == condition.admin) ) {
+				if( ( condition.admin && !banzuAndadmin) ) {
 					jsonUser = new JSONObject();
 					jsonUser.put("user_id", userId);
 					jsonUser.put("nickname", user.getNickName());
