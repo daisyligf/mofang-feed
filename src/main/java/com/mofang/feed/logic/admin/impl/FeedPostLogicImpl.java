@@ -242,7 +242,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						if(null != historyMap && historyMap.size() != 0) {
 							OperatorHistoryInfo historyInfo = historyMap.get(postInfo.getPostId());
 							if(null != historyInfo) {
-								jsonPost.put("oprerator_name", historyInfo.operatorName);
+								jsonPost.put("operator_name", historyInfo.operatorName);
 								jsonPost.put("oprerator_name", historyInfo.operateTime);
 							}
 						}

@@ -666,7 +666,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 						if(null != historyMap && historyMap.size() != 0) {
 							OperatorHistoryInfo historyInfo = historyMap.get(threadInfo.getThreadId());
 							if(null != historyInfo) {
-								jsonThread.put("oprerator_name", historyInfo.operatorName);
+								jsonThread.put("operator_name", historyInfo.operatorName);
 								jsonThread.put("operate_time", historyInfo.operateTime);
 							}
 						}
