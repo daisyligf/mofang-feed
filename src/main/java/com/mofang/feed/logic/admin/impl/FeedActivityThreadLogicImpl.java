@@ -87,14 +87,14 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 				}
 				
 				//如果相符
-				if( ( condition.admin && !banzuAndadmin) ) {
-					jsonUser = new JSONObject();
-					jsonUser.put("user_id", userId);
-					jsonUser.put("nickname", user.getNickName());
-					jsonUser.put("position", user.getPostion());
-					jsonUser.put("level", user.getLevel());
-					userJsonArr.put(jsonUser);
-				}
+				if( ( condition.admin && banzuAndadmin) ) continue; 
+				
+				jsonUser = new JSONObject();
+				jsonUser.put("user_id", userId);
+				jsonUser.put("nickname", user.getNickName());
+				jsonUser.put("position", user.getPostion());
+				jsonUser.put("level", user.getLevel());
+				userJsonArr.put(jsonUser);
 				
 			}
 			data.put("users", userJsonArr);
