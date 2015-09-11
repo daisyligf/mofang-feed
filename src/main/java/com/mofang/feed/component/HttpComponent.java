@@ -256,7 +256,7 @@ public class HttpComponent
 			uids = uids.substring(1);
 		
 		
-		String requestUrl = GlobalConfig.BATCH_USER_INFO_URL + "?uids=" + uids + "&more=0";
+		String requestUrl = GlobalConfig.BATCH_USER_INFO_URL + "?uids=" + uids + "&more=1";
 		String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
 		if(StringUtil.isNullOrEmpty(result))
 			return;
