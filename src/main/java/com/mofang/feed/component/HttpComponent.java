@@ -240,7 +240,7 @@ public class HttpComponent
 	 * 填充不返回魔币相关信息的用户信息
 	 * @param userIds
 	 */
-	public static void fillUserInfoNoMoreByIds(List<FeedActivityUser> userList) {
+	public static void fillUserInfo(List<FeedActivityUser> userList) {
 		if(null == userList || userList.size() == 0)
 			return;
 		

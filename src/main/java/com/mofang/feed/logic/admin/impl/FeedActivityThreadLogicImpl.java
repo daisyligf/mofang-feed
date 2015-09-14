@@ -1,5 +1,6 @@
 package com.mofang.feed.logic.admin.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -60,16 +61,28 @@ public class FeedActivityThreadLogicImpl implements FeedActivityThreadLogic {
 				return result;
 			}
 			
+			List<FeedActivityUser> userList = activityThreadService
+					.generateRewardUserList(threadId, condition);
+
+			if(userList == null || userList.size() == 0) {
+				throw new Exception("帖子id: " + threadId + "对应的用户获奖名单是空的");
+			}
 			
 			JSONObject data = new JSONObject();
 			data.put("thread_subject", feedThread.getSubject());
 			JSONArray userJsonArr = new JSONArray();
 			
-			List<FeedActivityUser> userList = activityThreadService
-					.generateRewardUserList(threadId, condition);
-
-			//填充nickname, level
-			HttpComponent.fillUserInfoNoMoreByIds(userList);
+			int size = userList.size();
+			if(size > 100) {
+				List<FeedActivityUser> subUserList =  new ArrayList<FeedActivityUser>(50);
+				for(int idx = 0; idx < size; idx ++) {
+					subUserList.add(userList.get(idx));
+					if(subUserList.size() == 100 || idx == size - 1){
+						HttpComponent.fillUserInfo(subUserList);
+						subUserList.clear();
+					}
+				}
+			}else HttpComponent.fillUserInfo(userList);
 			
 			JSONObject jsonUser = null;
 			for(int idx = 0; idx < userList.size(); idx ++) {
