@@ -18,7 +18,7 @@ public interface FeedPostLogic
 	
 	public ResultValue delete(long postId, long operatorId, String reason) throws Exception;
 	
-	public ResultValue recommend(long userId, long postId) throws Exception;
+	public ResultValue recommend(long userId, long recomendUserId, long postId) throws Exception;
 	
 	public ResultValue getInfo(long postId) throws Exception;
 	

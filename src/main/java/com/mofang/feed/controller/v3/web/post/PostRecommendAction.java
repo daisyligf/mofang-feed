@@ -42,9 +42,10 @@ public class PostRecommendAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		long userId = Long.parseLong(strUserId);
+		long userId = Long.parseLong(strUserId); 
 		JSONObject json = new JSONObject(postData);
 		long postId = json.optLong("pid", 0L);
+		long recomendUserId  = json.optLong("recommenduid", 0L);
 		
 		///参数检查
 		if(postId <= 0)
@@ -53,6 +54,6 @@ public class PostRecommendAction extends AbstractActionExecutor
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
 			return result;
 		}
-		return logic.recommend(userId, postId);
+		return logic.recommend(userId, recomendUserId, postId);
 	}
 }

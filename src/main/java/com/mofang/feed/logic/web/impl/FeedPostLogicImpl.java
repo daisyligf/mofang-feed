@@ -436,7 +436,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	}
 
 	@Override
-	public ResultValue recommend(long userId, long postId) throws Exception
+	public ResultValue recommend(long userId, long recommendUserId, long postId) throws Exception
 	{
 		try
 		{
@@ -461,7 +461,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 				if(null != threadInfo)
 				{
 					FeedRecommendNotify notify = new FeedRecommendNotify();
-					notify.setUserId(threadInfo.getUserId());
+					notify.setUserId(recommendUserId);
 					notify.setThreadId(postInfo.getThreadId());
 					notify.setSubject(threadInfo.getSubjectFilter());
 					notify.setRecommendType(RecommendType.POST);
