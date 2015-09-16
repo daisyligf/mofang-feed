@@ -267,8 +267,10 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select source_id, type from( ");
 		strSql.append("select post_id as source_id, '1' as type, create_time from feed_post where user_id = " + userId + " and status = 1 and position > 1 ");
+		strSql.append("and forum_id not in(select forum_id from feed_forum where is_hidden = 1) ");
 		strSql.append("union all ");
 		strSql.append("select comment_id as source_id, '2' as type, create_time from feed_comment where user_id = " + userId + " and status = 1 ");
+		strSql.append("and forum_id not in(select forum_id from feed_forum where is_hidden = 1) ");
 		strSql.append(") a order by create_time desc ");
 		strSql.append("limit " + start + ", " + end);
 		ResultData data = super.executeQuery(strSql.toString());
@@ -297,8 +299,10 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select count(1) from( ");
 		strSql.append("select post_id as source_id from feed_post where user_id = " + userId + " and status = 1 and position > 1 ");
+		strSql.append("and forum_id not in(select forum_id from feed_forum where is_hidden = 1) ");
 		strSql.append("union all ");
 		strSql.append("select comment_id as source_id from feed_comment where user_id = " + userId + " and status = 1 ");
+		strSql.append("and forum_id not in(select forum_id from feed_forum where is_hidden = 1) ");
 		strSql.append(") a ");
 		ResultData data = super.executeQuery(strSql.toString());
 		if(null == data)
