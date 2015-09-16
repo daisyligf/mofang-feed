@@ -160,7 +160,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	@Override
 	public List<FeedForumOrder> getForumOrderList(long type) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("select forum_id,create_time from feed_forum where type != " + ForumType.HIDDEN);
+		strSql.append("select forum_id,create_time from feed_forum where is_hidden = 0 and type != " + ForumType.HIDDEN);
 		
 		if(type != ForumType.ALL) {
 			strSql.append(" and type = "+ type);
