@@ -8,7 +8,7 @@ import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedReply;
 import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
 import com.mofang.feed.model.external.FeedActivityUser;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
@@ -128,7 +128,7 @@ public interface FeedPostDao
 	 */
 	public long getUserReplyCount(long userId) throws Exception;
 	
-	public Map<Long,ForumCount> getReplyCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
+	public Map<Long,ForumCountByTime> getReplyCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 	
 	/**
 	 * 获取主题的内容(数据初始化使用)

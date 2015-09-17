@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.StatForumViewHistory;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.feed.mysql.StatForumViewHistoryDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.meta.ResultData;
@@ -36,7 +36,7 @@ public class StatForumViewHistoryDaoImpl extends
 	}
 
 	@Override
-	public Map<Long, ForumCount> getUV(Set<Long> forumIds, long startTime, long endTime) throws Exception {
+	public Map<Long, ForumCountByTime> getUV(Set<Long> forumIds, long startTime, long endTime) throws Exception {
 		String strForumIds = "";
 		for (long strForumId : forumIds)
 			strForumIds += strForumId + ",";
@@ -54,10 +54,10 @@ public class StatForumViewHistoryDaoImpl extends
 		List<RowData> rows = data.getQueryResult();
 		if (rows == null || rows.size() == 0)
 			return null;
-		Map<Long,ForumCount> map = new HashMap<Long,ForumCount>(rows.size());
+		Map<Long,ForumCountByTime> map = new HashMap<Long,ForumCountByTime>(rows.size());
 		for (RowData row : rows){
-			ForumCount count = new ForumCount();
-			count.count  = row.getLong(0);
+			ForumCountByTime count = new ForumCountByTime();
+			count.followCount  = row.getLong(0);
 			count.forumId = row.getLong(1);
 			map.put(count.forumId, count);
 		}

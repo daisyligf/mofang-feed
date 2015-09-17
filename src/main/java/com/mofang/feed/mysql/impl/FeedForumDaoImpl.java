@@ -9,7 +9,7 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.ForumType;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.external.FeedForumOrder;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.feed.model.external.Pair;
 import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
@@ -183,7 +183,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 	}
 
 	@Override
-	public Map<Long,ForumCount> getPostRecommendCount(long startTime, long endTime) throws Exception {
+	public Map<Long,ForumCountByTime> getPostRecommendCount(long startTime, long endTime) throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select  count(1),a.forum_id from (");
 		strSql.append("select post_id, count(1) from feed_post_recommend");
@@ -195,10 +195,10 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		List<RowData> rows = data.getQueryResult();
 		if (rows == null || rows.size() == 0)
 			return null;
-		Map<Long,ForumCount> map = new HashMap<Long,ForumCount>(rows.size());
+		Map<Long,ForumCountByTime> map = new HashMap<Long,ForumCountByTime>(rows.size());
 		for (RowData row : rows){
-			ForumCount count = new ForumCount();
-			count.count  = row.getLong(0);
+			ForumCountByTime count = new ForumCountByTime();
+			count.followCount  = row.getLong(0);
 			count.forumId = row.getLong(1);
 			map.put(count.forumId, count);
 		}
@@ -207,7 +207,7 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 
 
 	@Override
-	public Map<Long, ForumCount> getThreadRecommendCount(long startTime, long endTime) throws Exception {
+	public Map<Long, ForumCountByTime> getThreadRecommendCount(long startTime, long endTime) throws Exception {
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select  count(1),a.forum_id from (");
 		strSql.append("select thread_id, count(1) from feed_thread_recommend");
@@ -219,10 +219,10 @@ public class FeedForumDaoImpl extends AbstractMysqlSupport<FeedForum> implements
 		List<RowData> rows = data.getQueryResult();
 		if (rows == null || rows.size() == 0)
 			return null;
-		Map<Long, ForumCount> map = new HashMap<Long, ForumCount>(rows.size());
+		Map<Long, ForumCountByTime> map = new HashMap<Long, ForumCountByTime>(rows.size());
 		for (RowData row : rows){
-			ForumCount count = new ForumCount();
-			count.count  = row.getLong(0);
+			ForumCountByTime count = new ForumCountByTime();
+			count.followCount  = row.getLong(0);
 			count.forumId = row.getLong(1);
 			map.put(count.forumId, count);
 		}

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.external.FeedForumOrder;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.feed.model.external.Pair;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
@@ -48,9 +48,9 @@ public interface FeedForumDao
 	
 	public List<FeedForumOrder> getForumOrderList(long type) throws Exception;
 	
-	public Map<Long,ForumCount> getPostRecommendCount(long startTime, long endTime) throws Exception;
+	public Map<Long,ForumCountByTime> getPostRecommendCount(long startTime, long endTime) throws Exception;
 	
-	public Map<Long,ForumCount> getThreadRecommendCount(long startTime, long endTime) throws Exception;
+	public Map<Long,ForumCountByTime> getThreadRecommendCount(long startTime, long endTime) throws Exception;
 
 	public List<Long> getForumIdList() throws Exception;
 	

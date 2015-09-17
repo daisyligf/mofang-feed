@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.external.FeedActivityUser;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
 /**
@@ -157,7 +157,7 @@ public interface FeedThreadDao
 
 	public long getGlobalEliteThreadCount() throws Exception;
 	
-	public Map<Long,ForumCount> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
+	public Map<Long,ForumCountByTime> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception;
 	
 	public long getUserTopOrEliteThreadCount(long userId) throws Exception;
 	

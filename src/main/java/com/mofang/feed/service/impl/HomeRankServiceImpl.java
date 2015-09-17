@@ -17,7 +17,7 @@ import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedHomeHotForumRank;
 import com.mofang.feed.model.FeedHomeRecommendGameRank;
 import com.mofang.feed.model.external.FeedForumOrder;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.feed.model.external.Game;
 import com.mofang.feed.mysql.FeedForumDao;
 import com.mofang.feed.mysql.FeedPostDao;
@@ -55,12 +55,12 @@ public class HomeRankServiceImpl implements HomeRankService {
 		return SERVICE;
 	}
 	
-	private long getCount(Map<Long, ForumCount> map, long fourmId){
+	private long getCount(Map<Long, ForumCountByTime> map, long fourmId){
 		if(map == null){
 			return 0;
 		}
-		ForumCount count = map.get(fourmId);
-		return count != null ? count.count : 0;
+		ForumCountByTime count = map.get(fourmId);
+		return count != null ? count.followCount : 0;
 	}
 	
 	private long calculate(long uv, long threadCount, long replyCount, long followCount, long recommendCount){
@@ -171,15 +171,15 @@ public class HomeRankServiceImpl implements HomeRankService {
 			long yesterdayStartTime = TimeUtil.getYesterdyStartTime();
 			long yesterdayEndTime = TimeUtil.getYesterdyEndTime();
 			
-			Map<Long, ForumCount> uvMap = viewHistoryDao.getUV(forumIds, yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCountByTime> uvMap = viewHistoryDao.getUV(forumIds, yesterdayStartTime, yesterdayEndTime);
 			//GlobalObject.INFO_LOG.info(logOut(uvMap, 1));
-			Map<Long, ForumCount> threadMap = threadDao.getThreadCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCountByTime> threadMap = threadDao.getThreadCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			//GlobalObject.INFO_LOG.info(logOut(threadMap, 2));
-			Map<Long, ForumCount> replyMap = postDao.getReplyCount(forumIds, yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCountByTime> replyMap = postDao.getReplyCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			//GlobalObject.INFO_LOG.info(logOut(replyMap, 3));
 			
 			/********************获取板块用户关注数 暂时请求http*************************/
-			Map<Long, ForumCount> followMap = new HashMap<Long, ForumCount>(size);
+			Map<Long, ForumCountByTime> followMap = new HashMap<Long, ForumCountByTime>(size);
 			int step = 0;
 			int loopCount = size % 100 == 0 ? size / 100 : size / 100 + 1;
 			for(int idx = 0; idx < loopCount; idx ++){
@@ -193,7 +193,7 @@ public class HomeRankServiceImpl implements HomeRankService {
 				for(;jdx < stepLimit; jdx ++) {
 					list.add(forumOrderList.get(jdx).getForumId());
 				}
-				Map<Long, ForumCount> map = HttpComponent.getForumFollowCountByTime(list, yesterdayStartTime/1000, yesterdayEndTime/1000);
+				Map<Long, ForumCountByTime> map = HttpComponent.getForumFollowCountByTime(list, yesterdayStartTime/1000, yesterdayEndTime/1000);
 				if(map != null) {
 					followMap.putAll(map);
 				}
@@ -204,30 +204,30 @@ public class HomeRankServiceImpl implements HomeRankService {
 			//Map<Long, ForumCount> followMap = forumFollowDao.getFollowCount(forumIds, yesterdayStartTime, yesterdayEndTime);
 			
 			/********************************取点赞数好蛋疼********************************/
-			Map<Long, ForumCount> postRecommendMap = forumDao.getPostRecommendCount(yesterdayStartTime, yesterdayEndTime);
-			Map<Long, ForumCount> threadRecommendMap = forumDao.getThreadRecommendCount(yesterdayStartTime, yesterdayEndTime);
-			Map<Long, ForumCount> recommendMap = null;
+			Map<Long, ForumCountByTime> postRecommendMap = forumDao.getPostRecommendCount(yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCountByTime> threadRecommendMap = forumDao.getThreadRecommendCount(yesterdayStartTime, yesterdayEndTime);
+			Map<Long, ForumCountByTime> recommendMap = null;
 			if(postRecommendMap != null && threadRecommendMap != null ){
 				int postRecommendSize = postRecommendMap.size();
 				int threadRecommendSize = threadRecommendMap.size();
 				if(postRecommendSize >= threadRecommendSize){
 					recommendMap = postRecommendMap;
-					for(Map.Entry<Long, ForumCount> entry : threadRecommendMap.entrySet()){
+					for(Map.Entry<Long, ForumCountByTime> entry : threadRecommendMap.entrySet()){
 						long key = entry.getKey();
-						ForumCount forumCount = recommendMap.get(key);
+						ForumCountByTime forumCount = recommendMap.get(key);
 						if(forumCount != null) {
-							forumCount.count = forumCount.count + entry.getValue().count;
+							forumCount.followCount = forumCount.followCount + entry.getValue().followCount;
 						}else {
 							recommendMap.put(key, forumCount);
 						}
 					}
 				}else{
 					recommendMap = threadRecommendMap;
-					for(Map.Entry<Long, ForumCount> entry : postRecommendMap.entrySet()){
+					for(Map.Entry<Long, ForumCountByTime> entry : postRecommendMap.entrySet()){
 						long key = entry.getKey();
-						ForumCount forumCount = recommendMap.get(key);
+						ForumCountByTime forumCount = recommendMap.get(key);
 						if(forumCount != null) {
-							forumCount.count = forumCount.count + entry.getValue().count;
+							forumCount.followCount = forumCount.followCount + entry.getValue().followCount;
 						}else {
 							recommendMap.put(key, forumCount);
 						}

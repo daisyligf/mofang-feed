@@ -15,7 +15,7 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.model.external.FeedRecommendNotify;
 import com.mofang.feed.model.external.FollowForumCount;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.feed.model.external.Game;
 import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
@@ -499,7 +499,7 @@ public class HttpComponent
 		}
 	}
 	
-	public static Map<Long, ForumCount> getForumFollowCountByTime(List<Long> forumIdList, long startTime, long endTime) throws Exception{
+	public static Map<Long, ForumCountByTime> getForumFollowCountByTime(List<Long> forumIdList, long startTime, long endTime) throws Exception{
 		try {
 			JSONArray arrForumIds = new JSONArray();
 			for(Long forumId : forumIdList){
@@ -521,15 +521,15 @@ public class HttpComponent
 				return null;
 			
 			int size = data.length();
-			Map<Long, ForumCount> map = new HashMap<Long, ForumCount>(size);
+			Map<Long, ForumCountByTime> map = new HashMap<Long, ForumCountByTime>(size);
 			for(int idx = 0; idx < size; idx ++){
 				JSONObject jsonObj = data.getJSONObject(idx);
 				long fid = jsonObj.optLong("fid", 0l);
 				int followCount = jsonObj.optInt("follow_count", 0);
 				
-				ForumCount forumCountModel = new ForumCount();
+				ForumCountByTime forumCountModel = new ForumCountByTime();
 				forumCountModel.forumId = fid;
-				forumCountModel.count = followCount;
+				forumCountModel.followCount = followCount;
 				map.put(fid, forumCountModel);
 			}
 			return map;

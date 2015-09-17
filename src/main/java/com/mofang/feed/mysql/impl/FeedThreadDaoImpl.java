@@ -11,7 +11,7 @@ import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.QueryTimeType;
 import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.model.FeedThread;
-import com.mofang.feed.model.external.ForumCount;
+import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.feed.mysql.FeedThreadDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
@@ -369,7 +369,7 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 	}
 
 	@Override
-	public Map<Long, ForumCount> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception
+	public Map<Long, ForumCountByTime> getThreadCount(Set<Long> forumIds, long startTime, long endTime) throws Exception
 	{
 		String strForumIds = "";
 		for (long strForumId : forumIds)
@@ -388,10 +388,10 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 		List<RowData> rows = data.getQueryResult();
 		if (rows == null || rows.size() == 0)
 			return null;
-		Map<Long, ForumCount> map = new HashMap<Long,ForumCount>(rows.size());
+		Map<Long, ForumCountByTime> map = new HashMap<Long,ForumCountByTime>(rows.size());
 		for (RowData row : rows){
-			ForumCount count = new ForumCount();
-			count.count  = row.getLong(0);
+			ForumCountByTime count = new ForumCountByTime();
+			count.followCount  = row.getLong(0);
 			count.forumId = row.getLong(1);
 			map.put(count.forumId, count);
 		}
