@@ -33,7 +33,7 @@ public class ForumStatisticsInfoAction extends AbstractActionExecutor {
 		if(StringUtil.isLong(strEndTime))
 			endTime = Long.parseLong(strEndTime);
 
-		if(StringUtils.isNullOrEmpty(strForumIds)) {
+		if(StringUtils.isNullOrEmpty(strForumIds) || startTime == 0l || endTime == 0l) {
 			ResultValue result = new ResultValue();
 			result.setCode(ReturnCode.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
 			result.setMessage(ReturnMessage.CLIENT_REQUEST_LOST_NECESSARY_PARAMETER);
