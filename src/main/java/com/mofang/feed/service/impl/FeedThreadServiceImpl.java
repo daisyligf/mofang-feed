@@ -93,6 +93,12 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			
 			long userId = model.getUserId();
 			long createTime = model.getCreateTime();
+
+			/******************************数据库操作******************************/
+			///保存主题信息
+			threadDao.add(model);
+			///版块主题数 +1
+			forumDao.incrThreads(forumId);
 			
 			/******************************redis操作******************************/
 			///保存主题信息
@@ -105,12 +111,6 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			forumRedis.incrThreads(forumId);
 			///版块今日发帖数 +1
 			forumRedis.incrTodayThreads(forumId);
-			
-			/******************************数据库操作******************************/
-			///保存主题信息
-			threadDao.add(model);
-			///版块主题数 +1
-			forumDao.incrThreads(forumId);
 
 			/******************************Solr操作******************************/
 			if(!forumIsHidden)   ///隐藏版块的主题不进入redis和solr(一般是cms的文章)
