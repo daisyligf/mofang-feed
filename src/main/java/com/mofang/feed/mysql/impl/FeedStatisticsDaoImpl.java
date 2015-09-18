@@ -92,9 +92,11 @@ public class FeedStatisticsDaoImpl extends AbstractMysqlSupport<Object> implemen
 
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select forum_id, count(1) from feed_thread where ");
-		strSql.append("create_time >=" + startTime);
-		strSql.append(" and create_time <=" + endTime);
-		strSql.append(" and forum_id in(" + strForumIds + ") group by forum_id");
+		if(startTime != 0l && endTime != 0l) {
+			strSql.append("create_time >=" + startTime);
+			strSql.append(" and create_time <=" + endTime + " and");
+		}
+		strSql.append(" forum_id in(" + strForumIds + ") group by forum_id");
 		
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
@@ -121,9 +123,11 @@ public class FeedStatisticsDaoImpl extends AbstractMysqlSupport<Object> implemen
 
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select forum_id, count(1) from feed_post where ");
-		strSql.append("create_time >=" + startTime);
-		strSql.append(" and create_time <=" + endTime);
-		strSql.append(" and forum_id in(" + strForumIds + ") group by forum_id");
+		if(startTime != 0l && endTime != 0l) {
+			strSql.append("create_time >=" + startTime);
+			strSql.append(" and create_time <=" + endTime + " and");
+		}
+		strSql.append(" forum_id in(" + strForumIds + ") group by forum_id");
 		
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)
@@ -150,9 +154,11 @@ public class FeedStatisticsDaoImpl extends AbstractMysqlSupport<Object> implemen
 
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select forum_id, count(1) from feed_comment where ");
-		strSql.append("create_time >=" + startTime);
-		strSql.append(" and create_time <=" + endTime);
-		strSql.append(" and forum_id in(" + strForumIds + ") group by forum_id");
+		if(startTime != 0l && endTime != 0l) {
+			strSql.append("create_time >=" + startTime);
+			strSql.append(" and create_time <=" + endTime + " and");
+		}
+		strSql.append(" forum_id in(" + strForumIds + ") group by forum_id");
 		
 		ResultData data = super.executeQuery(strSql.toString());
 		if (data == null)

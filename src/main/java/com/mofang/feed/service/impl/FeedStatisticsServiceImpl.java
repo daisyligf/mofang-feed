@@ -33,17 +33,10 @@ public class FeedStatisticsServiceImpl implements FeedStatisticsService {
 			int size = forumNameList.size();
 			
 			Map<Long, Integer> forumThreadCount = statisticsDao.forumThreadCount(forumIdSet, startTime, endTime);
-			if(forumThreadCount == null) throw new Exception("主题数为空");
 			
 			Map<Long, Integer> forumPostCount = statisticsDao.forumPostCount(forumIdSet, startTime, endTime);
-			if(forumPostCount == null) throw new Exception("楼层数为空");
 			
 			Map<Long, Integer> forumCommentCount = statisticsDao.forumCommentCount(forumIdSet, startTime, endTime);
-			if(forumCommentCount == null) throw new Exception("评论数为空");
-			
-			if(size != forumThreadCount.size() || size != forumPostCount.size() || size != forumCommentCount.size()) {
-				throw new Exception("主题数，楼层数，评论数返回的个数不统一");
-			}
 			
 			Map<Long, ForumStatisticsInfo> statisticsInfoMap = new LinkedHashMap<Long, ForumStatisticsInfo>(size);
 			for(int idx = 0; idx < size; idx ++) {
@@ -54,11 +47,16 @@ public class FeedStatisticsServiceImpl implements FeedStatisticsService {
 				info.type = (Integer)objArr[2];
 				
 				//主题
-				info.threadCount = forumThreadCount.get(info.forumId);
+				if(forumThreadCount == null || forumThreadCount.get(info.forumId) == null) info.threadCount = 0;
+				else info.threadCount = forumThreadCount.get(info.forumId);
+				
 				//楼层
-				info.postCount = forumPostCount.get(info.forumId);
+				if(forumPostCount == null || forumPostCount.get(info.forumId) == null) info.postCount = 0;
+				else info.postCount = forumPostCount.get(info.forumId);
+				
 				//评论
-				info.commentCount = forumCommentCount.get(info.forumId);
+				if(forumCommentCount == null || forumCommentCount.get(info.forumId) == null) info.commentCount = 0;
+				else info.commentCount = forumCommentCount.get(info.forumId);
 				
 				statisticsInfoMap.put(info.forumId, info);
 			}
