@@ -645,8 +645,15 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						userId = postInfo.getUserId();
 						jsonPost = new JSONObject();
 						jsonPost.put("pid", postInfo.getPostId());
-						jsonPost.put("content", postInfo.getContentFilter());
-						jsonPost.put("html_content", postInfo.getHtmlContentFilter());
+						
+						//过滤------>xx<------ 这种特殊符号
+						if(postInfo.getPosition() == 1) {
+							jsonPost.put("content", MiniTools.filterSpecialChars(postInfo.getContentFilter()));
+							jsonPost.put("html_content", MiniTools.filterSpecialChars(postInfo.getHtmlContentFilter()));							
+						}else {
+							jsonPost.put("content", postInfo.getContentFilter());
+							jsonPost.put("html_content", postInfo.getHtmlContentFilter());
+						}
 						jsonPost.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));
 						jsonPost.put("recommends", postInfo.getRecommends());
 						jsonPost.put("comments", postInfo.getComments());

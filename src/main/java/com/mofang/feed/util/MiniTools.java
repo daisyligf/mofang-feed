@@ -66,4 +66,10 @@ public class MiniTools
 			return null;
 		}
 	}
+	
+	public static String filterSpecialChars(String content) {
+    	String regex = "------&gt;([\\s\\S]*?)&lt;------";
+		return content.replaceAll(regex, "");
+	}
+	
 }
