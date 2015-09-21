@@ -42,8 +42,8 @@ public class FeedUserSignInServiceImpl implements FeedUserSignInService {
 				add = true;
 			} else {
 				long lastSignInTime = userSignIn.lastSignInTime;
-				int intervalDay = (int) (now - lastSignInTime) / 1000 / 60 / 60
-						/ 24;
+				int intervalDay = (int) ((now - lastSignInTime) / 1000 / 60 / 60
+						/ 24);
 
 				userSignIn.lastSignInTime = now;
 				if (intervalDay == 0 || intervalDay == 1) {
