@@ -25,18 +25,28 @@ public class FeedStatisticsServiceImpl implements FeedStatisticsService {
 	
 	@Override
 	public Map<Long, ForumStatisticsInfo> forumStatisticsInfos(
-			Set<Long> forumIdSet, long startTime, long endTime)
+			Set<Long> forumIdSet, long startTime, long endTime, int type)
 			throws Exception {
 		 try {
 			List<Object[]> forumNameList = statisticsDao.forumNameList(forumIdSet);
 			if(forumNameList == null) throw new Exception("板块id列表可能在数据库不存在");
 			int size = forumNameList.size();
 			
-			Map<Long, Integer> forumThreadCount = statisticsDao.forumThreadCount(forumIdSet, startTime, endTime);
+			Map<Long, Integer> forumThreadCount = null;
+			Map<Long, Integer> forumPostCount = null;
+			Map<Long, Integer> forumCommentCount = null;
 			
-			Map<Long, Integer> forumPostCount = statisticsDao.forumPostCount(forumIdSet, startTime, endTime);
-			
-			Map<Long, Integer> forumCommentCount = statisticsDao.forumCommentCount(forumIdSet, startTime, endTime);
+			if(type == 1) 
+				forumThreadCount = statisticsDao.forumThreadCount(forumIdSet, startTime, endTime);
+			else if (type == 2) 
+				forumPostCount = statisticsDao.forumPostCount(forumIdSet, startTime, endTime);
+			else if(type == 3) 
+				forumCommentCount = statisticsDao.forumCommentCount(forumIdSet, startTime, endTime);
+			else {
+				forumThreadCount = statisticsDao.forumThreadCount(forumIdSet, startTime, endTime);
+				forumPostCount = statisticsDao.forumPostCount(forumIdSet, startTime, endTime);
+				forumCommentCount = statisticsDao.forumCommentCount(forumIdSet, startTime, endTime);
+			}
 			
 			Map<Long, ForumStatisticsInfo> statisticsInfoMap = new LinkedHashMap<Long, ForumStatisticsInfo>(size);
 			for(int idx = 0; idx < size; idx ++) {

@@ -6,5 +6,5 @@ import com.mofang.feed.global.ResultValue;
 
 public interface FeedStatisticsLogic {
 
-	public ResultValue forumStatisticsInfos(Set<Long> forumIds, long startTime, long endTime) throws Exception;
+	public ResultValue forumStatisticsInfos(Set<Long> forumIds, long startTime, long endTime, int type) throws Exception;
 }

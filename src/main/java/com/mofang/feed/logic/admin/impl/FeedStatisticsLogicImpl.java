@@ -27,11 +27,11 @@ public class FeedStatisticsLogicImpl implements FeedStatisticsLogic {
 	
 	@Override
 	public ResultValue forumStatisticsInfos(Set<Long> forumIds, long startTime,
-			long endTime) throws Exception {
+			long endTime, int type) throws Exception {
 		try {
 			ResultValue result = new ResultValue();
 			JSONArray data = new JSONArray();
-			Map<Long, ForumStatisticsInfo> statisticsMap = statisticsService.forumStatisticsInfos(forumIds, startTime, endTime);
+			Map<Long, ForumStatisticsInfo> statisticsMap = statisticsService.forumStatisticsInfos(forumIds, startTime, endTime, type);
 			JSONObject infoJson = null;
 			for(Map.Entry<Long, ForumStatisticsInfo> entry : statisticsMap.entrySet()) {
 				long forumId = entry.getKey();
