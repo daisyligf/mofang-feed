@@ -35,7 +35,9 @@ import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.record.StatForumViewHistoryRecorder;
+import com.mofang.feed.redis.FeedUserCountRedis;
 import com.mofang.feed.redis.WaterproofWallRedis;
+import com.mofang.feed.redis.impl.FeedUserCountRedisImpl;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedBlackListService;
@@ -83,6 +85,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
 	private FeedSysRoleService roleService = FeedSysRoleServiceImpl.getInstance();
 	private FeedThreadRepliesRewardService rewardService = FeedThreadRepliesRewardServiceImpl.getInstance();
+	private FeedUserCountRedis userCountRedis = FeedUserCountRedisImpl.getInstance();
 	
 	private FeedPostLogicImpl()
 	{}
@@ -689,13 +692,27 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		if(null != threadUserInfo)
 		{
 			jsonUser = buildUserJSONObject(threadUserInfo);
-			long threadCount = threadService.getUserThreadCount(threadInfo.getUserId());
-			long eliteThreadCount = threadService.getUserEliteThreadCount(threadInfo.getUserId());
-			long postCount = postService.getUserPostCount(threadInfo.getUserId());
-			long commentCount = commentService.getUserCommentCount(threadInfo.getUserId());
-			jsonUser.put("threads", threadCount);
-			jsonUser.put("replies", postCount + commentCount);
-			jsonUser.put("elite_threads", eliteThreadCount);
+			
+			//先从2分钟缓存里取，如果没有，从数据库加载并缓存2分钟
+			String countInfo = userCountRedis.userCountInfo(threadInfo.getUserId());
+			if(StringUtil.isNullOrEmpty(countInfo)) {
+				long threadCount = threadService.getUserThreadCount(threadInfo.getUserId());
+				long eliteThreadCount = threadService.getUserEliteThreadCount(threadInfo.getUserId());
+				long postCount = postService.getUserPostCount(threadInfo.getUserId());
+				long commentCount = commentService.getUserCommentCount(threadInfo.getUserId());
+				
+				jsonUser.put("threads", threadCount);
+				jsonUser.put("replies", postCount + commentCount);
+				jsonUser.put("elite_threads", eliteThreadCount);
+				
+				userCountRedis.saveAndExpire(threadInfo.getUserId(), threadCount, postCount, commentCount, eliteThreadCount);
+			} else {
+				JSONObject jsonCountInfo = new JSONObject(countInfo);
+				jsonUser.put("threads", jsonCountInfo.optLong("threads", 0l));
+				jsonUser.put("replies",  jsonCountInfo.optLong("replies", 0l));
+				jsonUser.put("elite_threads", jsonCountInfo.optLong("elite_threads", 0l));
+			}
+			
 		}
 		jsonThread.put("forum", jsonForum);
 		jsonThread.put("user", jsonUser);
