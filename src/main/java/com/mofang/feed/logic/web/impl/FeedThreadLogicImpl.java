@@ -195,6 +195,7 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 				return result;
 			}
 			
+			
 			///完善Post实体对象
 			FeedPost postInfo = model.getPost();
 			postInfo.setThreadId(threadId);

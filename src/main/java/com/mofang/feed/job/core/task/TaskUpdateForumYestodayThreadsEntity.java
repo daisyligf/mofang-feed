@@ -44,6 +44,7 @@ public class TaskUpdateForumYestodayThreadsEntity extends TaskEntity
 						forumRedis.updateYestodayThreads(forumId, threads);
 					}
 				}
+				GlobalObject.INFO_LOG.info("at TaskClearForumTodayThreadsEntity.Task.run, update forumYestodayThreads task success.");
 			}
 			catch (Throwable e) 
 			{

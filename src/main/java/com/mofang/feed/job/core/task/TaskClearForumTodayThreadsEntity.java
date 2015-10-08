@@ -40,6 +40,7 @@ public class TaskClearForumTodayThreadsEntity extends TaskEntity
 					if(exists)
 						forumRedis.clearTodayThreads(forumInfo.getForumId());
 				}
+				GlobalObject.INFO_LOG.info("at TaskClearForumTodayThreadsEntity.Task.run, clear forumTodayThreads task success.");
 			}
 			catch (Throwable e) 
 			{
