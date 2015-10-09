@@ -25,6 +25,7 @@ public class TaskClearForumTodayThreadsEntity extends TaskEntity
 		{
 			try 
 			{
+				GlobalObject.INFO_LOG.info("at TaskClearForumTodayThreadsEntity.Task.run, clear forumTodayThreads task start...");
 				
 				///更新数据库
 				forumDao.clearTodayThreads();

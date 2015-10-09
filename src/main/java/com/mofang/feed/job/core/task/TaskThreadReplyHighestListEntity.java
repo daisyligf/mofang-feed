@@ -18,6 +18,7 @@ public class TaskThreadReplyHighestListEntity extends TaskEntity {
 		@Override
 		public void run() {
 			try {
+				GlobalObject.INFO_LOG.info("at TaskClearForumTodayThreadsEntity.Task, generate threadReplyHighestList task start...");
 				ThreadReplyHighestListServiceImpl.getInstance().generate();
 				GlobalObject.INFO_LOG.info("at TaskClearForumTodayThreadsEntity.Task.run, generate threadReplyHighestList task success.");
 			} catch (Throwable e) {

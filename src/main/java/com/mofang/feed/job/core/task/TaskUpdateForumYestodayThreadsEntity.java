@@ -30,6 +30,7 @@ public class TaskUpdateForumYestodayThreadsEntity extends TaskEntity
 		{
 			try 
 			{	
+				GlobalObject.INFO_LOG.info("at TaskClearForumTodayThreadsEntity.Task.run, update forumYestodayThreads task start...");
 				///获取版块昨日帖子数
 				long startTime = TimeUtil.getYesterdyStartTime();
 				long endTime = TimeUtil.getYesterdyEndTime();
