@@ -14,6 +14,15 @@ public class TimeUtil {
 		return cl.getTimeInMillis() - System.currentTimeMillis();
 	}
 	
+	public static long getTodayStartTime(){
+		Calendar cal = Calendar.getInstance();
+		cal.get(Calendar.HOUR_OF_DAY);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		return cal.getTimeInMillis();
+	}
+	
 	public static long getTodayEndTime(){
 		Calendar cal = Calendar.getInstance();
 		cal.get(Calendar.HOUR_OF_DAY);
@@ -73,6 +82,7 @@ public class TimeUtil {
 		SimpleDateFormat format =   new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 		long startTime = getLastSevenDayStartTime();
 		System.out.println(format.format(startTime));
+		System.out.println(format.format(getTodayStartTime()));
 	}
 
 }

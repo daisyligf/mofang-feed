@@ -96,6 +96,18 @@ public class TaskComponent
 		}
 	}
 	
+	public static void reply32DiffThread(long userId) {
+		try
+		{
+			Task task = new Task(userId, TaskEvent.REPLY_32_THREAD);
+			exec(task);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at TaskComponent.reply32DiffThread throw an error.", e);
+		}
+	}
+	
 	/**
 	 * 执行任务
 	 * @param task 任务实体

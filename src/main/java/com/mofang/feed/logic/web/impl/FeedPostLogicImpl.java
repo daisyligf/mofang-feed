@@ -47,7 +47,6 @@ import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysRoleService;
 import com.mofang.feed.service.FeedSysUserRoleService;
-import com.mofang.feed.service.FeedThreadRepliesRewardService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.FeedUserFavoriteService;
 import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
@@ -58,9 +57,12 @@ import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
-import com.mofang.feed.service.impl.FeedThreadRepliesRewardServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.feed.service.impl.FeedUserFavoriteServiceImpl;
+import com.mofang.feed.service.impl.task.FeedDifferenceThreadRepilyServiceImpl;
+import com.mofang.feed.service.impl.task.FeedThreadRepliesRewardServiceImpl;
+import com.mofang.feed.service.task.FeedDifferenceThreadRepilyService;
+import com.mofang.feed.service.task.FeedThreadRepliesRewardService;
 import com.mofang.feed.util.HtmlTagFilter;
 import com.mofang.feed.util.MiniTools;
 import com.mofang.framework.util.StringUtil;
@@ -86,6 +88,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
 	private FeedThreadRepliesRewardService rewardService = FeedThreadRepliesRewardServiceImpl.getInstance();
 	private FeedUserCountRedis userCountRedis = FeedUserCountRedisImpl.getInstance();
+	private FeedDifferenceThreadRepilyService diffThreadPepilyService = FeedDifferenceThreadRepilyServiceImpl.getInstance();
 	
 	private FeedPostLogicImpl()
 	{}
@@ -214,7 +217,11 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 			
 			/******************************回复奖励******************************/
-			rewardService.rewordUser(threadId);
+			rewardService.checkAndReword(threadId);
+			
+			/****************回复32个不同主题任务触发************************/
+			diffThreadPepilyService.checkAndcallTask(userId);
+
 			
 			///获取楼层总数(用于跳转到用户回复的最新楼层)
 			long posts = postService.getThreadPostCount(threadId);
