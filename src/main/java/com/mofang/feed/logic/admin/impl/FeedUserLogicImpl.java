@@ -207,23 +207,31 @@ public class FeedUserLogicImpl implements FeedUserLogic
 	@Override
 	public ResultValue clearUserTPC(long userId, long operatorId)
 			throws Exception {
-		ResultValue result = new ResultValue();
-		
-		///权限检查
-		boolean hasPrivilege = adminService.exists(operatorId);
-		if(!hasPrivilege)
+		try
 		{
-			result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
-			result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+			ResultValue result = new ResultValue();
+			
+			///权限检查
+			boolean hasPrivilege = adminService.exists(operatorId);
+			if(!hasPrivilege)
+			{
+				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+				return result;
+			}
+			
+			userTpcRemoveService.delete(userId);
+			
+			///返回结果
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
 			return result;
 		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedUserLogicImpl.clearUserTPC throw an error.", e);
+		}
 		
-		userTpcRemoveService.delete(userId);
-		
-		///返回结果
-		result.setCode(ReturnCode.SUCCESS);
-		result.setMessage(ReturnMessage.SUCCESS);
-		return result;
 	}
 	
 }
