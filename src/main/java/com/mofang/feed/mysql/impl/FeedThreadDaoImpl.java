@@ -86,7 +86,7 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 	{
 		super.deleteByPrimaryKey(threadId);
 	}
-
+	
 	@Override
 	public FeedThread getInfo(long threadId) throws Exception
 	{
@@ -533,4 +533,5 @@ public class FeedThreadDaoImpl extends AbstractMysqlSupport<FeedThread> implemen
 			map.put(row.getLong(0), row.getInteger(1));
 		return map;
 	}
+
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.model.FeedThread;
-import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 
@@ -194,4 +193,5 @@ public interface FeedThreadDao
 	 * @throws Exception
 	 */
 	public Map<Long, Integer> getForumYestodayThreadsMap(long startTime, long endTime) throws Exception;
+	
 }

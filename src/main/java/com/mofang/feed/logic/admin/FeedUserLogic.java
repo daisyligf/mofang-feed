@@ -16,4 +16,6 @@ public interface FeedUserLogic
 	public ResultValue updateStatus(long userId, int status, long operatorId) throws Exception;
 	
 	public ResultValue getInfo(long userId) throws Exception;
+	
+	public ResultValue clearUserTPC(long userId, long operatorId) throws Exception;
 }

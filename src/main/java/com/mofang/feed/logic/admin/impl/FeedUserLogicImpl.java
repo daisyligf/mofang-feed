@@ -19,6 +19,8 @@ import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
+import com.mofang.feed.service.impl.task.UserTPCRemoveServiceImpl;
+import com.mofang.feed.service.task.UserTPCRemoveService;
 
 /**
  * 
@@ -33,6 +35,7 @@ public class FeedUserLogicImpl implements FeedUserLogic
 	private FeedThreadService threadService = FeedThreadServiceImpl.getInstance();
 	private FeedPostService postService = FeedPostServiceImpl.getInstance();
 	private UserRedis userRedis = UserRedisImpl.getInstance();
+	private UserTPCRemoveService userTpcRemoveService = UserTPCRemoveServiceImpl.getInstance();
 	
 	private FeedUserLogicImpl()
 	{}
@@ -200,4 +203,27 @@ public class FeedUserLogicImpl implements FeedUserLogic
 			throw new Exception("at FeedUserLogicImpl.updateStatus throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue clearUserTPC(long userId, long operatorId)
+			throws Exception {
+		ResultValue result = new ResultValue();
+		
+		///权限检查
+		boolean hasPrivilege = adminService.exists(operatorId);
+		if(!hasPrivilege)
+		{
+			result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+			result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+			return result;
+		}
+		
+		userTpcRemoveService.delete(userId);
+		
+		///返回结果
+		result.setCode(ReturnCode.SUCCESS);
+		result.setMessage(ReturnMessage.SUCCESS);
+		return result;
+	}
+	
 }
