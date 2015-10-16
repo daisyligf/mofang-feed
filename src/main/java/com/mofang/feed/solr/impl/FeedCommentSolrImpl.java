@@ -94,6 +94,13 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 		IndexDeleteByQuery delete = new IndexDeleteByQuery(solrServer, query);
 		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
 	}
+	
+	@Override
+	public void deleteByThreadIds(List<String> threadIds) throws Exception {
+		SolrServer solrServer = GlobalObject.SOLR_SERVER_COMMENT;
+		IndexDeleteThreadQuery delete = new IndexDeleteThreadQuery(solrServer, threadIds);
+		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
+	}
 
 	@Override
 	public void deleteByPostId(long postId) throws Exception
@@ -101,6 +108,13 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 		SolrServer solrServer = GlobalObject.SOLR_SERVER_COMMENT;
 		String query = "post_id:" + postId;
 		IndexDeleteByQuery delete = new IndexDeleteByQuery(solrServer, query);
+		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
+	}
+	
+	@Override
+	public void deleteByPostIds(List<String> postIds) throws Exception {
+		SolrServer solrServer = GlobalObject.SOLR_SERVER_COMMENT;
+		IndexDeletePostQuery delete = new IndexDeletePostQuery(solrServer, postIds);
 		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
 	}
 
@@ -254,4 +268,5 @@ public class FeedCommentSolrImpl extends BaseSolr implements FeedCommentSolr
 			return null;
 		}
 	}
+
 }

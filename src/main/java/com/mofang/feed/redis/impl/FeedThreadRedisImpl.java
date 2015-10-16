@@ -214,6 +214,12 @@ public class FeedThreadRedisImpl implements FeedThreadRedis
 		String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
 		RedisFaster.hincrBy(key, "replies", -1);
 	}
+	
+	@Override
+	public void decrReplies(long threadId, int replys) throws Exception {
+		String key = RedisKey.buildRedisKey(RedisKey.THREAD_INFO_KEY_PREFIX, threadId);
+		RedisFaster.hincrBy(key, "replies", -replys);
+	}
 
 	@Override
 	public long incrRecommends(final long threadId) throws Exception
@@ -415,4 +421,5 @@ public class FeedThreadRedisImpl implements FeedThreadRedis
 		}
 		return threadInfo;
 	}
+
 }

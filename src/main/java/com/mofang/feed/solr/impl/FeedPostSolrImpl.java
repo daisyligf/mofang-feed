@@ -94,6 +94,14 @@ public class FeedPostSolrImpl extends BaseSolr implements FeedPostSolr
 		IndexDeleteByQuery delete = new IndexDeleteByQuery(solrServer, query);
 		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
 	}
+	
+
+	@Override
+	public void deleteByThreadIds(List<String> threadIds) throws Exception {
+		SolrServer solrServer = GlobalObject.SOLR_SERVER_POST;
+		IndexDeleteThreadQuery delete = new IndexDeleteThreadQuery(solrServer, threadIds);
+		GlobalObject.SOLR_INDEX_EXECUTOR.execute(delete);
+	}
 
 	@Override
 	public Page<FeedPost> search(long forumId, String forumName, String author, String keyword, int status, int start, int size) throws Exception
@@ -244,4 +252,5 @@ public class FeedPostSolrImpl extends BaseSolr implements FeedPostSolr
 			return null;
 		}
 	}
+
 }

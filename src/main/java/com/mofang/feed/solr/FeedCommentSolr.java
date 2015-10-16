@@ -24,7 +24,11 @@ public interface FeedCommentSolr
 	
 	public void deleteByThreadId(long threadId) throws Exception;
 	
+	public void deleteByThreadIds(List<String> threadIds) throws Exception;
+	
 	public void deleteByPostId(long postId) throws Exception;
+	
+	public void deleteByPostIds(List<String> postIds) throws Exception;
 	
 	public Page<FeedComment> search(long forumId, String forumName, String author, String keyword, int status, int start, int size) throws Exception;
 }

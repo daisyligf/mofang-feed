@@ -66,4 +66,57 @@ public abstract class BaseSolr
 			}
 		}
 	}
+	
+	protected class IndexDeleteThreadQuery implements Runnable {
+		
+		private SolrServer solrServer;
+		private List<String> queryList;
+		
+		public IndexDeleteThreadQuery(SolrServer solrServer, List<String> queryList) {
+			this.solrServer = solrServer;
+			this.queryList = queryList;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				for(int idx = 0; idx < queryList.size(); idx ++) {
+					String query = "thread_id:" + queryList.get(idx);
+					solrServer.deleteByQuery(query);
+				}
+				solrServer.commit();
+			} catch(Exception e) {
+				GlobalObject.ERROR_LOG.error("at IndexDeleteThreadQuery.run throw an error", e);
+			}
+
+		}
+		
+	}
+	
+	protected class IndexDeletePostQuery implements Runnable {
+		
+		private SolrServer solrServer;
+		private List<String> queryList;
+		
+		public IndexDeletePostQuery(SolrServer solrServer, List<String> queryList) {
+			this.solrServer = solrServer;
+			this.queryList = queryList;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				for(int idx = 0; idx < queryList.size(); idx ++) {
+					String query = "post_id:" + queryList.get(idx);
+					solrServer.deleteByQuery(query);
+				}
+				solrServer.commit();
+			} catch(Exception e) {
+				GlobalObject.ERROR_LOG.error("at IndexDeleteThreadQuery.run throw an error", e);
+			}
+
+		}
+		
+	}
+	
 }

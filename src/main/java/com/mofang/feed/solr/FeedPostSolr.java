@@ -24,5 +24,7 @@ public interface FeedPostSolr
 	
 	public void deleteByThreadId(long threadId) throws Exception;
 	
+	public void deleteByThreadIds(List<String> threadIds) throws Exception;
+	
 	public Page<FeedPost> search(long forumId, String forumName, String author, String keyword, int status, int start, int size) throws Exception;
 }

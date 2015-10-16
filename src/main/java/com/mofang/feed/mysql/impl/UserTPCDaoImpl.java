@@ -69,7 +69,7 @@ public class UserTPCDaoImpl extends AbstractMysqlSupport<Object>implements UserT
 	@Override
 	public void deleteThreadPostAll(long userId) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("delete from feed_post a inner join feed_thread b on a.thread_id = b.thread_id where b.user_id = " + userId);
+		strSql.append("delete a from feed_post a inner join feed_thread b on a.thread_id = b.thread_id and b.user_id = " + userId);
 		super.execute(strSql.toString());
 
 	}
@@ -77,21 +77,21 @@ public class UserTPCDaoImpl extends AbstractMysqlSupport<Object>implements UserT
 	@Override
 	public void deleteThreadCommentAll(long userId) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("delete from feed_comment a inner join feed_thread b on a.thread_id = b.thread_id where b.user_id = " + userId);
+		strSql.append("delete a from feed_comment a inner join feed_thread b on a.thread_id = b.thread_id and b.user_id = " + userId);
 		super.execute(strSql.toString());
 	}
 
 	@Override
 	public void deleteThreadRecommendAll(long userId) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("delete from feed_thread_recommend a inner join feed_thread b on a.thread_id = b.thread_id where b.user_id = " + userId);
+		strSql.append("delete a from feed_thread_recommend a inner join feed_thread b on a.thread_id = b.thread_id and b.user_id = " + userId);
 		super.execute(strSql.toString());
 	}
 
 	@Override
 	public void deleteThreadFavorateAll(long userId) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("delete from feed_user_favorite a inner join feed_thread b on a.thread_id = b.thread_id where b.user_id = " + userId);
+		strSql.append("delete a from feed_user_favorite a inner join feed_thread b on a.thread_id = b.thread_id and b.user_id = " + userId);
 		super.execute(strSql.toString());
 	}
 
@@ -132,21 +132,21 @@ public class UserTPCDaoImpl extends AbstractMysqlSupport<Object>implements UserT
 	@Override
 	public void deletePostRecommendAll(long userId) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("delete from feed_post_recommend a inner join feed_post b on a.post_id = b.post_id where b.user_id = " + userId);
+		strSql.append("delete a from feed_post_recommend a inner join feed_post b on a.post_id = b.post_id and b.user_id = " + userId);
 		super.execute(strSql.toString());
 	}
 
 	@Override
 	public void updatePostThreadRepliesAll(long userId) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("update feed_thread a inner join feed_post b on a.thread_id = b.thread_id set replies = replies - 1 where b.user_id = " + userId);
+		strSql.append("update feed_thread a inner join feed_post b on a.thread_id = b.thread_id set replies = replies - 1 and b.user_id = " + userId);
 		super.execute(strSql.toString());
 	}
 
 	@Override
 	public void deletePostCommentAll(long userId) throws Exception {
 		StringBuilder strSql = new StringBuilder();
-		strSql.append("delete from feed_comment a inner join feed_post b on a.post_id = b.post_id where b.user_id = " + userId);
+		strSql.append("delete a from feed_comment a inner join feed_post b on a.post_id = b.post_id and b.user_id = " + userId);
 		super.execute(strSql.toString());
 	}
 

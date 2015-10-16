@@ -119,6 +119,8 @@ public interface FeedThreadRedis
 	 */
 	public void decrReplies(long threadId) throws Exception;
 	
+	public void decrReplies(long threadId, int replys) throws Exception;
+	
 	/**
 	 * 递增主题点赞数
 	 * @param threadId 主题ID
