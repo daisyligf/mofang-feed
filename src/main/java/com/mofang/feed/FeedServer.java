@@ -19,7 +19,7 @@ import com.mofang.framework.web.server.reactor.parse.PostDataParserType;
 public class FeedServer
 {
 	public static void main(String[] args)
-	{
+	{	
 		///String configpath = "/Users/milo/document/workspace/mofang.feed/src/main/resources/config.ini";
 		
 		if(args.length <= 0)

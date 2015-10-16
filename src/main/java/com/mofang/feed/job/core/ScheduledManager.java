@@ -49,12 +49,13 @@ public class ScheduledManager {
 	}
 
 	public void execute() {
+		registerTask();
 		int maxTaskSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
 		int taskSize = TASKS.size();
 		if (taskSize > maxTaskSize) {
 			taskSize = maxTaskSize;
 		}
-		registerTask();
+		
 		executor = Executors.newScheduledThreadPool(taskSize);
 		for (TaskEntity entity : TASKS) {
 			executor.scheduleAtFixedRate(entity.getTask(),

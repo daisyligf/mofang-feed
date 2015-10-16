@@ -341,7 +341,7 @@ public class HttpComponent
 		}
 		catch(Exception e)
 		{
-			GlobalObject.ERROR_LOG.error("at HttpComponent.getUserInfoByIds throw an error.", e);
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getUserInfoByIds throw an error. request url:" + requestUrl + "    result:" + result, e);
 			return null;
 		}
 	}
@@ -361,7 +361,7 @@ public class HttpComponent
 		}
 		catch(Exception e)
 		{
-			GlobalObject.ERROR_LOG.error("at HttpComponent.updateUserStatus throw an error.", e);
+			GlobalObject.ERROR_LOG.error("at HttpComponent.updateUserStatus throw an error. ", e);
 			return false;
 		}
 	}
