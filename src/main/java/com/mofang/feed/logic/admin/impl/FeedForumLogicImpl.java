@@ -118,7 +118,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				return result;
 			}
 			
-			String icon = forumInfo.getIcon();
+			String icon = model.getIcon();
 			///根据gameId获取游戏信息
 			if(model.getType() != ForumType.OFFICAL)
 			{
