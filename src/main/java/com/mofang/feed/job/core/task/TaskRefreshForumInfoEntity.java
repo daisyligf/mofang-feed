@@ -43,7 +43,7 @@ public class TaskRefreshForumInfoEntity extends TaskEntity {
 		@Override
 		public void run() {
 			try {
-				
+				GlobalObject.INFO_LOG.info("at TaskRefreshForumInfoEntity.Task, 刷新板块最新礼包地址和icon开始...");
 				List<Pair<Long, Integer>> forumIdGameIdPairList = forumDao.getForumIdGameIdPairList(ForumType.ALL);
 				if(forumIdGameIdPairList == null)
 					return;

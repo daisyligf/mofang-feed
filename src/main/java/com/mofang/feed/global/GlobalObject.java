@@ -188,7 +188,7 @@ public class GlobalObject
 	{
         try
         {
-        		Properties configurations = loadConfig(configPath);
+        	Properties configurations = loadConfig(configPath);
 			String host = configurations.getProperty("host");
 			String port = configurations.getProperty("port");
 			String user = configurations.getProperty("user");

@@ -138,4 +138,7 @@ public interface FeedPostDao
 	public Map<Long, String> getThreadContentMap(String where) throws Exception;
 	
 	public List<FeedActivityUser> getUserByCondition(long threadId, FeedActivityThreadRewardCondition condtion) throws Exception; 
+	
+	public int getRepilyCountOfDiffThread(long userId) throws Exception;
+	
 }

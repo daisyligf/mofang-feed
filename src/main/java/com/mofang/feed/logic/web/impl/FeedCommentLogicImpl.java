@@ -37,7 +37,6 @@ import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
 import com.mofang.feed.service.FeedSysUserRoleService;
-import com.mofang.feed.service.FeedThreadRepliesRewardService;
 import com.mofang.feed.service.FeedThreadService;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
@@ -45,8 +44,9 @@ import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
-import com.mofang.feed.service.impl.FeedThreadRepliesRewardServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
+import com.mofang.feed.service.impl.task.FeedThreadRepliesRewardServiceImpl;
+import com.mofang.feed.service.task.FeedThreadRepliesRewardService;
 import com.mofang.feed.util.HtmlTagFilter;
 import com.mofang.framework.util.StringUtil;
 
@@ -193,7 +193,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 			
 			
 			/******************************回复奖励******************************/
-			rewardService.rewordUser(threadId);
+			rewardService.checkAndReword(threadId);
 			
 			///创建返回结果
 			JSONObject data = new JSONObject();

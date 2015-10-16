@@ -248,6 +248,14 @@ public class RedisKey
 	 */
 	public final static String SIGN_IN_MEMBER_LIST_KEY = "sign_in_member_list";
 	
+	/**
+	 * 用户 帖子 回复 精华 数据缓存
+	 * 结构: String
+	 * 示例: set user_count_{user_id} {threads:         xx,
+	 * 												  replies:  	       xx,
+	 *                                                elite_threads: xx}
+	 */
+	public final static String USER_COUNT_KEY_PREFIX = "user_count_";
 	
 	/**
 	 * 构建Redis Key

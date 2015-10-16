@@ -1,4 +1,4 @@
-package com.mofang.feed.service.impl;
+package com.mofang.feed.service.impl.task;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import com.mofang.feed.mysql.FeedThreadRepliesRewardDao;
 import com.mofang.feed.mysql.impl.FeedThreadRepliesRewardDaoImpl;
 import com.mofang.feed.redis.FeedThreadRedis;
 import com.mofang.feed.redis.impl.FeedThreadRedisImpl;
-import com.mofang.feed.service.FeedThreadRepliesRewardService;
+import com.mofang.feed.service.task.FeedThreadRepliesRewardService;
 import com.mofang.feed.util.RandomUtil;
 
 public class FeedThreadRepliesRewardServiceImpl implements
@@ -31,7 +31,7 @@ public class FeedThreadRepliesRewardServiceImpl implements
 	}
 
 	@Override
-	public void rewordUser(final long threadId) throws Exception {
+	public void checkAndReword(final long threadId) throws Exception {
 		Runnable task = new Runnable() {
 
 			@Override
@@ -104,7 +104,7 @@ public class FeedThreadRepliesRewardServiceImpl implements
 
 				} catch (Exception e) {
 					GlobalObject.ERROR_LOG
-							.error("at FeedThreadRepliesRewardServiceImpl.rewordUser.task.run throw an error.",
+							.error("at FeedThreadRepliesRewardServiceImpl.checkAndReword.task.run throw an error.",
 									e);
 				}
 

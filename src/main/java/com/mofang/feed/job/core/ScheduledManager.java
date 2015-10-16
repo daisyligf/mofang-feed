@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mofang.feed.job.core.TaskEntity;
 import com.mofang.feed.job.core.task.TaskClearForumTodayThreadsEntity;
@@ -55,8 +57,16 @@ public class ScheduledManager {
 		if (taskSize > maxTaskSize) {
 			taskSize = maxTaskSize;
 		}
-		
-		executor = Executors.newScheduledThreadPool(taskSize);
+
+		executor = Executors.newScheduledThreadPool(taskSize, new ThreadFactory() {
+			private final AtomicInteger threadNumber = new AtomicInteger(1);
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread thread = new Thread(r);
+				thread.setName("feed-job-".concat(String.valueOf(threadNumber.getAndIncrement())));
+				return thread;
+			}
+		});
 		for (TaskEntity entity : TASKS) {
 			executor.scheduleAtFixedRate(entity.getTask(),
 					entity.getInitialDelay(), entity.getPeriod(),

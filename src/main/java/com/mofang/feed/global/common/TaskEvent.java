@@ -31,4 +31,9 @@ public class TaskEvent
      * 帖子被加精的任务代码
      */
     public final static int ELITE_THREAD = 116;
+    
+    /**
+     * 回复32个不同的帖子
+     */
+    public final static int REPLY_32_THREAD = 119;
 }
