@@ -96,7 +96,10 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		deleteThreadDao(userId);
 	}
 	
-	private void deleteThreadRedisAndSolr(long userId, List<Pair<Long, Long>> forumIdThreadIds) throws Exception{
+	private void deleteThreadRedisAndSolr(long userId, List<Pair<Long, Long>> forumIdThreadIds) {
+		try {
+			
+
 		if(forumIdThreadIds == null || forumIdThreadIds.size() ==0) return;
 		
 		List<String> solrDeleteThreadIs = new ArrayList<String>(forumIdThreadIds.size());
@@ -132,6 +135,9 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		
 		///将主题信息从索引中删除
 		threadSolr.deleteByIds(solrDeleteThreadIs);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at UserTPCRemoveServiceImpl.deleteThreadRedisAndSolr throw an error.");
+		}
 	}
 	
 	private void deleteThreadPostRedisAndSolr(long postId) throws Exception {
@@ -190,7 +196,10 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		deletePostDao(userId);
 	}
 	
-	private void deletePostRedisAndSolr(long userId, List<Pair<Long, Long>> threadIdPostIds) throws Exception {
+	private void deletePostRedisAndSolr(long userId, List<Pair<Long, Long>> threadIdPostIds)  {
+		try {
+			
+
 		if(threadIdPostIds == null || threadIdPostIds.size() == 0) return;
 		List<String> solrDeletePostIds = new ArrayList<String>(threadIdPostIds.size());
 		for(int idx = 0; idx < threadIdPostIds.size(); idx ++) {
@@ -226,6 +235,9 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		
 		///将楼层信息从索引中批量删除
 		postSolr.deleteByIds(solrDeletePostIds);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at UserTPCRemoveServiceImpl.deletePostRedisAndSolr throw an error.");
+		}
 	}
 	
 	private void deletePostDao(long userId) throws Exception {
@@ -263,7 +275,10 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		deleteCommentDao(userId);
 	}
 	
-	private void deleteCommentRedisAndSolr(long userId, List<Object[]> postIdCommentIds) throws Exception {
+	private void deleteCommentRedisAndSolr(long userId, List<Object[]> postIdCommentIds) {
+		try {
+			
+
 		if(postIdCommentIds == null || postIdCommentIds.size() == 0) return;
 		List<String> solrDeleteCommentIds = new ArrayList<String>(postIdCommentIds.size());
 		for(int idx = 0; idx < postIdCommentIds.size(); idx ++) {
@@ -286,6 +301,9 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		
 		///将评论信息从索引中删除
 		commentSolr.deleteByIds(solrDeleteCommentIds);
+		} catch (Exception e) {
+			GlobalObject.ERROR_LOG.error("at UserTPCRemoveServiceImpl.deleteCommentRedisAndSolr throw an error.");
+		}
 	}
 	
 	private void deleteCommentDao(long userId) throws Exception {
