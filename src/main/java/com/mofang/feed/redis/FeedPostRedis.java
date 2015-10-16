@@ -81,6 +81,8 @@ public interface FeedPostRedis
 	 */
 	public void decrComments(long postId) throws Exception;
 	
+	public void decrComments(long postId, int comments) throws Exception;
+	
 	/**
 	 * 递增楼层点赞数
 	 * @param postId 楼层ID

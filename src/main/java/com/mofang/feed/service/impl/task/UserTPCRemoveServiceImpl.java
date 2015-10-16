@@ -1,7 +1,9 @@
 package com.mofang.feed.service.impl.task;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
@@ -59,9 +61,12 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 			@Override
 			public void run() {
 				try {
+					long startTime = System.currentTimeMillis();
 					deleteThread(userId);
 					deletePost(userId);
 					deleteComment(userId);
+					long endTime = System.currentTimeMillis();
+					GlobalObject.INFO_LOG.info("at UserTPCRemoveServiceImpl.delete.task. 删除userId:"+ userId +"的数据耗时:" + (endTime - startTime) + "毫秒");
 				} catch (Exception e) {
 					GlobalObject.ERROR_LOG.error("at UserTPCRemoveServiceImpl.delete.task throw an error.");
 				}
@@ -72,9 +77,10 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 	}
 	
 	private void deleteThread(long userId) throws Exception {
+		long startTime = System.currentTimeMillis();
 		int totalCount = (int)threadDao.getUserThreadCount(userId);
 		if(totalCount == 0) return;
-		int loopCount = totalCount % 1000  == 0l ? totalCount / 1000 : totalCount / 1000 + 1;
+		int loopCount = totalCount % 1000  == 0 ? totalCount / 1000 : totalCount / 1000 + 1;
 		//如果用户的帖子数很多，那就分批删除
 		if(loopCount > 0) {
 			int start = 0;
@@ -94,6 +100,8 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		
 		//缓存删除干净了，删除数据库数据
 		deleteThreadDao(userId);
+		long endTime = System.currentTimeMillis();
+		GlobalObject.INFO_LOG.info("at UserTPCRemoveServiceImpl.deleteThread. 删除userId:"+ userId +"的帖子数据耗时:" + (endTime - startTime) + "毫秒");
 	}
 	
 	private void deleteThreadRedisAndSolr(long userId, List<Pair<Long, Long>> forumIdThreadIds) {
@@ -171,6 +179,7 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 	}
 
 	private void deletePost(long userId) throws Exception {
+		long startTime = System.currentTimeMillis();
 		int totalCount = (int)postDao.getUserPostCount(userId);
 		if(totalCount == 0) return;
 		int loopCount = totalCount % 1000  == 0l ? totalCount / 1000 : totalCount / 1000 + 1;
@@ -192,12 +201,15 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		
 		//缓存删除干净了，删除数据库数据
 		deletePostDao(userId);
+		long endTime = System.currentTimeMillis();
+		GlobalObject.INFO_LOG.info("at UserTPCRemoveServiceImpl.deletePost. 删除userId:"+ userId +"的楼层数据耗时:" + (endTime - startTime) + "毫秒");
 	}
 	
 	private void deletePostRedisAndSolr(long userId, List<Pair<Long, Long>> threadIdPostIds)  {
 		try {
 			if(threadIdPostIds == null || threadIdPostIds.size() == 0) return;
 			List<String> solrDeletePostIds = new ArrayList<String>(threadIdPostIds.size());
+			Map<Long, Integer> threadIdCountMap = new HashMap<Long, Integer>();
 			for(int idx = 0; idx < threadIdPostIds.size(); idx ++) {
 				Pair<Long, Long> pair = threadIdPostIds.get(idx);
 				long threadId = pair.left;
@@ -213,9 +225,6 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 				///将楼层ID从用户点赞楼层列表中删除
 				postRedis.deleteFromUserRecommendPostList(userId, postId);
 				
-				///主题回复数 -1
-				threadRedis.decrReplies(threadId);
-				
 				//删除楼层评论
 				Set<String> commentIds = commentRedis.getPostCommentList(postId, 0, -1);
 				if(null != commentIds && commentIds.size() > 0) {
@@ -225,7 +234,14 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 				
 				//删除楼层评论列表
 				commentRedis.deletePostCommentListByPostId(postId);
+				
+				Integer threadIdCount = threadIdCountMap.get(threadId);
+				if(threadIdCount == null) threadIdCountMap.put(threadId, 1);
+				else threadIdCountMap.put(threadId, threadIdCount+1);
 			}
+			
+			//更新redis主题回复数
+			for(Map.Entry<Long, Integer> entry : threadIdCountMap.entrySet()) { threadRedis.decrReplies(entry.getKey(), entry.getValue()); }
 			
 			//将该楼层的评论从索引中删除
 			commentSolr.deleteByPostIds(solrDeletePostIds);
@@ -249,6 +265,7 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 	}
 	
 	private void deleteComment(long userId) throws Exception {
+		long startTime = System.currentTimeMillis();
 		int totalCount = (int)commentDao.getUserCommentCount(userId);
 		if(totalCount == 0) return;
 		int loopCount = totalCount % 1000  == 0l ? totalCount / 1000 : totalCount / 1000 + 1;
@@ -270,12 +287,16 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 		
 		//缓存删除干净了，删除数据库数据
 		deleteCommentDao(userId);
+		long endTime = System.currentTimeMillis();
+		GlobalObject.INFO_LOG.info("at UserTPCRemoveServiceImpl.deleteComment. 删除userId:"+ userId +"的评论数据耗时:" + (endTime - startTime) + "毫秒");
 	}
 	
 	private void deleteCommentRedisAndSolr(long userId, List<Object[]> postIdCommentIds) {
 		try {
 			if(postIdCommentIds == null || postIdCommentIds.size() == 0) return;
 			List<String> solrDeleteCommentIds = new ArrayList<String>(postIdCommentIds.size());
+			Map<Long, Integer> postIdCountMap = new HashMap<Long, Integer>();
+			Map<Long, Integer> threadIdCountMap = new HashMap<Long, Integer>();
 			for(int idx = 0; idx < postIdCommentIds.size(); idx ++) {
 				Object[] objArr = postIdCommentIds.get(idx);
 				long threadId = (Long)objArr[0];
@@ -286,13 +307,25 @@ public class UserTPCRemoveServiceImpl implements UserTPCRemoveService {
 				commentRedis.delete(commentId);
 				///将评论ID 从楼层评论列表中删除
 				commentRedis.deleteFromPostCommentList(postId, commentId);
-				///楼层评论数 -1
-				postRedis.decrComments(postId);
-				///主题回复数 -1
-				threadRedis.decrReplies(threadId);
 				
 				solrDeleteCommentIds.add(String.valueOf(commentId));
+				
+				Integer postIdCount = postIdCountMap.get(postId);
+				Integer threadIdCount = threadIdCountMap.get(threadId);
+				
+				if(postIdCount == null) postIdCountMap.put(postId, 1);
+				else postIdCountMap.put(postId, postIdCount + 1);
+				
+				if(threadIdCount == null) threadIdCountMap.put(threadId, 1);
+				else threadIdCountMap.put(threadId, threadIdCount + 1);
 			}
+			
+//			///楼层评论数 -1
+//			postRedis.decrComments(postId);
+//			///主题回复数 -1
+//			threadRedis.decrReplies(threadId);
+			for(Map.Entry<Long, Integer> entry : postIdCountMap.entrySet()) postRedis.decrComments(entry.getKey(), entry.getValue());;
+			for(Map.Entry<Long, Integer> entry : threadIdCountMap.entrySet()) threadRedis.decrReplies(entry.getKey(), entry.getValue());
 			
 			///将评论信息从索引中删除
 			commentSolr.deleteByIds(solrDeleteCommentIds);

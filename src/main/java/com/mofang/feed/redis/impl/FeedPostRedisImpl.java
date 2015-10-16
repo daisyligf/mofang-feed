@@ -122,6 +122,13 @@ public class FeedPostRedisImpl implements FeedPostRedis
 		String key = RedisKey.buildRedisKey(RedisKey.POST_INFO_KEY_PREFIX, postId);
 		RedisFaster.hincrBy(key, "comments", -1);
 	}
+	
+	@Override
+	public void decrComments(long postId, int comments) throws Exception
+	{
+		String key = RedisKey.buildRedisKey(RedisKey.POST_INFO_KEY_PREFIX, postId);
+		RedisFaster.hincrBy(key, "comments", -comments);
+	}
 
 	@Override
 	public void incrRecommends(long postId) throws Exception
