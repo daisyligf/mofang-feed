@@ -218,7 +218,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			rewardService.checkAndReword(threadId);
 			
 			/****************回复32个不同主题任务触发************************/
-			diffThreadPepilyService.checkAndcallTask(userId);
+			diffThreadPepilyService.checkAndcallTask(userId, threadId);
 			
 			///返回结果
 			return getInfo(postId);

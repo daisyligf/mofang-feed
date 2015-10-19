@@ -258,6 +258,13 @@ public class RedisKey
 	public final static String USER_COUNT_KEY_PREFIX = "user_count_";
 	
 	/**
+	 * 用户回复32个不同帖子任务 不同帖子id缓存 凌晨自动清除
+	 * 结果：Set
+	 * 示例：sadd user_reply_diff_thread_task_{user_id} {thread_id}
+	 */
+	public final static String USER_DIFF_THREAD_REPLY_TASK_PREFIX = "user_reply_diff_thread_task_";
+	
+	/**
 	 * 构建Redis Key
 	 * @param prefix  前缀
 	 * @param parameter 参数

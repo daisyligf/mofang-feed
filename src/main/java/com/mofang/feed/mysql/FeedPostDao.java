@@ -139,6 +139,5 @@ public interface FeedPostDao
 	
 	public List<FeedActivityUser> getUserByCondition(long threadId, FeedActivityThreadRewardCondition condtion) throws Exception; 
 	
-	public int getRepilyCountOfDiffThread(long userId) throws Exception;
 	
 }

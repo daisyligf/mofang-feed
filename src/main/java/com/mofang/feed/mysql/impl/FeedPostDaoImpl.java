@@ -13,7 +13,6 @@ import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
 import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.feed.mysql.FeedPostDao;
-import com.mofang.feed.util.TimeUtil;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
@@ -442,22 +441,22 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		return result;
 	}
 
-	@Override
-	public int getRepilyCountOfDiffThread(long userId) throws Exception {
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select count(distinct thread_id) from feed_post where user_id = "+ userId);
-		strSql.append(" and create_time >= " + TimeUtil.getTodayStartTime());
-		strSql.append(" and create_time <= " + TimeUtil.getTodayEndTime());
-		ResultData data = super.executeQuery(strSql.toString());
-		if(null == data)
-			return 0;
-		
-		List<RowData> rows = data.getQueryResult();
-		if(null == rows || rows.size() == 0)
-			return 0;		
-		
-		return rows.get(0).getInteger(0);
-	}
+//	@Override
+//	public int getRepilyCountOfDiffThread(long userId) throws Exception {
+//		StringBuilder strSql = new StringBuilder();
+//		strSql.append("select count(distinct thread_id) from feed_post where user_id = "+ userId);
+//		strSql.append(" and create_time >= " + TimeUtil.getTodayStartTime());
+//		strSql.append(" and create_time <= " + TimeUtil.getTodayEndTime());
+//		ResultData data = super.executeQuery(strSql.toString());
+//		if(null == data)
+//			return 0;
+//		
+//		List<RowData> rows = data.getQueryResult();
+//		if(null == rows || rows.size() == 0)
+//			return 0;		
+//		
+//		return rows.get(0).getInteger(0);
+//	}
 
 	
 }

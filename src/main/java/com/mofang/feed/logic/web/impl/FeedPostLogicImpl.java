@@ -220,7 +220,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			rewardService.checkAndReword(threadId);
 			
 			/****************回复32个不同主题任务触发************************/
-			diffThreadPepilyService.checkAndcallTask(userId);
+			diffThreadPepilyService.checkAndcallTask(userId, threadId);
 
 			
 			///获取楼层总数(用于跳转到用户回复的最新楼层)
