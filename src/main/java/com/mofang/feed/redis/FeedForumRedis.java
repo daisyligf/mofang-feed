@@ -93,6 +93,13 @@ public interface FeedForumRedis
 	public void clearTodayThreads(long forumId) throws Exception;
 	
 	/**
+	 * 递增今日回复数
+	 * @param forumId 版块ID
+	 * @throws Exception
+	 */
+	public void incrReplies(long forumId) throws Exception;
+	
+	/**
 	 * 更新昨日帖子数
 	 * @param forumId 版块ID
 	 * @param threads 帖子数

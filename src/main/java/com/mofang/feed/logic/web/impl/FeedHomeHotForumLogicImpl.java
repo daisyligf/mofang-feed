@@ -105,7 +105,8 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 					objHotForum.put("game_id", feedForum.getGameId());
 					objHotForum.put("icon", feedForum.getIcon());
 					objHotForum.put("today_threads", feedForum.getTodayThreads());
-					objHotForum.put("total_threads", feedForum.getThreads());
+					///帖子数=帖子数 + 楼层数 + 评论数 (replies = 楼层数 + 评论数)
+					objHotForum.put("total_threads", feedForum.getThreads() + feedForum.getReplies());
 					objHotForum.put("prefecture_url", model.getPrefectureUrl());
 					objHotForum.put("gift_url", model.getGiftUrl());
 					

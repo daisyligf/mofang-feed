@@ -41,7 +41,9 @@ public class FeedHomePrefectureLogicImpl implements FeedHomePrefectureLogic {
 				objPrefecture.put("forum_name", forum.getName());
 				objPrefecture.put("icon", forum.getIcon());
 				objPrefecture.put("today_threads", forum.getTodayThreads());
-				objPrefecture.put("total_threads", forum.getThreads());
+				
+				///帖子数=帖子数 + 楼层数 + 评论数 (replies = 楼层数 + 评论数)
+				objPrefecture.put("total_threads", forum.getThreads() + forum.getReplies());
 				
 				data.put(objPrefecture);
 			}

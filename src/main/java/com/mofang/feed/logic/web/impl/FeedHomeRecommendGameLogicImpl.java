@@ -95,7 +95,8 @@ public class FeedHomeRecommendGameLogicImpl implements
 					objRecommendGame.put("game_id", feedForum.getGameId());
 					objRecommendGame.put("icon", feedForum.getIcon());
 					objRecommendGame.put("today_threads", feedForum.getTodayThreads());
-					objRecommendGame.put("total_threads", feedForum.getThreads());
+					///帖子数=帖子数 + 楼层数 + 评论数 (replies = 楼层数 + 评论数)
+					objRecommendGame.put("total_threads", feedForum.getThreads() + feedForum.getReplies());
 					objRecommendGame.put("download_url", model.getDownloadUrl());
 					objRecommendGame.put("gift_url", model.getGiftUrl());
 					

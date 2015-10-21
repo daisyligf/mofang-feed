@@ -93,6 +93,8 @@ public class FeedCommentServiceImpl implements FeedCommentService
 			
 			///版块今日发帖数 +1
 			forumRedis.incrTodayThreads(forumId);
+			///版块回复数+1
+			forumRedis.incrReplies(forumId);
 			
 			/******************************数据库操作******************************/
 			///保存评论信息

@@ -127,6 +127,8 @@ public class FeedPostServiceImpl implements FeedPostService
 				threadRedis.incrReplies(threadId);
 				///版块今日发帖数 +1
 				forumRedis.incrTodayThreads(forumId);
+				///版块回复数+1
+				forumRedis.incrReplies(forumId);
 			}
 			
 			/******************************数据库操作******************************/

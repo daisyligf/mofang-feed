@@ -55,6 +55,7 @@ public class FeedForum
 	private int gameId;
 	
 	private Set<Integer> tags;
+	private int replies = 0;
 	
 	public FeedForum()
 	{}
@@ -78,6 +79,7 @@ public class FeedForum
 			this.todayThreads = decorator.optInt("today_threads", 0);
 			this.yestodayThreads = decorator.optInt("yestoday_threads", 0);
 			this.follows = decorator.optInt("follows", 0);
+			this.replies = decorator.optInt("replies", 0);
 			this.yestodayFollows = decorator.optInt("yestoday_follows", 0);
 			this.createTime = decorator.optLong("create_time", System.currentTimeMillis()); 
 		}
@@ -231,6 +233,14 @@ public class FeedForum
 		this.tags = tags;
 	}
 
+	public int getReplies() {
+		return replies;
+	}
+
+	public void setReplies(int replies) {
+		this.replies = replies;
+	}
+
 	/**
 	 * 将实体对象转换为redis的hashmap
 	 * @return
@@ -254,6 +264,7 @@ public class FeedForum
 			decorator.put("today_threads", todayThreads);
 			decorator.put("yestoday_threads", yestodayThreads);
 			decorator.put("follows", follows);
+			decorator.put("replies", replies);
 			decorator.put("yestoday_follows", yestodayFollows);
 			decorator.put("create_time", createTime);
 			return decorator.toMap();
