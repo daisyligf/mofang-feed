@@ -115,7 +115,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 				jsonForum.put("name_spell", forumInfo.getNameSpell());
 				jsonForum.put("icon", forumInfo.getIcon());
 				jsonForum.put("type", forumInfo.getType());
-				jsonForum.put("threads", forumInfo.getThreads());
+				jsonForum.put("threads", forumInfo.getThreads() + forumInfo.getReplies());
 				jsonForum.put("today_threads", forumInfo.getTodayThreads());
 				jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 				jsonForum.put("create_time", forumInfo.getCreateTime());
@@ -160,7 +160,7 @@ public class FeedForumLogicImpl implements FeedForumLogic
 						jsonForum.put("name_spell", forumInfo.getNameSpell());
 						jsonForum.put("icon", forumInfo.getIcon());
 						jsonForum.put("type", forumInfo.getType());
-						jsonForum.put("threads", forumInfo.getThreads());
+						jsonForum.put("threads", forumInfo.getThreads() + forumInfo.getReplies());
 						jsonForum.put("today_threads", forumInfo.getTodayThreads());
 						jsonForum.put("yesterday_threads", forumInfo.getYestodayThreads());
 						jsonForum.put("create_time", forumInfo.getCreateTime());
