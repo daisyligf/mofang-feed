@@ -411,4 +411,37 @@ public class FeedForumServiceImpl implements FeedForumService
 		}
 		
 	}
+
+	@Override
+	public List<FeedForum> getForumListByAppstore(Set<Long> forumIds) throws Exception
+	{
+		try
+		{
+			//获取关注数
+			Map<Long, FollowForumCount> map = HttpComponent.getForumFollowCount(forumIds);
+			
+			List<FeedForum> list = new ArrayList<FeedForum>();
+			FeedForum forumInfo = null;
+			for(long forumId : forumIds)
+			{
+				forumInfo = forumRedis.getInfo(forumId);
+				if(null == forumInfo)
+					continue;
+				
+				if(null != map)
+				{
+					FollowForumCount ffc = map.get(forumId);
+					if(ffc != null) 
+						forumInfo.setFollows(ffc.getTotalFollows());
+				}
+				list.add(forumInfo);
+			}
+			return list;
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedForumServiceImpl.getForumListByAppstore throw an error.", e);
+			throw e;
+		}
+	}
 }

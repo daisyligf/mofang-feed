@@ -39,4 +39,6 @@ public interface FeedForumService
 	public Map<String, String> getUrlMap(long forumId) throws Exception;
 	
 	public List<FeedForum> getForumRecomendList(Set<Long> gameIds) throws Exception;
+	
+	public List<FeedForum> getForumListByAppstore(Set<Long> forumIds) throws Exception;
 }

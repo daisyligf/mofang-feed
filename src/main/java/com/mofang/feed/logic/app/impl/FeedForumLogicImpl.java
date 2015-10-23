@@ -211,5 +211,40 @@ public class FeedForumLogicImpl implements FeedForumLogic
 			throw new Exception("at FeedForumLogicImpl.forumRecommends throw an error.");
 		}
 	}
-	
+
+	@Override
+	public ResultValue getForumListByAppstore(Set<Long> forumIds) throws Exception
+	{
+		try
+		{
+			ResultValue result = new ResultValue();
+			JSONArray data = new JSONArray();
+			
+			List<FeedForum> list = forumService.getForumListByAppstore(forumIds);
+			if(list != null)
+			{
+				JSONObject item = null;
+				for(FeedForum forum : list)
+				{
+					item = new JSONObject();
+					item.put("id", forum.getForumId());
+					item.put("icon", forum.getIcon());
+					item.put("name", forum.getName());
+					item.put("threads_num", forum.getThreads());
+					item.put("follow_num", forum.getFollows());     //关注总数
+					item.put("is_see", 0);
+					data.put(item);
+				}
+			}
+			
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		} 
+		catch (Exception e) 
+		{
+			throw new Exception("at FeedForumLogicImpl.getForumListByAppstore throw an error.");
+		}
+	}
 }

@@ -848,4 +848,18 @@ public class FeedThreadServiceImpl implements FeedThreadService
 			throw e;
 		}
 	}
+
+	@Override
+	public Page<FeedThread> getThreadListByAppstore(List<Long> threadIds) throws Exception
+	{
+		try
+		{
+			return convertEntityList(threadIds.size(), threadIds);
+		}
+		catch(Exception e)
+		{
+			GlobalObject.ERROR_LOG.error("at FeedThreadServiceImpl.getForumThreadListByAppstore throw an error.", e);
+			throw e;
+		}
+	}
 }

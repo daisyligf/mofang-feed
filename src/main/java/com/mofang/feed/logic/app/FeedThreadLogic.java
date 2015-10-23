@@ -1,5 +1,7 @@
 package com.mofang.feed.logic.app;
 
+import java.util.List;
+
 import com.mofang.feed.global.ResultValue;
 import com.mofang.feed.model.FeedThread;
 
@@ -39,4 +41,6 @@ public interface FeedThreadLogic
 	public ResultValue getForumEliteThreadList(long userId, int pageNum, int pageSize) throws Exception;
 	
 	public ResultValue search(long forumId, String forumName, String author, String keyword, int status, int pageNum, int pageSize) throws Exception;
+	
+	public ResultValue getThreadListByAppstore(List<Long> threadIds) throws Exception;
 }

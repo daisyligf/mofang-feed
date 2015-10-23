@@ -1,5 +1,6 @@
 package com.mofang.feed.service;
 
+import java.util.List;
 import java.util.Set;
 
 import com.mofang.feed.global.common.DataSource;
@@ -267,4 +268,6 @@ public interface FeedThreadService
 	 * @throws Exception
 	 */
 	public Page<FeedThread> getForumThreadListByCondition(long forumId, int tagId, boolean isElite, int timeType, int pageNum, int pageSize) throws Exception;
+	
+	public Page<FeedThread> getThreadListByAppstore(List<Long> threadIds) throws Exception;
 }

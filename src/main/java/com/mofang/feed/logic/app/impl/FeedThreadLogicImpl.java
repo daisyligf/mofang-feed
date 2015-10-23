@@ -725,6 +725,20 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 			throw new Exception("at FeedThreadLogicImpl.search throw an error.", e);
 		}
 	}
+
+	@Override
+	public ResultValue getThreadListByAppstore(List<Long> threadIds) throws Exception
+	{
+		try
+		{
+			Page<FeedThread> page = threadService.getThreadListByAppstore(threadIds);
+			return convertPageToJSON(page);
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedThreadLogicImpl.getThreadListByAppstore throw an error.", e);
+		}
+	}
 	
 	private ResultValue convertPageToJSON(Page<FeedThread> page) throws Exception
 	{
@@ -833,6 +847,4 @@ public class FeedThreadLogicImpl implements FeedThreadLogic
 		result.setData(data);
 		return result;
 	}
-
-
 }
