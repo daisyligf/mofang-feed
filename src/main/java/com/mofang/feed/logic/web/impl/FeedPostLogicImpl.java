@@ -31,6 +31,7 @@ import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.FeedRecommendNotify;
+import com.mofang.feed.model.external.Game;
 import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
@@ -773,7 +774,15 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		jsonThread.put("forum", jsonForum);
 		FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
 		if(null != forumInfo)
+		{
 			jsonForum.put("name", forumInfo.getName());
+			int gameId = forumInfo.getGameId();
+			Game gameInfo = HttpComponent.getGameInfo(gameId);
+			if(null != gameInfo)
+			{
+				jsonForum.put("game_name", gameInfo.getName());
+			}
+		}
 		
 		///获取主题用户信息
 		JSONObject jsonUser = new JSONObject();
