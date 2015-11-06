@@ -109,7 +109,6 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			long userId = model.getUserId();
 			long threadId = model.getThreadId();
 			
-
 			String contentFilter = "";
 			String contentMark = "";
 			String htmlContentFilter = "";
@@ -221,7 +220,20 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			diffThreadPepilyService.checkAndcallTask(userId, threadId);
 			
 			///返回结果
-			return getInfo(postId);
+			JSONObject data = getPostInfo(postId);
+			if(null == data)
+			{
+				result.setCode(ReturnCode.POST_NOT_EXISTS);
+				result.setMessage(ReturnMessage.POST_NOT_EXISTS);
+				return result;
+			}
+			
+			int rank = postService.getRank(threadId, postId);
+			data.put("rank", rank);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
 		}
 		catch(Exception e)
 		{
@@ -531,6 +543,51 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		catch(Exception e)
 		{
 			throw new Exception("at FeedPostLogicImpl.getUserReplyList throw an error.", e);
+		}
+	}
+	
+	private JSONObject getPostInfo(long postId) throws Exception
+	{
+		try
+		{
+			FeedPost postInfo = postService.getInfo(postId, DataSource.REDIS);
+			if(null == postInfo)
+				return null;
+			
+			JSONObject data = new JSONObject();
+			data.put("pid", postInfo.getPostId());          ///楼层ID
+			data.put("content", postInfo.getContentFilter());      ///楼层内容
+			data.put("html_content", postInfo.getHtmlContentFilter());    ///楼层HTML内容
+			data.put("pic", MiniTools.StringToJSONArray(postInfo.getPictures()));     ///楼层图片
+			data.put("position", postInfo.getPosition());     ///楼层数
+			data.put("create_time", postInfo.getCreateTime());      ///创建时间
+			
+			///版块信息
+			JSONObject jsonForum = new JSONObject();
+			jsonForum.put("fid", postInfo.getForumId());
+			
+			///主题信息
+			JSONObject jsonThread = new JSONObject();
+			jsonThread.put("tid", postInfo.getThreadId());
+			
+			///用户信息
+			JSONObject jsonUser = new JSONObject();
+			jsonUser.put("user_id", postInfo.getUserId());
+			User userInfo = UserComponent.getInfo(postInfo.getUserId());
+			if(null != userInfo)
+			{
+				jsonUser.put("nickname", userInfo.getNickName());
+				jsonUser.put("avatar", userInfo.getAvatar());
+			}
+			
+			data.put("forum", jsonForum);
+			data.put("thread", jsonThread);
+			data.put("user", jsonUser);
+			return data;
+		}
+		catch(Exception e)
+		{
+			throw new Exception("at FeedPostLogicImpl.getPostInfo throw an error.", e);
 		}
 	}
 
