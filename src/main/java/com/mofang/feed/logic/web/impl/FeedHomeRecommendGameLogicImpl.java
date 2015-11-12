@@ -1,6 +1,9 @@
 package com.mofang.feed.logic.web.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -83,6 +86,7 @@ public class FeedHomeRecommendGameLogicImpl implements
 			List<FeedHomeRecommendGame> list = recommendGameService.getList();
 			if(list != null){
 				JSONObject objRecommendGame = null;
+				Set<Integer> gameIds = new HashSet<Integer>();
 				for(FeedHomeRecommendGame model : list){
 					long forumId = model.getForumId();
 					FeedForum feedForum = forumService.getInfo(forumId);
@@ -99,8 +103,22 @@ public class FeedHomeRecommendGameLogicImpl implements
 					objRecommendGame.put("total_threads", feedForum.getThreads() + feedForum.getReplies());
 					objRecommendGame.put("download_url", model.getDownloadUrl());
 					objRecommendGame.put("gift_url", model.getGiftUrl());
-					
 					data.put(objRecommendGame);
+					
+					gameIds.add(feedForum.getGameId());
+				}
+				
+				///批量获取游戏简介并填充
+				Map<Integer, String> map = HttpComponent.getGameCommentByIds(gameIds);
+				if(null != map)
+				{
+					for(int i=0; i<data.length(); i++)
+					{
+						objRecommendGame = data.optJSONObject(i);
+						int gameId = objRecommendGame.optInt("game_id", 0);
+						if(map.containsKey(gameId))
+							objRecommendGame.put("comment", map.get(gameId));
+					}
 				}
 			}
 			result.setCode(ReturnCode.SUCCESS);

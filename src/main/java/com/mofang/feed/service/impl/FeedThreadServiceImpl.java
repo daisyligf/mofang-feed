@@ -11,6 +11,7 @@ import com.mofang.feed.global.common.DataSource;
 import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.global.common.ThreadStatus;
 import com.mofang.feed.model.FeedForum;
+import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.FeedThreadRecommend;
 import com.mofang.feed.model.Page;
@@ -565,7 +566,10 @@ public class FeedThreadServiceImpl implements FeedThreadService
 	{
 		try
 		{
-			return threadRedis.getFullInfo(threadId);
+			FeedThread threadInfo = threadRedis.getInfo(threadId);
+			FeedPost postInfo = postDao.getStartPost(threadId);
+			threadInfo.setPost(postInfo);
+			return threadInfo;
 		}
 		catch(Exception e)
 		{

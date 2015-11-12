@@ -10,6 +10,7 @@ import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
 import com.mofang.feed.model.external.FeedActivityUser;
 import com.mofang.feed.model.external.ForumCountByTime;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
+import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 
 /**
  * 
@@ -57,7 +58,7 @@ public interface FeedPostDao
 	 * @return
 	 * @throws Exception
 	 */
-	public List<FeedPost> getPostList(long threadId, int status, int start, int end) throws Exception;
+	public List<FeedPost> getPostList(long threadId, int status, SortType sortType, int start, int end) throws Exception;
 	
 	/***
 	 * 
@@ -70,7 +71,7 @@ public interface FeedPostDao
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Long> getPostList(long threadId, int status, int start, int end, Set<Long> userIds, boolean include, boolean sort) throws Exception;
+	public List<FeedPost> getPostList(long threadId, int status, int start, int end, Set<Long> userIds, boolean include, boolean sort) throws Exception;
 	
 	/**
 	 * 获取楼层总数
@@ -100,7 +101,7 @@ public interface FeedPostDao
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Long> getUserPostList(long userId, int start, int end) throws Exception;
+	public List<FeedPost> getUserPostList(long userId, int start, int end) throws Exception;
 	
 	/**
 	 * 获取用户楼层总数
@@ -139,5 +140,13 @@ public interface FeedPostDao
 	
 	public List<FeedActivityUser> getUserByCondition(long threadId, FeedActivityThreadRewardCondition condtion) throws Exception; 
 	
+	public FeedPost getStartPost(long threadId) throws Exception;
 	
+	public List<FeedPost> getHostPostList(long threadId, long userId, int start, int end) throws Exception;
+	
+	public long getHostPostCount(long threadId, long userId) throws Exception;
+	
+	public List<FeedPost> getPostListFromPostId(long threadId, long postId, int size) throws Exception;
+	
+	public List<FeedPost> getPostListByPostIds(List<Long> postIds) throws Exception;
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.mofang.feed.component.HttpComponent;
 import com.mofang.feed.global.GlobalObject;
 import com.mofang.feed.global.common.CommentStatus;
 import com.mofang.feed.global.common.DataSource;
@@ -18,7 +17,6 @@ import com.mofang.feed.model.FeedPostRecommend;
 import com.mofang.feed.model.FeedReply;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
-import com.mofang.feed.model.external.Video;
 import com.mofang.feed.mysql.FeedCommentDao;
 import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.feed.mysql.FeedPostRecommendDao;
@@ -42,6 +40,7 @@ import com.mofang.feed.solr.impl.FeedCommentSolrImpl;
 import com.mofang.feed.solr.impl.FeedPostSolrImpl;
 import com.mofang.feed.util.MysqlPageNumber;
 import com.mofang.feed.util.RedisPageNumber;
+import com.mofang.framework.data.mysql.core.criterion.type.SortType;
 
 /**
  * 
@@ -83,16 +82,6 @@ public class FeedPostServiceImpl implements FeedPostService
 			int position = postRedis.incrPosition(threadId);
 			model.setPostId(postId);
 			model.setPosition(position);
-			if(model.getVideoId() > 0)
-			{
-				///获取视频信息
-				Video video = HttpComponent.getVideoInfo(model.getVideoId());
-				if(null != video)
-				{
-					model.setThumbnail(video.getThumbnail());
-					model.setDuration(video.getDuration());
-				}
-			}
 			
 			///获取版块信息
 			FeedForum forumInfo = forumRedis.getInfo(model.getForumId());
@@ -101,20 +90,11 @@ public class FeedPostServiceImpl implements FeedPostService
 				forumIsHidden = forumInfo.isHidden();
 			
 			/******************************redis操作******************************/
-			///保存楼层信息
-			postRedis.save(model);
 			///将楼层ID添加到主题楼层列表中
 			postRedis.addThreadPostList(threadId, postId, position);
-			///将楼层ID添加到楼主楼层列表(需要判断是否为楼主)
 			FeedThread threadInfo = threadRedis.getInfo(threadId);
 			if(null != threadInfo)
 			{
-				long hostId = threadInfo.getUserId();
-				if(hostId == userId)
-				{
-					postRedis.addHostPostList(threadId, postId, position);
-				}
-				
 				///更新主题最后回复用户ID和最后回复时间
 				threadRedis.updateLastPost(threadId, userId, postTime);
 				///更新版块主题列表中该主题的score(只需要更新非置顶帖的score)
@@ -163,25 +143,12 @@ public class FeedPostServiceImpl implements FeedPostService
 	{
 		try
 		{
-			if(model.getVideoId() > 0)
-			{
-				///获取视频信息
-				Video video = HttpComponent.getVideoInfo(model.getVideoId());
-				if(null != video)
-				{
-					model.setThumbnail(video.getThumbnail());
-					model.setDuration(video.getDuration());
-				}
-			}
 			///获取版块信息
 			FeedForum forumInfo = forumRedis.getInfo(model.getForumId());
 			boolean forumIsHidden = false;
 			if(null != forumInfo)
 				forumIsHidden = forumInfo.isHidden();
 			
-			/******************************redis操作******************************/
-			///保存楼层信息
-			postRedis.save(model);
 			/******************************数据库操作******************************/
 			///保存楼层信息
 			postDao.update(model);
@@ -207,12 +174,8 @@ public class FeedPostServiceImpl implements FeedPostService
 			long postId = model.getPostId();
 			long threadId = model.getThreadId();
 			/******************************redis操作******************************/
-			///删除楼层信息
-			postRedis.delete(postId);
 			///将楼层ID 从主题楼层列表中删除
 			postRedis.deleteFromThreadPostList(threadId, postId);
-			///将楼层ID 从楼主楼层列表中删除
-			postRedis.deleteFromHostPostList(threadId, postId);
 			///主题回复数 -1
 			threadRedis.decrReplies(threadId);
 			/******************************数据库操作******************************/
@@ -244,7 +207,6 @@ public class FeedPostServiceImpl implements FeedPostService
 			long postId = model.getPostId();
 			long threadId = model.getThreadId();
 			int position = model.getPosition();
-			long userId = model.getUserId();
 			long forumId = model.getForumId();
 			long postTime = model.getCreateTime();
 			
@@ -255,20 +217,11 @@ public class FeedPostServiceImpl implements FeedPostService
 				forumIsHidden = forumInfo.isHidden();
 			
 			/******************************redis操作******************************/
-			///保存楼层信息
-			postRedis.save(model);
 			///将楼层ID添加到主题楼层列表中
 			postRedis.addThreadPostList(threadId, postId, position);
-			///将楼层ID添加到楼主楼层列表(需要判断是否为楼主)
 			FeedThread threadInfo = threadRedis.getInfo(threadId);
 			if(null != threadInfo)
 			{
-				long hostId = threadInfo.getUserId();
-				if(hostId == userId)
-				{
-					postRedis.addHostPostList(threadId, postId, position);
-				}
-				
 				///主题回复数 +1
 				if(position > 1)
 					threadRedis.incrReplies(threadId);
@@ -347,8 +300,6 @@ public class FeedPostServiceImpl implements FeedPostService
 		try
 		{
 			/******************************redis操作******************************/
-			///楼层点赞数 +1
-			postRedis.incrRecommends(postId);
 			///将点赞的用户ID 添加到 楼层对应的点赞用户列表中,用于判断用户是否对该楼层点赞
 			postRedis.addUserRecommendPostList(userId, postId);
 			/******************************数据库操作******************************/
@@ -373,8 +324,6 @@ public class FeedPostServiceImpl implements FeedPostService
 		try
 		{
 			/******************************redis操作******************************/
-			///楼层点赞数 -1
-			postRedis.decrRecommends(postId);
 			///将点赞的用户ID 从 楼层对应的点赞用户列表中删除
 			postRedis.deleteFromUserRecommendPostList(userId, postId);
 			/******************************数据库操作******************************/
@@ -437,12 +386,14 @@ public class FeedPostServiceImpl implements FeedPostService
 	{
 		try
 		{
+			/*
 			if(source == DataSource.REDIS)
 				return postRedis.getInfo(postId);
 			else if(source == DataSource.MYSQL)
 				return postDao.getInfo(postId);
+			*/
 			
-			return null;
+			return postDao.getInfo(postId);
 		}
 		catch(Exception e)
 		{
@@ -456,7 +407,7 @@ public class FeedPostServiceImpl implements FeedPostService
 	{
 		try
 		{	
-			return postRedis.getStartPost(threadId);
+			return postDao.getStartPost(threadId);
 		}
 		catch(Exception e)
 		{
@@ -474,7 +425,7 @@ public class FeedPostServiceImpl implements FeedPostService
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<FeedPost> list = postDao.getPostList(threadId, status, start, end);
+			List<FeedPost> list = postDao.getPostList(threadId, status, SortType.Desc, start, end);
 			return new Page<FeedPost>(total, list);
 		}
 		catch(Exception e)
@@ -493,12 +444,23 @@ public class FeedPostServiceImpl implements FeedPostService
 			threadDao.incrPageView(threadId);
 			threadRedis.incrPageView(threadId);
 			
+			/*
+			long total = postRedis.getThreadPostCount(threadId);
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
+			int start = pageNumber.getStart();
+			int end = pageNumber.getEnd();
+			List<FeedPost> list = postDao.getPostList(threadId, PostStatus.NORMAL, SortType.Asc, start, end);
+			return new Page<FeedPost>(total, list);
+			*/
+			
 			long total = postRedis.getThreadPostCount(threadId);
 			RedisPageNumber pageNumber = new RedisPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
 			Set<String> idSet = postRedis.getThreadPostList(threadId, start, end);
-			return convertEntityList(total, idSet);
+			List<Long> postIds = SetToList(idSet);
+			List<FeedPost> list = postDao.getPostListByPostIds(postIds);
+			return new Page<FeedPost>(total, list);
 		}
 		catch(Exception e)
 		{
@@ -508,17 +470,19 @@ public class FeedPostServiceImpl implements FeedPostService
 	}
 	
 	@Override
-	public Page<FeedPost> getThreadPostList(long threadId, int pageNum,
-			int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception 
+	public Page<FeedPost> getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception 
 	{
-		try {
+		try
+		{
 			long total = postDao.getPostCount(threadId, 1, userIds, include);
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = postDao.getPostList(threadId, 1, start, end, userIds, include, sort);
-			return convertEntityList(total, idList);
-		} catch (Exception e) {
+			List<FeedPost> list = postDao.getPostList(threadId, 1, start, end, userIds, include, sort);
+			return new Page<FeedPost>(total, list);
+		}
+		catch (Exception e)
+		{
 			GlobalObject.ERROR_LOG.error("at FeedPostServiceImpl.getThreadPostList by userIds throw an error.", e);
 			throw e;
 		}
@@ -530,8 +494,14 @@ public class FeedPostServiceImpl implements FeedPostService
 		try
 		{
 			long total = postRedis.getThreadPostCount(threadId);
+			/*
+			List<FeedPost> list = postDao.getPostListFromPostId(threadId, postId, pageSize);
+			return new Page<FeedPost>(total, list);
+			*/
 			Set<String> idSet = postRedis.getThreadPostList(threadId, postId, pageSize);
-			return convertEntityList(total, idSet);
+			List<Long> postIds = SetToList(idSet);
+			List<FeedPost> list = postDao.getPostListByPostIds(postIds);
+			return new Page<FeedPost>(total, list);
 		}
 		catch(Exception e)
 		{
@@ -555,7 +525,7 @@ public class FeedPostServiceImpl implements FeedPostService
 	}
 
 	@Override
-	public Page<FeedPost> getHostPostList(long threadId, int pageNum, int pageSize) throws Exception
+	public Page<FeedPost> getHostPostList(long threadId, long userId, int pageNum, int pageSize) throws Exception
 	{
 		try
 		{	
@@ -563,12 +533,12 @@ public class FeedPostServiceImpl implements FeedPostService
 			threadDao.incrPageView(threadId);
 			threadRedis.incrPageView(threadId);
 			
-			long total = postRedis.getHostPostCount(threadId);
-			RedisPageNumber pageNumber = new RedisPageNumber(pageNum, pageSize);
+			long total = postDao.getHostPostCount(threadId, userId);
+			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			Set<String> idSet = postRedis.getHostPostList(threadId, start, end);
-			return convertEntityList(total, idSet);
+			List<FeedPost> list = postDao.getHostPostList(threadId, userId, start, end);
+			return new Page<FeedPost>(total, list);
 		}
 		catch(Exception e)
 		{
@@ -586,8 +556,8 @@ public class FeedPostServiceImpl implements FeedPostService
 			MysqlPageNumber pageNumber = new MysqlPageNumber(pageNum, pageSize);
 			int start = pageNumber.getStart();
 			int end = pageNumber.getEnd();
-			List<Long> idList = postDao.getUserPostList(userId, start, end);
-			return convertEntityList(total, idList);
+			List<FeedPost> list = postDao.getUserPostList(userId, start, end);
+			return new Page<FeedPost>(total, list);
 		}
 		catch(Exception e)
 		{
@@ -714,25 +684,14 @@ public class FeedPostServiceImpl implements FeedPostService
 			throw e;
 		}
 	}
-
-	private Page<FeedPost> convertEntityList(long total, Set<String> idSet) throws Exception
-	{
-		if(null == idSet || idSet.size() == 0)
-			return null;
-		
-		List<FeedPost> list = postRedis.convertEntityList(idSet);
-		Page<FeedPost> page = new Page<FeedPost>(total, list);
-		return page;
-	}
 	
-	private Page<FeedPost> convertEntityList(long total, List<Long> idList) throws Exception
+	private List<Long> SetToList(Set<String> set)
 	{
-		if(null == idList || idList.size() == 0)
-			return null;
-		
-		List<FeedPost> list = postRedis.convertEntityList(idList);
-		Page<FeedPost> page = new Page<FeedPost>(total, list);
-		return page;
+		List<Long> list = new ArrayList<Long>();
+		for(String item : set)
+		{
+			list.add(Long.parseLong(item));
+		}
+		return list;
 	}
-
 }

@@ -1,6 +1,9 @@
 package com.mofang.feed.logic.web.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -93,6 +96,7 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 			List<FeedHomeHotForum> list = hotForumService.getList();
 			if(list != null){
 				JSONObject objHotForum = null;
+				Set<Integer> gameIds = new HashSet<Integer>();
 				for(FeedHomeHotForum model : list){
 					objHotForum = new JSONObject();
 					
@@ -109,10 +113,25 @@ public class FeedHomeHotForumLogicImpl implements FeedHomeHotForumLogic {
 					objHotForum.put("total_threads", feedForum.getThreads() + feedForum.getReplies());
 					objHotForum.put("prefecture_url", model.getPrefectureUrl());
 					objHotForum.put("gift_url", model.getGiftUrl());
-					
 					data.put(objHotForum);
+					
+					gameIds.add(feedForum.getGameId());
+				}
+				
+				///批量获取游戏简介并填充
+				Map<Integer, String> map = HttpComponent.getGameCommentByIds(gameIds);
+				if(null != map)
+				{
+					for(int i=0; i<data.length(); i++)
+					{
+						objHotForum = data.optJSONObject(i);
+						int gameId = objHotForum.optInt("game_id", 0);
+						if(map.containsKey(gameId))
+							objHotForum.put("comment", map.get(gameId));
+					}
 				}
 			}
+			
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);

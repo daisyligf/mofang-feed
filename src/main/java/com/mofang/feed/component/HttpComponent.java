@@ -658,6 +658,56 @@ public class HttpComponent
 		}
 	}
 	
+	public static Map<Integer, String> getGameCommentByIds(Set<Integer> gameIds)
+	{
+		try
+		{
+			if(gameIds == null || gameIds.size() == 0)
+				return null;
+			
+			String ids = "";
+			for(long gameId : gameIds)
+				ids += gameId + ",";
+			
+			if(ids.length() > 0)
+				ids = ids.substring(0, ids.length() - 1);
+			
+			String requestUrl = GlobalConfig.GAMECOMMENT_BY_IDS_URL + "?pg_ids=" + ids;
+			String result = get(GlobalObject.HTTP_CLIENT_GAMESERVICE, requestUrl);
+			if(StringUtil.isNullOrEmpty(result))
+				return null;
+
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			if(0 != code)
+				return null;
+			
+			JSONObject data = json.optJSONObject("data");
+			if(null == data)
+				return null;
+
+			JSONObject item = null;
+			String comment = "";
+			Map<Integer, String> map = new HashMap<Integer, String>();
+			for(int gameId : gameIds)
+			{
+				item = data.optJSONObject(String.valueOf(gameId));
+				if(null == item)
+					continue;
+				
+				comment = item.optString("pg_comment", "");
+				map.put(gameId, comment);
+			}
+			
+			return map;
+		}
+		catch (Exception e) 
+		{
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getGameCommentByIds throw an error.", e);
+			return null;
+		}
+	}
+	
 	private static String get(CloseableHttpClient httpClient, String requestUrl)
 	{
 		StringBuilder strLog = new StringBuilder();

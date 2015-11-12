@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
+import com.mofang.feed.global.common.PostStatus;
 import com.mofang.feed.model.FeedPost;
 import com.mofang.feed.model.FeedReply;
 import com.mofang.feed.model.external.FeedActivityThreadRewardCondition;
@@ -16,7 +17,10 @@ import com.mofang.feed.mysql.FeedPostDao;
 import com.mofang.framework.data.mysql.AbstractMysqlSupport;
 import com.mofang.framework.data.mysql.core.criterion.operand.AndOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.EqualOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.GreaterThanOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.InOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.LimitOperand;
+import com.mofang.framework.data.mysql.core.criterion.operand.NotInOperand;
 import com.mofang.framework.data.mysql.core.criterion.operand.Operand;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByEntry;
 import com.mofang.framework.data.mysql.core.criterion.operand.OrderByOperand;
@@ -165,12 +169,12 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 	}
 
 	@Override
-	public List<FeedPost> getPostList(long threadId, int status, int start, int end) throws Exception
+	public List<FeedPost> getPostList(long threadId, int status, SortType sortType, int start, int end) throws Exception
 	{
 		Operand where = new WhereOperand();
 		Operand threadEqual = new EqualOperand("thread_id", threadId);
 		Operand statusEqual = new EqualOperand("status", status);
-		OrderByEntry entry = new OrderByEntry("post_id", SortType.Desc);
+		OrderByEntry entry = new OrderByEntry("post_id", sortType);
 		Operand orderby = new OrderByOperand(entry);
 		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
 		Operand and = new AndOperand();
@@ -179,7 +183,9 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 			where.append(threadEqual).append(and).append(statusEqual).append(orderby).append(limit);
 		else
 			where.append(statusEqual).append(orderby).append(limit);
-		return super.getList(where);
+		
+		String strWhere = where.toString();
+		return getListByWhere(strWhere);
 	}
 
 	@Override
@@ -198,8 +204,7 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 	}
 	
 	@Override
-	public long getPostCount(long threadId, int status, final Set<Long> userIds,
-			final boolean include) throws Exception 
+	public long getPostCount(long threadId, int status, final Set<Long> userIds, final boolean include) throws Exception 
 	{
 		Operand where = new WhereOperand();
 		Operand threadEqual = new EqualOperand("thread_id", threadId);
@@ -227,27 +232,19 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 
 
 	@Override
-	public List<Long> getUserPostList(long userId, int start, int end) throws Exception
+	public List<FeedPost> getUserPostList(long userId, int start, int end) throws Exception
 	{
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select post_id from feed_post ");
-		strSql.append("where user_id = " + userId + " ");
-		strSql.append("and status = 1 ");
-		strSql.append("order by create_time desc ");
-		strSql.append("limit " + start + ", " + end);
-		ResultData data = super.executeQuery(strSql.toString());
-		if(null == data)
-			return null;
+		Operand where = new WhereOperand();
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand statusEqual = new EqualOperand("status", PostStatus.NORMAL);
+		Operand and = new AndOperand();
+		OrderByEntry entry = new OrderByEntry("post_id", SortType.Desc);
+		Operand orderby = new OrderByOperand(entry);
+		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+		where.append(userEqual).append(and).append(statusEqual).append(orderby).append(limit);
 		
-		List<RowData> rows = data.getQueryResult();
-		if(null == rows || rows.size() == 0)
-			return null;
-		
-		List<Long> list = new ArrayList<Long>();
-		for(RowData row : rows)
-			list.add(row.getLong(0));
-		
-		return list;
+		String strWhere = where.toString();
+		return getListByWhere(strWhere);
 	}
 
 	@Override
@@ -316,7 +313,8 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 	}
 
 	@Override
-	public Map<Long, ForumCountByTime> getReplyCount(Set<Long> forumIds, long startTime, long endTime) throws Exception{
+	public Map<Long, ForumCountByTime> getReplyCount(Set<Long> forumIds, long startTime, long endTime) throws Exception
+	{
 		String strForumIds = "";
 		for (long strForumId : forumIds)
 			strForumIds += strForumId + ",";
@@ -371,47 +369,31 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 	}
 
 	@Override
-	public List<Long> getPostList(long threadId, int status, int start,
-			int end, final Set<Long> userIds, final boolean include , boolean sort) throws Exception {
-		String strUserIds = "";
-		for (long strForumId : userIds)
-			strUserIds += strForumId + ",";
-		if (strUserIds.length() > 0)
-			strUserIds = strUserIds.substring(0, strUserIds.length() - 1);
+	public List<FeedPost> getPostList(long threadId, int status, int start, int end, final Set<Long> userIds, final boolean include , boolean sort) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand threadEqual = new EqualOperand("thread_id", threadId);
+		Operand statusEqual = new EqualOperand("status", status);
+		Operand and = new AndOperand();
 		
-		StringBuilder strSql = new StringBuilder();
-		strSql.append("select post_id from feed_post ");
-		
+		Operand userInclude = null;
 		if(include)
-			strSql.append("where user_id in (" + strUserIds + ") ");
-		else 
-			strSql.append("where user_id not in (" + strUserIds + ") ");
-		strSql.append("and status = " + status);
-		strSql.append(" and thread_id = " + threadId);
-		
-		if(sort)
-			strSql.append(" order by create_time desc ");
+			userInclude = new InOperand("user_id", userIds);
 		else
-			strSql.append(" order by create_time asc ");
-		strSql.append("limit " + start + ", " + end);
-		ResultData data = super.executeQuery(strSql.toString());
-		if(null == data)
-			return null;
+			userInclude = new NotInOperand("user_id", userIds);
 		
-		List<RowData> rows = data.getQueryResult();
-		if(null == rows || rows.size() == 0)
-			return null;
+		OrderByEntry entry = new OrderByEntry("post_id", SortType.Asc);
+		Operand orderby = new OrderByOperand(entry);
+		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+		where.append(threadEqual).append(and).append(statusEqual).append(and).append(userInclude).append(orderby).append(limit);
 		
-		List<Long> list = new ArrayList<Long>(rows.size());
-		for(RowData row : rows)
-			list.add(row.getLong(0));
-		
-		return list;
+		String strWhere = where.toString();
+		return getListByWhere(strWhere);
 	}
 
 	@Override
-	public List<FeedActivityUser> getUserByCondition(long threadId,
-			FeedActivityThreadRewardCondition condition) throws Exception {
+	public List<FeedActivityUser> getUserByCondition(long threadId, FeedActivityThreadRewardCondition condition) throws Exception
+	{
 		StringBuilder strSql = new StringBuilder();
 		strSql.append("select user_id, position, forum_id from feed_post where thread_id = " + threadId);
 		if(condition.startTime > 0 && condition.endTime > 0) {
@@ -441,22 +423,111 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		return result;
 	}
 
-//	@Override
-//	public int getRepilyCountOfDiffThread(long userId) throws Exception {
-//		StringBuilder strSql = new StringBuilder();
-//		strSql.append("select count(distinct thread_id) from feed_post where user_id = "+ userId);
-//		strSql.append(" and create_time >= " + TimeUtil.getTodayStartTime());
-//		strSql.append(" and create_time <= " + TimeUtil.getTodayEndTime());
-//		ResultData data = super.executeQuery(strSql.toString());
-//		if(null == data)
-//			return 0;
-//		
-//		List<RowData> rows = data.getQueryResult();
-//		if(null == rows || rows.size() == 0)
-//			return 0;		
-//		
-//		return rows.get(0).getInteger(0);
-//	}
+	@Override
+	public FeedPost getStartPost(long threadId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand threadEqual = new EqualOperand("thread_id", threadId);
+		Operand positionEqual = new EqualOperand("position", 1);
+		Operand and = new AndOperand();
+		where.append(threadEqual).append(and).append(positionEqual);
+		List<FeedPost> list = super.getList(where);
+		if(null == list || list.size() == 0)
+			return null;
+		
+		return list.get(0);
+	}
 
+	@Override
+	public List<FeedPost> getHostPostList(long threadId, long userId, int start, int end) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand threadEqual = new EqualOperand("thread_id", threadId);
+		Operand statusEqual = new EqualOperand("status", PostStatus.NORMAL);
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand and = new AndOperand();
+		OrderByEntry entry = new OrderByEntry("post_id", SortType.Asc);
+		Operand orderby = new OrderByOperand(entry);
+		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
+		where.append(threadEqual).append(and).append(statusEqual).append(and).append(userEqual).append(orderby).append(limit);
+		String strWhere = where.toString();
+		return getListByWhere(strWhere);
+	}
+
+	@Override
+	public long getHostPostCount(long threadId, long userId) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand threadEqual = new EqualOperand("thread_id", threadId);
+		Operand statusEqual = new EqualOperand("status", PostStatus.NORMAL);
+		Operand userEqual = new EqualOperand("user_id", userId);
+		Operand and = new AndOperand();
+		where.append(threadEqual).append(and).append(statusEqual).append(and).append(userEqual);
+		return super.getCount(where);
+	}
+
+	@Override
+	public List<FeedPost> getPostListFromPostId(long threadId, long postId, int size) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand threadEqual = new EqualOperand("thread_id", threadId);
+		Operand statusEqual = new EqualOperand("status", PostStatus.NORMAL);
+		Operand greatePost = new GreaterThanOperand("post_id", postId);
+		Operand and = new AndOperand();
+		Operand limit = new LimitOperand(0L, Integer.valueOf(size).longValue());
+		where.append(threadEqual).append(and).append(statusEqual).append(and).append(greatePost).append(limit);
+		String strWhere = where.toString();
+		return getListByWhere(strWhere);
+	}
+
+	@Override
+	public List<FeedPost> getPostListByPostIds(List<Long> postIds) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand postIdIn = new InOperand("post_id", postIds);
+		where.append(postIdIn);
+		String strWhere = where.toString();
+		return getListByWhere(strWhere);
+	}
 	
+	private List<FeedPost> getListByWhere(String where) throws Exception
+	{
+		StringBuilder strSql = new StringBuilder();
+		strSql.append("select post_id,forum_id,thread_id,user_id,content_filter,html_content_filter,pictures,position,comments,recommends,status,create_time,update_time ");
+		strSql.append("from feed_post ");
+		if(!StringUtil.isNullOrEmpty(where))
+			strSql.append(where);
+		
+		ResultData rs = super.executeQuery(strSql.toString());
+		if(null == rs)
+			return null;
+		
+		List<RowData> rows = rs.getQueryResult();
+		if(null == rows || rows.size() == 0)
+			return null;
+		
+		List<FeedPost> list = new ArrayList<FeedPost>();
+		FeedPost postInfo = null;
+		for(RowData row : rows)
+		{
+			postInfo = new FeedPost();
+			postInfo.setPostId(row.getLong(0));
+			postInfo.setForumId(row.getLong(1));
+			postInfo.setThreadId(row.getLong(2));
+			postInfo.setUserId(row.getLong(3));
+			postInfo.setContent(row.getString(4));
+			postInfo.setContentFilter(row.getString(4));
+			postInfo.setHtmlContent(row.getString(5));
+			postInfo.setHtmlContentFilter(row.getString(5));
+			postInfo.setPictures(row.getString(6));
+			postInfo.setPosition(row.getInteger(7));
+			postInfo.setComments(row.getInteger(8));
+			postInfo.setRecommends(row.getInteger(9));
+			postInfo.setStatus(row.getInteger(10));
+			postInfo.setCreateTime(row.getLong(11));
+			postInfo.setUpdateTime(row.getLong(12));
+			list.add(postInfo);
+		}
+		return list;
+	}
 }
