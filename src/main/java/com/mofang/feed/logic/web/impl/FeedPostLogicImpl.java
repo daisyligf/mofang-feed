@@ -36,8 +36,10 @@ import com.mofang.feed.model.external.PostReplyNotify;
 import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.record.StatForumViewHistoryRecorder;
+import com.mofang.feed.redis.FeedPostCache;
 import com.mofang.feed.redis.FeedUserCountRedis;
 import com.mofang.feed.redis.WaterproofWallRedis;
+import com.mofang.feed.redis.impl.FeedPostCacheImpl;
 import com.mofang.feed.redis.impl.FeedUserCountRedisImpl;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
 import com.mofang.feed.service.FeedAdminUserService;
@@ -90,6 +92,8 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	private FeedThreadRepliesRewardService rewardService = FeedThreadRepliesRewardServiceImpl.getInstance();
 	private FeedUserCountRedis userCountRedis = FeedUserCountRedisImpl.getInstance();
 	private FeedDifferenceThreadRepilyService diffThreadPepilyService = FeedDifferenceThreadRepilyServiceImpl.getInstance();
+	
+	private FeedPostCache cache = FeedPostCacheImpl.getInstance();
 	
 	private FeedPostLogicImpl()
 	{}
@@ -561,8 +565,21 @@ public class FeedPostLogicImpl implements FeedPostLogic
 	@Override
 	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{
-		///验证主题是否存在
 		ResultValue result = new ResultValue();
+		
+		///获取缓存中获取
+		String cacheResult = cache.getThreadPostList(threadId, pageNum, pageSize);
+		JSONObject data = null;
+		if(!StringUtil.isNullOrEmpty(cacheResult))
+		{
+			data = new JSONObject(cacheResult);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+		
+		///验证主题是否存在
 		FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
 		if(null == threadInfo)
 		{
@@ -572,19 +589,23 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		}
 		
 		Page<FeedPost> page = postService.getThreadPostList(threadId, pageNum, pageSize);
-		ResultValue resultValue = getPostList(page, threadId, pageNum, pageSize, currentUserId);
+		result = getPostList(page, threadId, pageNum, pageSize, currentUserId);
+		
+		///保存到缓存中
+		data = (JSONObject)result.getData();
+		cache.setThreadPostList(threadId, pageNum, pageSize, data.toString());
 		
 		/*********记录用户浏览数**********/
 		StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
 		
-		return resultValue;
+		return result;
 	}
 	
 	@Override
-	public ResultValue getThreadPostList(long threadId, int pageNum,
-			int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception 
+	public ResultValue getThreadPostList(long threadId, int pageNum, int pageSize, Set<Long> userIds, boolean include, boolean sort) throws Exception 
 	{
-		try {
+		try
+		{
 			///验证主题是否存在
 			ResultValue result = new ResultValue();
 			FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
@@ -599,17 +620,18 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			ResultValue resultValue = getPostList(page, threadId, pageNum, pageSize, 0);
 			
 			return resultValue;
-		} catch (Exception e) {
+		} 
+		catch (Exception e)
+		{
 			throw new Exception("at FeedPostLogicImpl.getThreadPostList by userIds throw an error.", e);
 		}
-		
 	}
 
 	@Override
 	public ResultValue getHostPostList(long threadId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{
-		///验证主题是否存在
 		ResultValue result = new ResultValue();
+		///验证主题是否存在
 		FeedThread threadInfo = threadService.getInfo(threadId, DataSource.REDIS);
 		if(null == threadInfo)
 		{
@@ -617,14 +639,30 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			result.setMessage(ReturnMessage.THREAD_NOT_EXISTS);
 			return result;
 		}
-				
-		Page<FeedPost> page = postService.getHostPostList(threadId, pageNum, pageSize);
-		ResultValue resultValue = getPostList(page, threadId, pageNum, pageSize, currentUserId);
+		
+		///获取缓存中获取
+		String cacheResult = cache.getHostPostList(threadId, threadInfo.getUserId(), pageNum, pageSize);
+		JSONObject data = null;
+		if(!StringUtil.isNullOrEmpty(cacheResult))
+		{
+			data = new JSONObject(cacheResult);
+			result.setCode(ReturnCode.SUCCESS);
+			result.setMessage(ReturnMessage.SUCCESS);
+			result.setData(data);
+			return result;
+		}
+			
+		Page<FeedPost> page = postService.getHostPostList(threadId, threadInfo.getUserId(), pageNum, pageSize);
+		result = getPostList(page, threadId, pageNum, pageSize, currentUserId);
+		
+		///保存到缓存中
+		data = (JSONObject)result.getData();
+		cache.setHostPostList(threadId, threadInfo.getUserId(), pageNum, pageSize, data.toString());
 		
 		/*********记录用户浏览数**********/
 		StatForumViewHistoryRecorder.recordInPostLogic(threadId, currentUserId);
 		
-		return resultValue;
+		return result;
 	}
 
 	private ResultValue getPostList(Page<FeedPost> page, long threadId, int pageNum, int pageSize, long currentUserId) throws Exception

@@ -36,9 +36,9 @@ public class ForumAppstoreAction extends AbstractActionExecutor
 		}
 		
 		Set<Long> forumIds = new HashSet<Long>();
-		forumIds.add(44686L);
-		forumIds.add(290L);
-		forumIds.add(352L);
+		forumIds.add(360L);
+		forumIds.add(44712L);
+		forumIds.add(44717L);
 		
 		return logic.getForumListByAppstore(forumIds);
 	}

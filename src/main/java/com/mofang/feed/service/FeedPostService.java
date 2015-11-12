@@ -168,7 +168,7 @@ public interface FeedPostService
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<FeedPost> getHostPostList(long threadId, int pageNum, int pageSize) throws Exception;
+	public Page<FeedPost> getHostPostList(long threadId, long userId, int pageNum, int pageSize) throws Exception;
 	
 	/**
 	 * 获取用户楼层列表
