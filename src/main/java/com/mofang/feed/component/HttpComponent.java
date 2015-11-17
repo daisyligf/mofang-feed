@@ -708,6 +708,49 @@ public class HttpComponent
 		}
 	}
 	
+	public static Map<Long, Integer> getForumFollowsByForumIds(String forumIds)
+	{
+		try
+		{
+			if(forumIds == null || forumIds.length() == 0)
+				return null;
+			
+			String requestUrl = GlobalConfig.BATCH_FORUM_FOLLOWS_INFO_URL + "?feeds=" + forumIds;
+			String result = get(GlobalObject.HTTP_CLIENT_USERSERVICE, requestUrl);
+			if(StringUtil.isNullOrEmpty(result))
+				return null;
+
+			JSONObject json = new JSONObject(result);
+			int code = json.optInt("code", -1);
+			
+			if(0 != code)
+				return null;
+			
+			JSONObject data = json.optJSONObject("data");
+			if(null == data)
+				return null;
+
+			Integer item = null;
+			Map<Long, Integer> map = new HashMap<Long, Integer>();
+			String[] strforumIds = forumIds.split(",");
+			for(String forumId : strforumIds)
+			{
+				item = data.optInt(forumId, 0);
+				if(null == item)
+					continue;
+				
+				map.put(Long.valueOf(forumId), item);
+			}
+			
+			return map;
+		}
+		catch (Exception e) 
+		{
+			GlobalObject.ERROR_LOG.error("at HttpComponent.getGameCommentByIds throw an error.", e);
+			return null;
+		}
+	}
+	
 	private static String get(CloseableHttpClient httpClient, String requestUrl)
 	{
 		StringBuilder strLog = new StringBuilder();

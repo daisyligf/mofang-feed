@@ -52,10 +52,14 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 			JSONObject objHotForumOut = new JSONObject();
 			JSONObject objRecommendGameOut = new JSONObject();
 			
+			StringBuilder forumIds = new StringBuilder();
+			
 			//首页综合专区信息
 			String forumIdsStr = GlobalConfig.HOME_PREFECTURE_IDS;
 			String[] forumIdArr = forumIdsStr.split(",");
 			JSONObject objPrefecture = null;
+			//综合专区版块id
+			forumIds.append(forumIdsStr);
 			for(String forumIdStr : forumIdArr){
 				long forumId = Long.valueOf(forumIdStr);
 				FeedForum forum = forumService.getInfo(forumId);
@@ -79,8 +83,9 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 			
 			//首页热门游戏版块信息
 			List<FeedHomeHotForum> hotForumList = hotForumService.getList();
+			JSONObject objHotForum = null;
 			if(hotForumList != null){
-				JSONObject objHotForum = null;
+				
 				Set<Integer> gameIds = new HashSet<Integer>();
 				for(FeedHomeHotForum model : hotForumList){
 					objHotForum = new JSONObject();
@@ -89,6 +94,8 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 					FeedForum feedForum = forumService.getInfo(forumId);
 					if(feedForum == null)
 						continue;
+					//热门游戏版块ids
+					forumIds.append(forumId).append(",");
 					objHotForum.put("forum_id", forumId);
 					objHotForum.put("forum_name", feedForum.getName());
 					objHotForum.put("game_id", feedForum.getGameId());
@@ -107,9 +114,9 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 				Map<Integer, String> map = HttpComponent.getGameCommentByIds(gameIds);
 				if(null != map)
 				{
-					for(int i=0; i<data.length(); i++)
+					for(int i=0; i<arrayHotForum.length(); i++)
 					{
-						objHotForum = data.optJSONObject(i);
+						objHotForum = arrayHotForum.optJSONObject(i);
 						int gameId = objHotForum.optInt("game_id", 0);
 						if(map.containsKey(gameId))
 							objHotForum.put("comment", map.get(gameId));
@@ -123,8 +130,9 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 			
 			//首页新游推荐版块信息
 			List<FeedHomeRecommendGame> recommendGameList = recommendGameService.getList();
+			JSONObject objRecommendGame = null;
 			if(recommendGameList != null){
-				JSONObject objRecommendGame = null;
+				
 				Set<Integer> gameIds = new HashSet<Integer>();
 				for(FeedHomeRecommendGame model : recommendGameList){
 					long forumId = model.getForumId();
@@ -132,6 +140,8 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 					if(feedForum == null)
 						continue;
 					
+					//热门游戏版块ids
+					forumIds.append(forumId).append(",");
 					objRecommendGame = new JSONObject();
 					objRecommendGame.put("forum_id", forumId);
 					objRecommendGame.put("forum_name", feedForum.getName());
@@ -151,9 +161,9 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 				Map<Integer, String> map = HttpComponent.getGameCommentByIds(gameIds);
 				if(null != map)
 				{
-					for(int i=0; i<data.length(); i++)
+					for(int i=0; i<arrayRecommendGame.length(); i++)
 					{
-						objRecommendGame = data.optJSONObject(i);
+						objRecommendGame = arrayRecommendGame.optJSONObject(i);
 						int gameId = objRecommendGame.optInt("game_id", 0);
 						if(map.containsKey(gameId))
 							objRecommendGame.put("comment", map.get(gameId));
@@ -162,6 +172,36 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 			}
 			objRecommendGameOut.put("recommendGameList", arrayRecommendGame);
 			data.put(objRecommendGameOut);
+			
+			///批量获取版块关注并填充
+			Map<Long, Integer> mapFollows = HttpComponent.getForumFollowsByForumIds(forumIds.substring(0, forumIds.length() - 1).toString());
+			if(null != mapFollows)
+			{
+				for(int i=0; i<arrayPrefecture.length(); i++)
+				{	
+					objPrefecture = arrayPrefecture.optJSONObject(i);
+					long forumId = objPrefecture.optLong("forum_id", 0);
+					if(mapFollows.containsKey(forumId))
+						objPrefecture.put("follow_num", mapFollows.get(forumId));
+				}
+				
+				for(int i=0; i<arrayHotForum.length(); i++)
+				{	
+					objHotForum = arrayHotForum.optJSONObject(i);
+					long forumId = objHotForum.optLong("forum_id", 0);
+					if(mapFollows.containsKey(forumId))
+						objHotForum.put("follow_num", mapFollows.get(forumId));
+				}
+				
+				for(int i=0; i<arrayRecommendGame.length(); i++)
+				{	
+					objRecommendGame = arrayRecommendGame.optJSONObject(i);
+					long forumId = objRecommendGame.optLong("forum_id", 0);
+					if(mapFollows.containsKey(forumId))
+						objRecommendGame.put("follow_num", mapFollows.get(forumId));
+				}
+			}
+			
 			
 			
 			result.setCode(ReturnCode.SUCCESS);

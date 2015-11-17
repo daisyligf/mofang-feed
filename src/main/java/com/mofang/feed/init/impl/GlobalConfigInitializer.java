@@ -105,5 +105,6 @@ public class GlobalConfigInitializer extends AbstractInitializer
 		
 		GlobalConfig.LOAD_DATA = config.getBoolean("load", "load_data");
 		GlobalConfig.LOAD_LIST =config.get("load", "load_list");
+		GlobalConfig.BATCH_FORUM_FOLLOWS_INFO_URL = config.get("api", "batch_forum_follows_info_url");
 	}
 }

@@ -152,4 +152,6 @@ public class GlobalConfig
 	public static boolean LOAD_DATA = false;
 	
 	public static String LOAD_LIST;
+	
+	public static String BATCH_FORUM_FOLLOWS_INFO_URL;
 }
