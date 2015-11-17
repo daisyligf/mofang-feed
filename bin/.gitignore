@@ -1,1 +1,16 @@
 /com/
+/config.ini
+/http_client_chatservice.properties
+/http_client_fahaoservice.properties
+/http_client_gameservice.properties
+/http_client_sensitiveword.properties
+/http_client_taskservice.properties
+/http_client_userservice.properties
+/http_client_videoservice.properties
+/http_client_viperservice.properties
+/log4j.properties
+/mysql.properties
+/redis_master.properties
+/redis_slave.properties
+/return_message.properties
+/thread_replies_reward_config.ini
