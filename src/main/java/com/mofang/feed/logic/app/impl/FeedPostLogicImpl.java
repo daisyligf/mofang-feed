@@ -783,9 +783,11 @@ public class FeedPostLogicImpl implements FeedPostLogic
 		jsonForum.put("fid", threadInfo.getForumId());
 		jsonThread.put("forum", jsonForum);
 		FeedForum forumInfo = forumService.getInfo(threadInfo.getForumId());
+		Map<Long, Integer> mapFollows = HttpComponent.getForumFollowsByForumIds(String.valueOf(threadInfo.getForumId()));
 		if(null != forumInfo)
 		{
 			jsonForum.put("name", forumInfo.getName());
+			jsonForum.put("follow_num", mapFollows.get(threadInfo.getForumId()));
 			jsonForum.put("icon", forumInfo.getIcon());
 		}
 		
