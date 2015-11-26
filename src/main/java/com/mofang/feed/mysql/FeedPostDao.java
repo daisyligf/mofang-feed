@@ -149,4 +149,6 @@ public interface FeedPostDao
 	public List<FeedPost> getPostListFromPostId(long threadId, long postId, int size) throws Exception;
 	
 	public List<FeedPost> getPostListByPostIds(List<Long> postIds) throws Exception;
+	
+	public List<FeedPost> getPostListByPostIds(List<Long> postIds, int orderType) throws Exception;
 }

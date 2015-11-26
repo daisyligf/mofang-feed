@@ -490,6 +490,25 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		return getListByWhere(strWhere);
 	}
 	
+	@Override
+	public List<FeedPost> getPostListByPostIds(List<Long> postIds, int orderType) throws Exception
+	{
+		Operand where = new WhereOperand();
+		Operand postIdIn = new InOperand("post_id", postIds);
+		where.append(postIdIn);
+		OrderByEntry entry = null;
+		if (orderType == 1) {
+			entry = new OrderByEntry("post_id", SortType.Desc);
+		} else {
+			entry = new OrderByEntry("post_id", SortType.Asc);
+		}
+		
+		Operand orderby = new OrderByOperand(entry);
+		where.append(orderby);
+		String strWhere = where.toString();
+		return getListByWhere(strWhere);
+	}
+	
 	private List<FeedPost> getListByWhere(String where) throws Exception
 	{
 		StringBuilder strSql = new StringBuilder();

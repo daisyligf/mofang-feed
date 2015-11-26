@@ -502,7 +502,7 @@ public class FeedPostServiceImpl implements FeedPostService
 			*/
 			Set<String> idSet = postRedis.getThreadPostList(threadId, postId, pageSize);
 			List<Long> postIds = SetToList(idSet);
-			List<FeedPost> list = postDao.getPostListByPostIds(postIds);
+			List<FeedPost> list = postDao.getPostListByPostIds(postIds,1);
 			return new Page<FeedPost>(total, list);
 		}
 		catch(Exception e)
