@@ -1,7 +1,9 @@
 package com.mofang.feed.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.mofang.feed.global.GlobalObject;
@@ -597,14 +599,28 @@ public class FeedPostServiceImpl implements FeedPostService
 			FeedPostAndComment postAndCommentInfo = null;
 			FeedThread threadInfo = null;
 			FeedForum forumInfo = null;
+			List<Long> postIdsList = new ArrayList<Long>();
+			for (FeedReply replyInfo : replies) {
+				if(replyInfo.getType() == ReplyType.THREAD)   ///楼层
+				{
+					postIdsList.add(replyInfo.getSourceId());
+				}
+			}
+			
+			List<FeedPost> postlist = postDao.getPostListByPostIds(postIdsList);
+			Map<Long, FeedPost> mapPost = new HashMap<Long, FeedPost>();
+			for (FeedPost feedPost:postlist) {
+				mapPost.put(feedPost.getPostId(), feedPost);
+			}
 			for(FeedReply replyInfo : replies)
 			{
 				if(replyInfo.getType() == ReplyType.THREAD)   ///楼层
 				{
-					FeedPost postInfo = postRedis.getInfo(replyInfo.getSourceId());
-					if(null == postInfo)
-						continue;
+//					FeedPost postInfo = postRedis.getInfo(replyInfo.getSourceId());
+//					if(null == postInfo)
+//						continue;
 					
+					FeedPost postInfo = mapPost.get(replyInfo.getSourceId());
 					postAndCommentInfo = new FeedPostAndComment();
 					postAndCommentInfo.setThreadId(postInfo.getThreadId());
 					threadInfo = threadRedis.getInfo(postInfo.getThreadId());
