@@ -382,7 +382,12 @@ public class FeedPostDaoImpl extends AbstractMysqlSupport<FeedPost> implements F
 		else
 			userInclude = new NotInOperand("user_id", userIds);
 		
-		OrderByEntry entry = new OrderByEntry("post_id", SortType.Asc);
+		OrderByEntry entry = null;
+		if (sort) 
+			entry = new OrderByEntry("post_id", SortType.Desc);
+		else
+			entry = new OrderByEntry("post_id", SortType.Asc);
+		
 		Operand orderby = new OrderByOperand(entry);
 		Operand limit = new LimitOperand(Integer.valueOf(start).longValue(), Integer.valueOf(end).longValue());
 		where.append(threadEqual).append(and).append(statusEqual).append(and).append(userInclude).append(orderby).append(limit);
