@@ -66,9 +66,9 @@ public class ForumCreateAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		if(type != ForumType.OFFICAL && isHidden == false)
+		if(type != ForumType.OFFICAL)
 		{
-			if(gameId <= 0)
+			if(gameId <= 0 && isHidden == false)
 			{
 				result.setCode(ReturnCode.CLIENT_REQUEST_DATA_IS_INVALID);
 				result.setMessage(ReturnMessage.CLIENT_REQUEST_DATA_IS_INVALID);
