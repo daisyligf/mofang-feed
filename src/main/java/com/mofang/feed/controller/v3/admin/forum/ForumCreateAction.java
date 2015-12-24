@@ -66,7 +66,7 @@ public class ForumCreateAction extends AbstractActionExecutor
 			return result;
 		}
 		
-		if(type != ForumType.OFFICAL)
+		if(type != ForumType.OFFICAL && isHidden == false)
 		{
 			if(gameId <= 0)
 			{
