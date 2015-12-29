@@ -95,7 +95,7 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 					if(feedForum == null)
 						continue;
 					//热门游戏版块ids
-					forumIds.append(forumId).append(",");
+					forumIds.append(",").append(forumId);
 					objHotForum.put("forum_id", forumId);
 					objHotForum.put("forum_name", feedForum.getName());
 					objHotForum.put("game_id", feedForum.getGameId());
@@ -141,7 +141,7 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 						continue;
 					
 					//热门游戏版块ids
-					forumIds.append(forumId).append(",");
+					forumIds.append(",").append(forumId);
 					objRecommendGame = new JSONObject();
 					objRecommendGame.put("forum_id", forumId);
 					objRecommendGame.put("forum_name", feedForum.getName());
@@ -174,7 +174,7 @@ public class HomeForumListLogicImpl implements HomeForumListLogic{
 			data.put(objRecommendGameOut);
 			
 			///批量获取版块关注并填充
-			Map<Long, Integer> mapFollows = HttpComponent.getForumFollowsByForumIds(forumIds.substring(0, forumIds.length() - 1).toString());
+			Map<Long, Integer> mapFollows = HttpComponent.getForumFollowsByForumIds(forumIds.toString());
 			if(null != mapFollows)
 			{
 				for(int i=0; i<arrayPrefecture.length(); i++)
