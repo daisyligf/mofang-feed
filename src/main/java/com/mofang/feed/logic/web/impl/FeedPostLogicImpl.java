@@ -701,6 +701,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 						jsonPost.put("comments", postInfo.getComments());
 						jsonPost.put("position", postInfo.getPosition());
 						jsonPost.put("create_time", postInfo.getCreateTime());
+						jsonPost.put("update_time", postInfo.getUpdateTime());
 						
 						///是否点赞
 						boolean isRecommend = false;
