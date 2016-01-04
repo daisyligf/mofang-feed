@@ -303,14 +303,18 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			}
 			
 			///权限检查
-			boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.EDIT_POST);
-			if(!hasPrivilege)
+			long postUserId = postInfo.getUserId();
+			long threadUserId = threadInfo.getUserId();
+			if (operatorId != postUserId && operatorId != threadUserId)
 			{
-				result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
-				result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
-				return result;
+				boolean hasPrivilege = userRoleService.hasPrivilege(forumId, operatorId, FeedPrivilege.EDIT_POST);
+				if(!hasPrivilege)
+				{
+					result.setCode(ReturnCode.INSUFFICIENT_PERMISSIONS);
+					result.setMessage(ReturnMessage.INSUFFICIENT_PERMISSIONS);
+					return result;
+				}
 			}
-			
 			///过滤内容所有HTML标签
 			content = HtmlTagFilter.filterHtmlTag(content);
 			///过滤内容敏感词
