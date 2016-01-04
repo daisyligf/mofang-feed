@@ -232,6 +232,7 @@ public class FeedPostLogicImpl implements FeedPostLogic
 			long posts = postService.getThreadPostCount(threadId);
 			JSONObject data = new JSONObject();
 			data.put("total", posts);
+			data.put("post_id", postId);
 			
 			///返回结果
 			result.setCode(ReturnCode.SUCCESS);
