@@ -24,6 +24,7 @@ import com.mofang.feed.model.FeedComment;
 import com.mofang.feed.model.FeedForum;
 import com.mofang.feed.model.FeedOperateHistory;
 import com.mofang.feed.model.FeedPost;
+import com.mofang.feed.model.FeedSysRole;
 import com.mofang.feed.model.FeedThread;
 import com.mofang.feed.model.Page;
 import com.mofang.feed.model.external.PostReplyNotify;
@@ -31,23 +32,28 @@ import com.mofang.feed.model.external.SensitiveWord;
 import com.mofang.feed.model.external.User;
 import com.mofang.feed.redis.WaterproofWallRedis;
 import com.mofang.feed.redis.impl.WaterproofWallRedisImpl;
+import com.mofang.feed.service.FeedAdminUserService;
 import com.mofang.feed.service.FeedBlackListService;
 import com.mofang.feed.service.FeedCommentService;
 import com.mofang.feed.service.FeedForumService;
 import com.mofang.feed.service.FeedOperateHistoryService;
 import com.mofang.feed.service.FeedPostService;
+import com.mofang.feed.service.FeedSysRoleService;
 import com.mofang.feed.service.FeedSysUserRoleService;
 import com.mofang.feed.service.FeedThreadService;
+import com.mofang.feed.service.impl.FeedAdminUserServiceImpl;
 import com.mofang.feed.service.impl.FeedBlackListServiceImpl;
 import com.mofang.feed.service.impl.FeedCommentServiceImpl;
 import com.mofang.feed.service.impl.FeedForumServiceImpl;
 import com.mofang.feed.service.impl.FeedOperateHistoryServiceImpl;
 import com.mofang.feed.service.impl.FeedPostServiceImpl;
+import com.mofang.feed.service.impl.FeedSysRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedSysUserRoleServiceImpl;
 import com.mofang.feed.service.impl.FeedThreadServiceImpl;
 import com.mofang.feed.service.impl.task.FeedThreadRepliesRewardServiceImpl;
 import com.mofang.feed.service.task.FeedThreadRepliesRewardService;
 import com.mofang.feed.util.HtmlTagFilter;
+import com.mofang.feed.util.MiniTools;
 import com.mofang.framework.util.StringUtil;
 
 /**
@@ -67,6 +73,8 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 	private FeedCommentService commentService = FeedCommentServiceImpl.getInstance();
 	private FeedThreadRepliesRewardService rewardService = FeedThreadRepliesRewardServiceImpl.getInstance();
 	private FeedForumService forumService = FeedForumServiceImpl.getInstance();
+	private FeedAdminUserService adminService = FeedAdminUserServiceImpl.getInstance();
+	private FeedSysRoleService roleService = FeedSysRoleServiceImpl.getInstance();
 	
 	private FeedCommentLogicImpl()
 	{}
@@ -287,16 +295,18 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 	}
 
 	@Override
-	public ResultValue getPostCommentList(long postId, int pageNum, int pageSize) throws Exception
+	public ResultValue getPostCommentList(long postId, int pageNum, int pageSize, long currentUserId) throws Exception
 	{
 		try
 		{
+			
 			ResultValue result = new ResultValue();
 			JSONObject data = new JSONObject();
 			JSONArray arrayComments = new JSONArray();
 			///存储缓存中没有数据的用户ID, 用于批量获取用户信息
 			Set<Long> uids = new HashSet<Long>();
 			long total = 0;
+			long forumId = 0;
 			Page<FeedComment> page = commentService.getPostCommentList(postId, pageNum, pageSize);
 			if(null != page)
 			{
@@ -314,7 +324,7 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 						jsonComment.put("cid", commentInfo.getCommentId());
 						jsonComment.put("content", commentInfo.getContentFilter());
 						jsonComment.put("create_time", commentInfo.getCreateTime());
-						
+						jsonComment.put("forum_id", commentInfo.getForumId());
 						jsonPost = new JSONObject();
 						jsonPost.put("pid", commentInfo.getPostId());
 						
@@ -362,9 +372,36 @@ public class FeedCommentLogicImpl implements FeedCommentLogic
 					}
 				}
 			}
+			
+			//获取版块id
+			if (uids.size() > 0) {
+				forumId = arrayComments.getJSONObject(0).optLong("forum_id", 0L);
+			}
+			///获取当前用户角色权限
+			JSONObject jsonCurrentUser = new JSONObject();
+			if (currentUserId > 0) {
+				
+				boolean isAdmin = adminService.exists(currentUserId);
+				int roleId = userRoleService.getRoleId(forumId, currentUserId);
+				boolean isModerator = false;
+				JSONArray arrayPrivileges = new JSONArray();
+				if(roleId > 0)
+				{
+					FeedSysRole roleInfo = roleService.getInfo(roleId);
+					if(null != roleInfo)
+					{
+						isModerator = true;
+						arrayPrivileges = MiniTools.StringToJSONArray(roleInfo.getPrivileges());
+					}
+				}
+				jsonCurrentUser.put("is_admin", isAdmin);
+				jsonCurrentUser.put("is_moderator", isModerator);
+				jsonCurrentUser.put("privileges", arrayPrivileges);
+			}
 
 			data.put("total", total);
 			data.put("comments", arrayComments);
+			data.put("current_user", jsonCurrentUser);
 			result.setCode(ReturnCode.SUCCESS);
 			result.setMessage(ReturnMessage.SUCCESS);
 			result.setData(data);

@@ -27,7 +27,7 @@ public class CommentListAction extends AbstractActionExecutor
 		String strPostId = context.getParamMap().get("pid");
 		String strPageNum = context.getParameters("page");
 		String strPageSize = context.getParameters("size");
-		
+		String strCurrentUserId = context.getParamMap().get("uid");
 		///参数检查
 		if(!StringUtil.isLong(strPostId))
 		{
@@ -39,13 +39,16 @@ public class CommentListAction extends AbstractActionExecutor
 		long postId = Long.parseLong(strPostId);
 		int pageNum = 1;
 		int pageSize = 50;
+		long userId = 0L;
 		
+		if (StringUtil.isLong(strCurrentUserId)) 
+			userId = Long.valueOf(strCurrentUserId);
 		if(StringUtil.isInteger(strPageNum))
 			pageNum = Integer.parseInt(strPageNum);
 		if(StringUtil.isInteger(strPageSize))
 			pageSize = Integer.parseInt(strPageSize);
 		
-		return logic.getPostCommentList(postId, pageNum, pageSize);
+		return logic.getPostCommentList(postId, pageNum, pageSize, userId);
 	}
 	
 	protected boolean needCheckAtom()
